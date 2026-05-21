@@ -1,0 +1,1465 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <title>时间之镜 — 飞檐翚影</title>
+    <link rel="stylesheet" href="css/architecture_common.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary:       #444C5E;
+            --primary-light: #5A6478;
+            --primary-dark:  #2A3246;
+            --secondary:     #A29192;
+            --accent:        #8A9BC5;
+            --accent-light:  #A8B8D8;
+            --bg:            #F0F2F5;
+            --bg-card:       #FFFFFF;
+            --bg-muted:      #E8EBF0;
+            --text-main:     #2A3246;
+            --text-sub:      #4A5568;
+            --text-muted:    #9E9E9E;
+            --text-light:    rgba(240,242,245,0.85);
+            --border:        rgba(68,76,94,0.14);
+            --border-light:  rgba(68,76,94,0.08);
+            --shadow-sm:     0 2px 8px rgba(42,50,70,0.08);
+            --shadow-md:     0 6px 20px rgba(42,50,70,0.12);
+            --shadow-lg:     0 16px 48px rgba(42,50,70,0.18);
+            --radius-sm:     6px;
+            --radius-md:     12px;
+            --radius-lg:     20px;
+            --transition:    0.32s cubic-bezier(0.4,0,0.2,1);
+
+            /* 朝代色系 */
+            --xianqin-color: #6D7F99;
+            --han-color:     #C0392B;
+            --weijin-color:  #D4AC0D;
+            --tang-color:    #A93226;
+            --wudai-color:   #B7950B;
+            --song-color:    #1E8449;
+            --yuan-color:    #7D6608;
+            --ming-color:    #884EA0;
+            --qing-color:    #2471A3;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== 导航栏 ===== */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: #444C5E;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 0 48px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.22);
+            transition: background var(--transition);
+        }
+
+        .nav-logo {
+            color: #F7F3ED;
+            font-size: 1.4em;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.08em;
+        }
+
+        .nav-logo-icon {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: #F7F3ED;
+        }
+
+        .nav-links { display: flex; gap: 4px; }
+
+        .nav-link {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+            font-size: 0.95em;
+            letter-spacing: 0.03em;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #A29192;
+            color: #F7F3ED;
+        }
+
+        .nav-user {
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .nav-user a {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color var(--transition);
+        }
+
+        .nav-user a:hover { color: #F7F3ED; }
+
+
+         /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139,69,19,0.15);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139,69,19,0.3);
+        }
+
+        
+        /* ===== 页面头部 ===== */
+        .page-header {
+            padding-top: 88px;
+            padding-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(93,43,10,0.06) 0%, transparent 100%);
+            position: relative;
+        }
+
+        /* 传统云纹装饰 */
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 55%;
+            height: 2px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10'%3E%3Cpath d='M0,5 Q25,0 50,5 T100,5' stroke='%23D4A574' stroke-width='1' fill='none'/%3E%3C/svg%3E") repeat-x;
+            opacity: 0.6;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--text-main);
+            letter-spacing: 0.15em;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .page-header h1 span {
+            background: linear-gradient(135deg, var(--accent), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            color: var(--text-sub);
+            font-size: 0.92em;
+            letter-spacing: 0.08em;
+            font-style: italic;
+        }
+
+        /* ===== 主体三栏布局 ===== */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 30% 40% 30%;
+            gap: 14px;
+            padding: 8px 20px 20px;
+            height: calc(100vh - 152px);
+            min-height: 560px;
+        }
+
+        /* ===== 面板卡片 ===== */
+        .panel {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow var(--transition);
+        }
+
+        /* 传统纹样顶部边框 */
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+            opacity: 0.7;
+        }
+
+        .panel:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .panel-header {
+            padding: 14px 16px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+        }
+
+        .panel-header-icon {
+            width: 28px; height: 28px;
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: #F7F3ED;
+        }
+
+        .panel-header h3 {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            letter-spacing: 0.06em;
+            font-weight: 600;
+        }
+
+        .panel-body {
+            flex: 1;
+            padding: 0;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* ===== 左侧：朝代时间轴 ===== */
+        .dynasty-list {
+            padding: 8px;
+            overflow-y: auto;
+            height: 100%;
+            scrollbar-width: thin;
+            scrollbar-color: var(--secondary) transparent;
+        }
+
+        .dynasty-list::-webkit-scrollbar { width: 4px; }
+        .dynasty-list::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 2px; }
+
+        .dynasty-card {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        .dynasty-card:hover {
+            background: rgba(212,165,116,0.08);
+            border-color: var(--border);
+        }
+
+        .dynasty-card.active {
+            background: rgba(212,165,116,0.14);
+            border-color: var(--secondary);
+            box-shadow: 0 2px 8px rgba(212,165,116,0.15);
+        }
+
+        .dynasty-card .color-bar {
+            width: 4px;
+            border-radius: 2px;
+            flex-shrink: 0;
+            transition: width var(--transition);
+        }
+
+        .dynasty-card.active .color-bar,
+        .dynasty-card:hover .color-bar {
+            width: 6px;
+        }
+
+        .dynasty-card .card-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dynasty-card .dynasty-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 2px;
+            letter-spacing: 0.05em;
+        }
+
+        .dynasty-card .dynasty-period {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .dynasty-card .dynasty-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .dynasty-card .building-count {
+            font-size: 0.72rem;
+            color: var(--text-sub);
+            background: var(--bg-muted);
+            padding: 1px 8px;
+            border-radius: 10px;
+        }
+
+        .dynasty-card .tag {
+            font-size: 0.68rem;
+            padding: 1px 6px;
+            border-radius: 3px;
+            color: #fff;
+            opacity: 0.85;
+        }
+
+        /* ===== 中间主区域 ===== */
+        .center-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .center-panel .panel-body {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chart-section {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .chart-section:last-child {
+            border-bottom: none;
+        }
+
+        .chart-section .section-label {
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            z-index: 2;
+            letter-spacing: 0.03em;
+            background: rgba(255,255,255,0.9);
+            padding: 2px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-light);
+        }
+
+        /* 词云区 */
+        .wordcloud-section {
+            flex: 5;
+            position: relative;
+            background: linear-gradient(135deg, rgba(212,165,116,0.03), rgba(139,69,19,0.02));
+            min-height: 200px;
+        }
+
+        .wordcloud-section > div {
+            width: 100%;
+            height: 100%;
+            min-height: 200px;
+        }
+
+        /* 屋顶分布饼图 */
+        .roof-section {
+            flex: 4;
+            position: relative;
+        }
+
+        .roof-section > div {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 代表建筑 */
+        .featured-section {
+            flex: 3;
+            display: flex;
+            align-items: stretch;
+            padding: 12px 14px;
+            gap: 14px;
+            background: linear-gradient(135deg, rgba(212,165,116,0.08), rgba(139,69,19,0.05));
+            border-top: 1px dashed var(--secondary);
+        }
+
+        .featured-img {
+            width: 110px;
+            height: 85px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            flex-shrink: 0;
+            background: var(--bg-muted);
+            border: 2px solid var(--secondary);
+            box-shadow: 0 2px 8px rgba(139,69,19,0.15);
+        }
+
+        .featured-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-info h4 {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            margin-bottom: 3px;
+            letter-spacing: 0.04em;
+        }
+
+        .featured-info p {
+            font-size: 0.72rem;
+            color: var(--text-sub);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .featured-info .featured-tag {
+            display: inline-block;
+            font-size: 0.66rem;
+            padding: 1px 6px;
+            border-radius: 3px;
+            color: #fff;
+            margin-top: 4px;
+        }
+
+        /* ===== 右侧面板 ===== */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-panel .panel-body {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chord-section {
+            flex: 5;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .chord-section > div {
+            width: 100%;
+            height: 100%;
+        }
+
+        .trend-section {
+            flex: 4;
+        }
+
+        .trend-section > div {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 面板图标色 */
+        .icon-timeline { background: linear-gradient(135deg, var(--accent), #C9A84C); }
+        .icon-wordcloud { background: linear-gradient(135deg, var(--tang-color), #CD5C5C); }
+        .icon-roof { background: linear-gradient(135deg, var(--song-color), #3CB371); }
+        .icon-featured { background: linear-gradient(135deg, var(--ming-color), #CD853F); }
+        .icon-chord { background: linear-gradient(135deg, var(--wudai-color), #DAA520); }
+        .icon-trend { background: linear-gradient(135deg, var(--qing-color), #6495ED); }
+
+        /* ===== 底部 ===== */
+        footer {
+            background: var(--primary-dark);
+            color: rgba(245,245,220,0.6);
+            text-align: center;
+            padding: 16px 24px;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+            position: relative;
+            border-top: 2px solid var(--secondary);
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M0,10 Q25,2 50,10 T100,10 L100,0 L0,0 Z' fill='%23D4A574'/%3E%3C/svg%3E") top left/50px 6px repeat-x;
+        }
+
+        /* ===== 加载动画 ===== */
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(247,243,237,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            transition: opacity 0.4s;
+        }
+
+        .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+
+        .loading-spinner {
+            width: 28px; height: 28px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto;
+                height: auto;
+            }
+            .center-panel {
+                grid-column: 1 / 3;
+                min-height: 600px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-bar { padding: 0 16px; }
+            .nav-links { display: none; }
+            .dashboard {
+                grid-template-columns: 1fr;
+                padding: 12px;
+                gap: 12px;
+            }
+            .center-panel {
+                grid-column: 1;
+                min-height: 500px;
+            }
+            .page-header { padding-top: 80px; padding-bottom: 12px; }
+            .page-header h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ===== 导航栏 ===== -->
+<nav class="nav-bar">
+    <a href="index.html" class="nav-logo">
+        <img 
+        src="./img/logo.png" 
+        style="width:30px; height:30px; vertical-align:middle;"
+        >
+        飞檐翚影
+    </a>
+    <div class="nav-links">
+        <a href="space.html" class="nav-link">空间漫游</a>
+        <a href="know.html" class="nav-link">民族之窗</a>
+        <a href="time.html" class="nav-link active">时间之境</a>
+        <a href="3d_architecture.html" class="nav-link">3D展示</a>
+        <a href="museum_3d.html" class="nav-link">3D展厅</a>
+        <a href="indivisual.html" class="nav-link">喜好映射</a>
+        <a href="chat.html" class="nav-link">AI助手</a>
+    </div>
+    <div class="nav-user">
+        <a href="index.html">返回首页</a>
+    </div>
+</nav>
+
+<!-- ===== 页面头部 ===== -->
+<div class="page-header">
+    <h1><span>时间之镜</span> · 穿越千年，纵览各朝建筑风格变迁</h1>
+    <p>选择朝代，探索建筑关键词、屋顶形式与文化关联</p>
+</div>
+
+<!-- ===== 主体面板 ===== -->
+<div class="dashboard">
+    <!-- 左侧面板：朝代时间轴 -->
+    <div class="panel">
+        <div class="panel-header">
+            <div class="panel-header-icon icon-timeline">⏳</div>
+            <h3>朝代时间轴</h3>
+        </div>
+        <div class="panel-body">
+            <div class="dynasty-list" id="dynastyList">
+                <!-- JS动态渲染 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 中间主区域 -->
+    <div class="panel center-panel">
+        <div class="panel-header">
+            <div class="panel-header-icon icon-wordcloud">☁️</div>
+            <h3 id="centerTitle">唐代 · 建筑词云与特征</h3>
+        </div>
+        <div class="panel-body">
+            <!-- 词云图 -->
+            <div class="chart-section wordcloud-section">
+                <span class="section-label">建筑关键词词云</span>
+                <div id="chartWordcloud"></div>
+            </div>
+            <!-- 屋顶分布饼图 -->
+            <div class="chart-section roof-section">
+                <span class="section-label">屋顶形式分布</span>
+                <div id="chartRoof"></div>
+            </div>
+            <!-- 代表建筑 -->
+            <div class="chart-section featured-section" id="featuredSection">
+                <!-- JS动态渲染 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧面板 -->
+    <div class="panel right-panel">
+        <div class="panel-header">
+            <div class="panel-header-icon icon-chord">🎵</div>
+            <h3>朝代建筑关联</h3>
+        </div>
+        <div class="panel-body">
+            <!-- 和弦图 -->
+            <div class="chord-section">
+                <div id="chartChord"></div>
+            </div>
+            <!-- 趋势折线图 -->
+            <div class="trend-section">
+                <div id="chartTrend"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 底部 ===== -->
+<footer>
+    <p>飞檐翚影 · 中国古建筑文化展示平台 | 传承千年营造智慧，守护中华建筑文明</p>
+</footer>
+
+<!-- ===== 脚本 ===== -->
+<script src="js/echarts-5.4.2.min.js"></script>
+<script src="js/config.js"></script>
+
+<script>
+(function() {
+    'use strict';
+
+    // ===== 朝代数据定义 =====
+    var DYNASTIES = [
+        { id: 'xianqin',   name: '先秦',     period: '远古 - 前221年',  color: '#6D7F99', tags: ['夯土','高台','瓦当'] },
+        { id: 'qinhan',    name: '秦汉',     period: '前221 - 220年',   color: '#C0392B', tags: ['陵墓','阙','画像石'] },
+        { id: 'weijin',    name: '魏晋南北朝', period: '220 - 581年',    color: '#D4AC0D', tags: ['石窟','佛塔','玄学'] },
+        { id: 'suitang',   name: '隋唐',     period: '581 - 907年',     color: '#A93226', tags: ['殿宇','斗拱','雄浑'] },
+        { id: 'wudai',     name: '五代辽金', period: '907 - 1279年',     color: '#B7950B', tags: ['楼阁','密檐','唐风'] },
+        { id: 'song',      name: '宋',       period: '960 - 1279年',     color: '#1E8449', tags: ['营造法式','精巧','藻井'] },
+        { id: 'yuan',      name: '元',       period: '1271 - 1368年',    color: '#7D6608', tags: ['减柱','壁画','融合'] },
+        { id: 'ming',      name: '明',       period: '1368 - 1644年',    color: '#884EA0', tags: ['紫禁城','园林','长城'] },
+        { id: 'qing',      name: '清',       period: '1644 - 1912年',    color: '#2471A3', tags: ['工部做法','藏式','园林'] }
+    ];
+
+    // 朝代名称到data.js中词云数据的映射
+    var WORDCLOUD_MAP = {
+        'xianqin': 'originData_shangzhou',
+        'qinhan':  'originData_qinhan',
+        'weijin':  'originData_weijin',
+        'suitang': 'originData_suitang',
+        'wudai':   'originData_songyuan', // 复用宋元词云
+        'song':    'originData_songyuan',
+        'yuan':    'originData_songyuan',
+        'ming':    'originData_mingqing',
+        'qing':    'originData_mingqing'
+    };
+
+    // 朝代名到buildings_static.json中dynasty字段的映射
+    var DYNASTY_FIELD_MAP = {
+        'xianqin':   '',
+        'qinhan':    '汉代',
+        'weijin':    '魏晋南北朝',
+        'suitang':   '唐代',
+        'wudai':     '辽金',
+        'song':      '宋代',
+        'yuan':      '元代',
+        'ming':      '明代',
+        'qing':      '清代'
+    };
+
+    var chartFont = "'Noto Serif SC', 'SimSun', serif";
+    var chartTextMain = '#2A3246';
+    var chartTextSub = '#4A5568';
+    var chartTooltipBg = 'rgba(42,50,70,0.92)';
+    var chartTooltipText = '#F0F2F5';
+    var chartTooltipBorder = '#8A9BC5';
+
+    var warmColors = [
+        '#C0392B', '#A93226', '#884EA0', '#7D6608', '#D4AC0D',
+        '#B7950B', '#1E8449', '#2471A3', '#5A6478', '#8A9BC5',
+        '#A29192', '#444C5E', '#2A3246', '#6D7F99', '#1E8449'
+    ];
+
+    function randomWarmColor() {
+        return warmColors[Math.floor(Math.random() * warmColors.length)];
+    }
+
+    // ===== 全局状态 =====
+    var currentDynasty = 'suitang'; // 默认选中唐代
+    var buildingsData = [];
+    var timelineData = [];
+    var roofData = [];
+    var dynastyBuildings = {};
+
+    // ===== ECharts 实例 =====
+    var wcEl = document.getElementById('chartWordcloud');
+    var chartWordcloud = echarts.init(wcEl);
+    var chartRoof = echarts.init(document.getElementById('chartRoof'));
+    var chartChord = echarts.init(document.getElementById('chartChord'));
+    var chartTrend = echarts.init(document.getElementById('chartTrend'));
+
+
+    // ===== 数据加载 =====
+    function loadData() {
+        // 获取 API 基础 URL
+        var apiBase = (typeof BASE_URL !== 'undefined' && BASE_URL) ? BASE_URL : '';
+        
+        // 加载建筑数据
+        var buildingsUrl = apiBase ? apiBase + '/architecture/buildings-by-dynasty/' : '/architecture/buildings-by-dynasty/';
+        fetch(buildingsUrl)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                buildingsData = data;
+                processDynastyBuildings(data);
+                renderDynastyList();
+                selectDynasty(currentDynasty);
+            })
+            .catch(function() {
+                // 降级到静态JSON
+                fetch('data/buildings_static.json')
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        buildingsData = data;
+                        processDynastyBuildings(data);
+                        renderDynastyList();
+                        selectDynasty(currentDynasty);
+                    })
+                    .catch(function() {
+                        renderDynastyList();
+                        selectDynasty(currentDynasty);
+                    });
+            });
+
+        // 加载时间轴数据
+        var timelineUrl = apiBase ? apiBase + '/architecture/timeline/' : '/architecture/timeline/';
+        fetch(timelineUrl)
+            .then(function(r) { return r.json(); })
+            .then(function(data) { timelineData = data; updateTrendChart(); })
+            .catch(function() { updateTrendChart(); });
+
+        // 加载屋顶分布数据
+        var roofUrl = apiBase ? apiBase + '/architecture/roof-distribution/' : '/architecture/roof-distribution/';
+        fetch(roofUrl)
+            .then(function(r) { return r.json(); })
+            .then(function(data) { roofData = data; })
+            .catch(function() {});
+    }
+
+    // 处理建筑数据，按朝代分组
+    function processDynastyBuildings(data) {
+        dynastyBuildings = {};
+        DYNASTIES.forEach(function(d) { dynastyBuildings[d.id] = []; });
+
+        data.forEach(function(b) {
+            for (var i = 0; i < DYNASTIES.length; i++) {
+                var field = DYNASTY_FIELD_MAP[DYNASTIES[i].id];
+                if (field && b.dynasty === field) {
+                    dynastyBuildings[DYNASTIES[i].id].push(b);
+                    break;
+                }
+            }
+        });
+    }
+
+    // ===== 渲染朝代列表 =====
+    function renderDynastyList() {
+        var container = document.getElementById('dynastyList');
+        var html = '';
+        DYNASTIES.forEach(function(d) {
+            var count = dynastyBuildings[d.id] ? dynastyBuildings[d.id].length : 0;
+            var tagsHtml = d.tags.map(function(t) {
+                return '<span class="tag" style="background:' + d.color + '">' + t + '</span>';
+            }).join('');
+            html += '<div class="dynasty-card" data-id="' + d.id + '" onclick="window._selectDynasty(\'' + d.id + '\')">' +
+                '<div class="color-bar" style="background:' + d.color + '"></div>' +
+                '<div class="card-content">' +
+                    '<div class="dynasty-name">' + d.name + '</div>' +
+                    '<div class="dynasty-period">' + d.period + '</div>' +
+                    '<div class="dynasty-meta">' +
+                        '<span class="building-count">' + count + ' 处建筑</span>' +
+                        tagsHtml +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        });
+        container.innerHTML = html;
+    }
+
+    // ===== 选中朝代 =====
+    function selectDynasty(id) {
+        currentDynasty = id;
+
+        // 更新列表高亮
+        var cards = document.querySelectorAll('.dynasty-card');
+        cards.forEach(function(c) {
+            c.classList.toggle('active', c.getAttribute('data-id') === id);
+        });
+
+        // 更新标题
+        var dyn = DYNASTIES.find(function(d) { return d.id === id; });
+        document.getElementById('centerTitle').textContent = dyn.name + ' · 建筑词云与特征';
+
+        // 更新词云
+        updateWordcloud(id);
+
+        // 更新屋顶饼图
+        updateRoofChart(id);
+
+        // 更新代表建筑
+        updateFeatured(id);
+
+        // 更新和弦图高亮
+        updateChordHighlight(id);
+    }
+
+    // 全局暴露
+    window._selectDynasty = selectDynasty;
+
+    // ===== 词云图 =====
+    function updateWordcloud(dynastyId) {
+        var dyn = DYNASTIES.find(function(d) { return d.id === dynastyId; });
+
+        // 优先使用 js/data.js 中预置的词云数据
+        var dataSource = window[WORDCLOUD_MAP[dynastyId]] || [];
+
+        // 如果预置数据为空，尝试从后端 API 获取
+        if (dataSource.length === 0) {
+            // 使用 config.js 中定义的 BASE_URL
+            var apiBase = (typeof BASE_URL !== 'undefined' && BASE_URL) ? BASE_URL : '';
+            var wordcloudUrl = apiBase ? apiBase + '/architecture/wordcloud/?dynasty=' + encodeURIComponent(dyn.name) : '/architecture/wordcloud/?dynasty=' + encodeURIComponent(dyn.name);
+            
+            fetch(wordcloudUrl)
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var wordData = (data.results || data).map(function(item) {
+                        return {
+                            name: item.name,
+                            value: item.value,
+                            textStyle: { normal: { color: dyn.color } }
+                        };
+                    });
+                    renderWordcloud(dyn, wordData);
+                })
+                .catch(function() {
+                    // API 失败，从本地建筑数据提取关键词
+                    buildWordcloudFromLocal(dynastyId, dyn);
+                });
+            return;
+        }
+
+        var wordData = dataSource.map(function(item) {
+            return {
+                name: item.name,
+                value: item.value,
+                textStyle: { normal: { color: dyn.color } }
+            };
+        });
+
+        renderWordcloud(dyn, wordData);
+    }
+
+    // 渲染词云（使用 scatter + label 模拟，兼容性最佳）
+    function renderWordcloud(dyn, wordData) {
+        // 确保容器已有尺寸再渲染
+        chartWordcloud.resize();
+
+        if (!wordData || wordData.length === 0) return;
+
+        var maxVal = 0, minVal = Infinity;
+        wordData.forEach(function(d) {
+            if (d.value > maxVal) maxVal = d.value;
+            if (d.value < minVal) minVal = d.value;
+        });
+        var range = maxVal - minVal || 1;
+
+        // 按value从大到小排序
+        var sorted = wordData.slice().sort(function(a, b) { return b.value - a.value; });
+
+        // 获取容器像素尺寸，用于将像素转换为数据坐标
+        var containerW = wcEl.clientWidth || 400;
+        var containerH = wcEl.clientHeight || 300;
+        var gridLeft = 10, gridRight = 10, gridTop = 10, gridBottom = 10;
+        var plotW = containerW - gridLeft - gridRight;
+        var plotH = containerH - gridTop - gridBottom;
+        var pxPerUnitX = plotW / 100;
+        var pxPerUnitY = plotH / 100;
+
+        // 如果容器尺寸为0，延迟重试
+        if (containerW < 50 || containerH < 50) {
+            setTimeout(function() { renderWordcloud(dyn, wordData); }, 200);
+            return;
+        }
+
+        var scatterData = [];
+        var placed = [];
+
+        sorted.forEach(function(d, i) {
+            var ratio = (d.value - minVal) / range;
+            var fontSize = Math.round(14 + ratio * 28);
+            var textLen = d.name.length;
+            // 中文方块字：每个字宽≈fontSize，加字间距
+            var estPxW = textLen * fontSize * 1.15;
+            var estPxH = fontSize * 1.4;
+            // 转为数据坐标
+            var hw = (estPxW / 2 + 4) / pxPerUnitX; // 加4px间距
+            var hh = (estPxH / 2 + 2) / pxPerUnitY;
+
+            // 螺旋寻找不重叠的位置
+            var cx = 50, cy = 50;
+            var angle = Math.random() * Math.PI * 2;
+            var r = 0;
+            var found = false;
+            for (var step = 0; step < 800; step++) {
+                var px = cx + r * Math.cos(angle);
+                var py = cy + r * Math.sin(angle) * 0.7;
+                // 边界检查
+                if (px - hw < 1 || px + hw > 99 || py - hh < 1 || py + hh > 99) {
+                    angle += 0.4;
+                    r += 0.15;
+                    continue;
+                }
+                // 碰撞检测
+                var overlap = false;
+                for (var j = 0; j < placed.length; j++) {
+                    var p = placed[j];
+                    if (Math.abs(px - p.x) < (hw + p.hw) &&
+                        Math.abs(py - p.y) < (hh + p.hh)) {
+                        overlap = true;
+                        break;
+                    }
+                }
+                if (!overlap) {
+                    placed.push({ x: px, y: py, hw: hw, hh: hh });
+                    found = true;
+                    break;
+                }
+                angle += 0.4;
+                r += 0.15;
+            }
+            if (!found) {
+                // 放不下就随机放
+                px = 5 + Math.random() * 90;
+                py = 5 + Math.random() * 90;
+                placed.push({ x: px, y: py, hw: hw, hh: hh });
+            }
+
+            // 颜色：朝代主色 + 亮暗变化
+            var baseColor = d.textStyle && d.textStyle.normal && d.textStyle.normal.color
+                ? d.textStyle.normal.color : dyn.color;
+            var colors = [baseColor, adjustBrightness(baseColor, 0.75), adjustBrightness(baseColor, 1.25)];
+            var wordColor = colors[i % 3];
+
+            scatterData.push({
+                value: [placed[placed.length-1].x, placed[placed.length-1].y],
+                name: d.name,
+                wordValue: d.value,
+                itemStyle: { color: wordColor },
+                label: {
+                    show: true,
+                    formatter: d.name,
+                    fontSize: fontSize,
+                    fontWeight: ratio > 0.5 ? 'bold' : 'normal',
+                    fontFamily: chartFont,
+                    color: wordColor,
+                    position: 'inside',
+                    rotate: (Math.random() > 0.75) ? ((Math.random() > 0.5 ? 1 : -1) * 20) : 0
+                }
+            });
+        });
+
+        chartWordcloud.setOption({
+            tooltip: {
+                formatter: function(params) {
+                    return '<span style="color:' + chartTooltipBorder + ';font-weight:600">' + params.name + '</span>：' + params.data.wordValue;
+                },
+                textStyle: { color: chartTooltipText, fontFamily: chartFont },
+                backgroundColor: chartTooltipBg,
+                borderColor: chartTooltipBorder,
+                borderWidth: 1
+            },
+            grid: { top: gridTop, right: gridRight, bottom: gridBottom, left: gridLeft, containLabel: false },
+            xAxis: { show: false, min: 0, max: 100 },
+            yAxis: { show: false, min: 0, max: 100 },
+            series: [{
+                type: 'scatter',
+                symbolSize: 1,
+                data: scatterData,
+                emphasis: {
+                    itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.2)' },
+                    label: { fontWeight: 'bold' }
+                }
+            }]
+        }, true);
+    }
+
+    // 调整颜色亮度
+    function adjustBrightness(hex, factor) {
+        hex = hex.replace('#', '');
+        if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+        var r = parseInt(hex.substr(0,2), 16);
+        var g = parseInt(hex.substr(2,2), 16);
+        var b = parseInt(hex.substr(4,2), 16);
+        r = Math.min(255, Math.max(0, Math.round(r * factor)));
+        g = Math.min(255, Math.max(0, Math.round(g * factor)));
+        b = Math.min(255, Math.max(0, Math.round(b * factor)));
+        return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    // 从本地建筑数据提取关键词生成词云
+    function buildWordcloudFromLocal(dynastyId, dyn) {
+        var buildings = dynastyBuildings[dynastyId] || [];
+        if (buildings.length === 0) {
+            // 完全没有数据，用朝代 tags 生成最小词云
+            var fallbackTags = DYNASTIES.find(function(d) { return d.id === dynastyId; }).tags;
+            var fallbackData = fallbackTags.map(function(t, i) {
+                return { name: t, value: 30 - i * 5, textStyle: { normal: { color: dyn.color } } };
+            });
+            renderWordcloud(dyn, fallbackData);
+            return;
+        }
+
+        var keywordMap = {};
+        buildings.forEach(function(b) {
+            // 从建筑特征提取关键词
+            var features = (b.architectural_features || '').split(/[，。、，．\s]+/);
+            features.forEach(function(f) {
+                f = f.trim();
+                if (f.length >= 2 && f.length <= 8) {
+                    keywordMap[f] = (keywordMap[f] || 0) + 3;
+                }
+            });
+            // 结构类型
+            if (b.structure_type) {
+                keywordMap[b.structure_type] = (keywordMap[b.structure_type] || 0) + 5;
+            }
+            // 屋顶类型
+            if (b.roof_type) {
+                keywordMap[b.roof_type.replace(/重檐|单檐/, '').trim()] = (keywordMap[b.roof_type] || 0) + 4;
+            }
+            // 斗拱样式
+            if (b.dougong_style) {
+                keywordMap[b.dougong_style] = (keywordMap[b.dougong_style] || 0) + 3;
+            }
+            // 建筑名称分词
+            var nameParts = (b.bname || '').replace(/殿|寺|塔|楼|阁|桥|陵|墓|园|庙|宫|院/, ' ').split(/\s+/);
+            nameParts.forEach(function(p) {
+                p = p.trim();
+                if (p.length >= 2 && p.length <= 6) {
+                    keywordMap[p] = (keywordMap[p] || 0) + 2;
+                }
+            });
+        });
+
+        var wordData = Object.keys(keywordMap).map(function(k) {
+            return { name: k, value: keywordMap[k], textStyle: { normal: { color: dyn.color } } };
+        }).sort(function(a, b) { return b.value - a.value; }).slice(0, 50);
+
+        renderWordcloud(dyn, wordData);
+    }
+
+    // ===== 屋顶形式饼图 =====
+    function updateRoofChart(dynastyId) {
+        var buildings = dynastyBuildings[dynastyId] || [];
+        var roofMap = {};
+        buildings.forEach(function(b) {
+            if (b.roof_type) {
+                // 简化屋顶名
+                var roof = b.roof_type.replace(/重檐|单檐/, '').trim();
+                if (roof) roofMap[roof] = (roofMap[roof] || 0) + 1;
+            }
+        });
+
+        var pieData = Object.keys(roofMap).map(function(k) {
+            return { name: k, value: roofMap[k] };
+        }).sort(function(a, b) { return b.value - a.value; }).slice(0, 8);
+
+        // 如果数据不够，用默认数据
+        if (pieData.length < 2) {
+            var dyn = DYNASTIES.find(function(d) { return d.id === dynastyId; });
+            var defaultRoofs = {
+                'suitang': [
+                    { name: '庑殿顶', value: 5 },
+                    { name: '歇山顶', value: 4 },
+                    { name: '攒尖顶', value: 3 },
+                    { name: '密檐式', value: 2 }
+                ],
+                'song': [
+                    { name: '歇山顶', value: 4 },
+                    { name: '庑殿顶', value: 3 },
+                    { name: '藻井', value: 2 }
+                ],
+                'ming': [
+                    { name: '歇山顶', value: 5 },
+                    { name: '庑殿顶', value: 4 },
+                    { name: '攒尖顶', value: 3 },
+                    { name: '硬山顶', value: 3 },
+                    { name: '盔顶', value: 1 }
+                ],
+                'qing': [
+                    { name: '庑殿顶', value: 5 },
+                    { name: '歇山顶', value: 4 },
+                    { name: '攒尖顶', value: 3 },
+                    { name: '碉房平顶', value: 2 },
+                    { name: '覆钵式', value: 2 }
+                ]
+            };
+            pieData = defaultRoofs[dynastyId] || [
+                { name: '庑殿顶', value: 4 },
+                { name: '歇山顶', value: 3 },
+                { name: '攒尖顶', value: 2 }
+            ];
+        }
+
+        var dyn = DYNASTIES.find(function(d) { return d.id === dynastyId; });
+
+        chartRoof.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b}: {c} ({d}%)',
+                textStyle: { fontFamily: chartFont, color: chartTooltipText },
+                backgroundColor: chartTooltipBg,
+                borderColor: chartTooltipBorder,
+                borderWidth: 1
+            },
+            series: [{
+                type: 'pie',
+                radius: ['30%', '60%'],
+                center: ['50%', '55%'],
+                avoidLabelOverlap: true,
+                itemStyle: {
+                    borderRadius: 4,
+                    borderColor: '#fff',
+                    borderWidth: 1
+                },
+                label: {
+                    show: true,
+                    fontSize: 10,
+                    fontFamily: chartFont,
+                    color: chartTextSub,
+                    formatter: '{b}'
+                },
+                labelLine: {
+                    lineStyle: { color: '#8A9BC5' }
+                },
+                emphasis: {
+                    label: { show: true, fontSize: 12, fontWeight: 'bold' },
+                    itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.15)' }
+                },
+                color: [
+                    dyn.color,
+                    '#8A9BC5', '#A29192', '#5A6478', '#D4AC0D',
+                    '#1E8449', '#2471A3', '#884EA0'
+                ],
+                data: pieData
+            }]
+        }, true);
+    }
+
+    // ===== 代表建筑展示 =====
+    function updateFeatured(dynastyId) {
+        var buildings = dynastyBuildings[dynastyId] || [];
+        var dyn = DYNASTIES.find(function(d) { return d.id === dynastyId; });
+        var container = document.getElementById('featuredSection');
+
+        if (buildings.length === 0) {
+            container.innerHTML =
+                '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.82rem;">暂无代表建筑数据</div>';
+            return;
+        }
+
+        // 选第一个有图片的建筑，否则第一个
+        var featured = buildings.find(function(b) { return b.image_url && b.image_url.indexOf('placeholder') === -1 && b.image_url.indexOf('lishi.jpg') === -1; }) || buildings[0];
+        var imgUrl = featured.image_url || 'img/宫殿建筑-故宫太和殿/image_01.jpg';
+        var intro = featured.introduction || featured.architectural_features || '';
+
+        container.innerHTML =
+            '<img class="featured-img" src="' + imgUrl + '" alt="' + featured.bname + '" onerror="this.src=\'img/宫殿建筑-故宫太和殿/image_01.jpg\'" />' +
+            '<div class="featured-info">' +
+                '<h4>' + featured.bname + '</h4>' +
+                '<p>' + intro + '</p>' +
+                '<span class="featured-tag" style="background:' + dyn.color + '">' + dyn.name + ' · ' + (featured.structure_type || '建筑') + '</span>' +
+            '</div>';
+    }
+
+    // ===== 和弦图 =====
+    function updateChordChart() {
+        // 朝代建筑类型关联数据
+        var dynNames = DYNASTIES.map(function(d) { return d.name; });
+        var structTypes = ['殿宇', '佛塔', '楼阁', '园林', '石窟', '民居', '陵墓', '城墙'];
+
+        // 从建筑数据统计朝代-类型关联
+        var links = [];
+        DYNASTIES.forEach(function(d) {
+            var buildings = dynastyBuildings[d.id] || [];
+            var typeCount = {};
+            buildings.forEach(function(b) {
+                var st = b.structure_type || '其他';
+                // 归类
+                var matched = structTypes.find(function(t) { return st.indexOf(t) >= 0; });
+                if (matched) {
+                    typeCount[matched] = (typeCount[matched] || 0) + 1;
+                }
+            });
+            structTypes.forEach(function(st) {
+                if (typeCount[st]) {
+                    links.push({ source: d.name, target: st, value: typeCount[st] });
+                }
+            });
+        });
+
+        // 补充默认数据以防为空
+        if (links.length === 0) {
+            var defaultLinks = [
+                { source: '秦汉', target: '陵墓', value: 3 },
+                { source: '魏晋南北朝', target: '石窟', value: 3 },
+                { source: '隋唐', target: '殿宇', value: 5 },
+                { source: '隋唐', target: '佛塔', value: 3 },
+                { source: '五代辽金', target: '殿宇', value: 4 },
+                { source: '五代辽金', target: '佛塔', value: 2 },
+                { source: '宋', target: '殿宇', value: 3 },
+                { source: '元', target: '殿宇', value: 2 },
+                { source: '明', target: '殿宇', value: 4 },
+                { source: '明', target: '园林', value: 3 },
+                { source: '明', target: '城墙', value: 2 },
+                { source: '明', target: '楼阁', value: 3 },
+                { source: '清', target: '殿宇', value: 5 },
+                { source: '清', target: '园林', value: 3 },
+                { source: '清', target: '民居', value: 3 }
+            ];
+            links = defaultLinks;
+        }
+
+        var colorMap = {};
+        DYNASTIES.forEach(function(d) { colorMap[d.name] = d.color; });
+        var structColors = ['#A93226', '#D4AC0D', '#A29192', '#1E8449', '#2471A3', '#884EA0', '#6D7F99', '#8A9BC5'];
+        structTypes.forEach(function(st, i) { colorMap[st] = structColors[i % structColors.length]; });
+
+        var allNames = dynNames.concat(structTypes);
+        var nodes = allNames.map(function(n) {
+            var isDyn = dynNames.indexOf(n) >= 0;
+            return {
+                name: n,
+                symbolSize: isDyn ? 24 : 16,
+                itemStyle: { color: colorMap[n] || '#999' },
+                label: {
+                    show: true,
+                    fontSize: isDyn ? 12 : 10,
+                    fontWeight: isDyn ? 'bold' : 'normal',
+                    color: isDyn ? colorMap[n] : chartTextSub,
+                    fontFamily: chartFont
+                }
+            };
+        });
+
+        var linkData = links.map(function(l) {
+            return {
+                source: l.source,
+                target: l.target,
+                value: l.value,
+                lineStyle: {
+                    color: colorMap[l.source],
+                    width: Math.max(1, l.value * 0.8),
+                    opacity: 0.5,
+                    curveness: 0.3
+                }
+            };
+        });
+
+        chartChord.setOption({
+            tooltip: {
+                formatter: function(params) {
+                    if (params.data && params.data.source) {
+                        return params.data.source + ' → ' + params.data.target + ': ' + params.data.value + '处';
+                    }
+                    return params.name;
+                },
+                textStyle: { fontFamily: chartFont, color: chartTooltipText },
+                backgroundColor: chartTooltipBg,
+                borderColor: chartTooltipBorder,
+                borderWidth: 1
+            },
+            series: [{
+                type: 'graph',
+                layout: 'circular',
+                circular: { rotateLabel: true },
+                radius: '85%',
+                data: nodes,
+                links: linkData,
+                roam: true,
+                label: { position: 'right' },
+                lineStyle: { curveness: 0.3 },
+                emphasis: {
+                    focus: 'adjacency',
+                    lineStyle: { opacity: 0.9, width: 3 }
+                }
+            }]
+        }, true);
+    }
+
+    function updateChordHighlight(dynastyId) {
+        var dyn = DYNASTIES.find(function(d) { return d.id === dynastyId; });
+        chartChord.dispatchAction({ type: 'downplay' });
+        chartChord.dispatchAction({ type: 'highlight', name: dyn.name });
+    }
+
+    // ===== 趋势折线图 =====
+    function updateTrendChart() {
+        var xData = DYNASTIES.map(function(d) { return d.name; });
+        var yData = DYNASTIES.map(function(d) {
+            return dynastyBuildings[d.id] ? dynastyBuildings[d.id].length : 0;
+        });
+
+        // 如果全为0，用默认数据
+        var hasData = yData.some(function(v) { return v > 0; });
+        if (!hasData) {
+            yData = [2, 4, 6, 8, 10, 5, 3, 12, 15];
+        }
+
+        var colorStops = DYNASTIES.map(function(d) { return d.color; });
+
+        chartTrend.setOption({
+            tooltip: {
+                trigger: 'axis',
+                formatter: function(params) {
+                    var p = params[0];
+                    return '<span style="color:' + chartTooltipBorder + ';font-weight:600">' + p.name + '</span><br/>建筑数量: <b>' + p.value + '</b>';
+                },
+                textStyle: { fontFamily: chartFont, color: chartTooltipText },
+                backgroundColor: chartTooltipBg,
+                borderColor: chartTooltipBorder,
+                borderWidth: 1
+            },
+            grid: {
+                top: 28, right: 16, bottom: 28, left: 36,
+                containLabel: false
+            },
+            xAxis: {
+                type: 'category',
+                data: xData,
+                axisLine: { lineStyle: { color: '#A29192' } },
+                axisTick: { show: false },
+                axisLabel: {
+                    fontSize: 9,
+                    fontFamily: chartFont,
+                    color: chartTextSub,
+                    rotate: 30
+                }
+            },
+            yAxis: {
+                type: 'value',
+                axisLine: { show: false },
+                axisTick: { show: false },
+                splitLine: { lineStyle: { color: 'rgba(68,76,94,0.06)' } },
+                axisLabel: { fontSize: 9, color: chartTextSub }
+            },
+            series: [{
+                type: 'line',
+                data: yData,
+                smooth: true,
+                symbol: 'circle',
+                symbolSize: 8,
+                lineStyle: {
+                    width: 2.5,
+                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                        { offset: 0, color: '#C0392B' },
+                        { offset: 0.5, color: '#8A9BC5' },
+                        { offset: 1, color: '#2471A3' }
+                    ])
+                },
+                itemStyle: {
+                    color: function(params) {
+                        return colorStops[params.dataIndex] || '#444C5E';
+                    },
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: 'rgba(138,155,197,0.2)' },
+                        { offset: 1, color: 'rgba(138,155,197,0.02)' }
+                    ])
+                },
+                emphasis: {
+                    itemStyle: { shadowBlur: 10, shadowColor: 'rgba(68,76,94,0.3)' }
+                }
+            }]
+        }, true);
+    }
+
+    // ===== 窗口自适应 =====
+    window.addEventListener('resize', function() {
+        chartWordcloud.resize();
+        chartRoof.resize();
+        chartChord.resize();
+        chartTrend.resize();
+    });
+
+    // ===== 加载data.js中的词云数据（兼容旧版） =====
+    var dataJs = document.createElement('script');
+    dataJs.src = 'js/data.js';
+    dataJs.onload = function() {
+        loadData();
+    };
+    dataJs.onerror = function() {
+        loadData();
+    };
+    document.body.appendChild(dataJs);
+
+    // 初始化和弦图和趋势图（延迟等待数据）
+    setTimeout(function() {
+        updateChordChart();
+        updateTrendChart();
+    }, 600);
+
+})();
+</script>
+
+</body>
+</html>

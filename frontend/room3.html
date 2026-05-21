@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Intangible Cultural Heritage Exhibition</title>
+	<meta name="description"
+		content="An experimental 3D room template that aims to show exhibition details in an interesting way" />
+	<meta name="author" content="Codrops" />
+	<link rel="stylesheet" href="css/normalize.css" />
+	<link rel="stylesheet" href="css/exhib.css" />
+	<script>document.documentElement.className = 'js';</script>
+	<style>
+		body #cdawrap {
+			background: transparent;
+			z-index: 999;
+			border: 1px solid #aaa;
+			height: auto;
+			padding: 13px;
+			min-height: 126px;
+			width: 320px;
+			bottom: auto;
+			right: calc(2vw + 10em);
+			top: calc(2vw + 0.5em);
+			text-align: left;
+		}
+
+		body #cdawrap #carbonads {
+			position: relative;
+			padding: 0 0 0 145px;
+		}
+
+		body #cdawrap .carbon-img {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+
+		body #cdawrap .carbon-text {
+			text-align: left;
+			letter-spacing: 0;
+		}
+
+		a {
+			position: relative;
+			z-index: 999;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="scroller" style="pointer-events: none;">
+			<div class="room room--current">
+				<div class="room__side room__side--back">
+					<a class="img_box" href="https://www.chnmus.net/xunizhan/lhzg/index.html">
+						<img class="room__img" src="img/show7.png" alt="商周" />
+					</a>
+				</div>
+				<div class="room__side room__side--left">
+					<a class="img_box" href="https://www.chnmus.net/xunizhan/dqqy/">
+						<img class="room__img" src="img/show8.png" alt="丹青" />
+					</a>
+				</div>
+				<div class="room__side room__side--right">
+					<a class="img_box" href="https://www.ihchina.cn/#page1">
+						<img class="room__img" src="img/show9.png" alt="音乐" />
+					</a>
+				</div>
+				<div class="room__side room__side--bottom"></div>
+			</div>
+		</div>
+	</div>
+	<script src="https://tympanus.net/Development/Exhibition/js/anime.min.js"></script>
+	<script src="https://tympanus.net/Development/Exhibition/js/imagesloaded.pkgd.min.js"></script>
+	<script src="https://tympanus.net/Development/Exhibition/js/main.js"></script>
+	<!-- For the demo ad only -->
+	<script src="/js/demoad.js"></script>
+</body>
+
+</html>

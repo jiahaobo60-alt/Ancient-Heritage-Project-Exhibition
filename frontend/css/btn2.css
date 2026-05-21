@@ -1,0 +1,251 @@
+@font-face {
+	font-family: FZQKBYSJW;
+	src: url('../font/FZQKBYSJW.ttf') format('truetype');
+ }
+
+.btn {
+    width: 100%;
+    margin: 40px auto;
+    text-align: center;
+    position: fixed;
+    bottom: 10px;
+    left: 30%;
+    right: 30%;
+}
+
+.custom-btn {
+    width: 250px;
+    height: 50px;
+    position: fixed;
+    bottom: 10px;
+    left: 44%;
+    right: 30%;
+    color: #fff;
+    border-radius: 20px;
+    padding: 10px 25px;
+    font-family: FZQKBYSJW;
+    font-size: 20px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+     box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+     7px 7px 20px 0px rgba(0,0,0,.1),
+     4px 4px 5px 0px rgba(0,0,0,.1);
+    outline: none;
+  }
+
+  .swapButton {
+    background: rgb(17, 13, 31);
+    border: none;
+  }
+  .swapButton:hover {
+     background: rgb(38, 37, 52);
+  }
+
+
+  .heart1 {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background-image: url('../img/node.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.heart1.active {
+    opacity: 1;
+}
+
+
+.heart2 {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../img/node.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heart2.active {
+  opacity: 1;
+}
+
+.heart3 {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../img/node.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heart3.active {
+  opacity: 1;
+}
+
+.heart4 {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../img/node.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heart4.active {
+  opacity: 1;
+}
+
+.heart5 {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../img/node.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heart5.active {
+  opacity: 1;
+}
+
+.heart6 {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../img/node.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heart6.active {
+  opacity: 1;
+}
+
+.heart7 {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../img/node.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heart7.active {
+  opacity: 1;
+}
+
+.heart8 {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../img/node.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heart8.active {
+  opacity: 1;
+}
+
+.heart9 {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../img/node.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heart9.active {
+  opacity: 1;
+}
+
+.heart10 {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../img/node.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heart10.active {
+  opacity: 1;
+}
+
+.heart11 {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../img/node.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heart11.active {
+  opacity: 1;
+}
+
+.heart12 {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background-image: url('../img/node.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.heart12.active {
+  opacity: 1;
+}
+

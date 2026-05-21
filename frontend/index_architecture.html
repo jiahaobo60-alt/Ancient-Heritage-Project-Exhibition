@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营造中华 - 中国古建筑史</title>
+    <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="css/demo.css" />
+    <link rel="stylesheet" type="text/css" href="css/layout-simple.css" />
+    <link rel="stylesheet" type="text/css" href="css/btn2.css" />
+    <link rel="stylesheet" type="text/css" href="css/architecture_common.css" />
+    <style>
+        /* 古建筑主题配色 */
+        :root {
+            --primary-color: #8B4513;
+            --secondary-color: #D4A574;
+            --accent-color: #8B4513;
+            --bg-color: #F7F3ED;
+            --text-color: #3E2723;
+        }
+
+        body {
+            background: linear-gradient(135deg, #F7F3ED 0%, #E8DCC4 100%);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+        }
+
+        .intro__title {
+            color: #8B4513 !important;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3) !important;
+            font-size: 3em !important;
+        }
+
+        .intro__subtitle {
+            color: #8B4513 !important;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2) !important;
+        }
+
+        /* 导航栏样式 */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(139, 69, 19, 0.95);
+            padding: 15px 50px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-logo {
+            color: #F7F3ED;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: #F7F3ED;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(212, 165, 116, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* 项目卡片样式 */
+        .item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .item__image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .item:hover .item__image {
+            transform: scale(1.05);
+        }
+
+        .item__title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(139, 69, 19, 0.9));
+            color: #F7F3ED;
+            padding: 20px 15px 15px;
+            margin: 0;
+            font-size: 1.3em;
+        }
+
+        /* 选中标记 */
+        .heart {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .item:hover .heart {
+            opacity: 1;
+        }
+
+        .heart.active {
+            opacity: 1;
+            background: #8B4513;
+        }
+
+        .heart::before {
+            content: '✓';
+            color: #8B4513;
+            font-weight: bold;
+        }
+
+        .heart.active::before {
+            color: white;
+        }
+
+        /* 按钮样式 */
+        .custom-btn {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: #F7F3ED;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.4);
+        }
+
+        .custom-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.6);
+        }
+
+        /* 介绍文字 */
+        .intro-text {
+            background: rgba(139, 69, 19, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 800px;
+            text-align: center;
+            color: #8B4513;
+            line-height: 1.8;
+        }
+
+        /* 页脚 */
+        .footer {
+            background: #3E2723;
+            color: #F7F3ED;
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="nav-bar">
+        <a href="index_architecture.html" class="nav-logo">🏛️ 营造中华</a>
+        <div class="nav-links">
+            <a href="space.html" class="nav-link">空间漫游</a>
+            <a href="know.html" class="nav-link">民族之窗</a>
+            <a href="time.html" class="nav-link">时间之境</a>
+            <a href="3d_architecture.html" class="nav-link">3D展示</a>
+            <a href="indivisual.html" class="nav-link">喜好映射</a>
+            <a href="chat.html" class="nav-link">AI助手</a>
+        </div>
+    </nav>
+
+    <div id="container" class="container" style="margin-top: 70px;">
+        <!-- 介绍区域 -->
+        <header class="intro">
+            <img class="intro__image" src="img/architecture/bg_architecture.jpg" alt="background" 
+                 onerror="this.src='img/bg_blue.jpg'" />
+            <div class="intro__content" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <h1 class="intro__title">营造中华</h1>
+                <div class="intro__subtitle">
+                    <div class="intro__description">
+                        探索中国古建筑之美，领略千年营造智慧
+                    </div>
+                </div>
+                <button class="trigger" style="position: absolute; bottom: -150px; left: 50%; transform: translateX(-50%);">
+                    <svg width="100%" height="100%" viewBox="0 0 60 60" preserveAspectRatio="none">
+                        <g class="icon icon--grid">
+                            <rect x="32.5" y="5.5" width="22" height="22" />
+                            <rect x="4.5" y="5.5" width="22" height="22" />
+                            <rect x="32.5" y="33.5" width="22" height="22" />
+                            <rect x="4.5" y="33.5" width="22" height="22" />
+                        </g>
+                        <g class="icon icon--cross">
+                            <line x1="4.5" y1="55.5" x2="54.953" y2="5.046" />
+                            <line x1="54.953" y1="55.5" x2="4.5" y2="5.047" />
+                        </g>
+                    </svg>
+                    <span>开始探索</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 介绍文字 -->
+        <div class="intro-text">
+            <p>中国古建筑是世界建筑史上的瑰宝，承载着五千年的文明积淀。</p>
+            <p>从雄伟的宫殿到精巧的园林，从庄严的寺庙到朴素的民居，</p>
+            <p>每一座建筑都诉说着中华民族的智慧与审美。</p>
+            <p style="margin-top: 15px; font-style: italic; color: #8B4513;">
+                —— 梁思成《中国建筑史》
+            </p>
+        </div>
+
+        <!-- 选择区域 -->
+        <section class="items-wrap">
+            <a href="#" class="item" onclick="selectCategory(event, 'tang')">
+                <img class="item__image" src="img/architecture/tang_style.jpg" alt="唐代建筑" 
+                     onerror="this.src='img/殿宇.jpg'" />
+                <h2 class="item__title">唐代建筑</h2>
+                <div class="heart" id="heart-tang"></div>
+            </a>
+            <a href="#" class="item" onclick="selectCategory(event, 'song')">
+                <img class="item__image" src="img/architecture/song_style.jpg" alt="宋代建筑"
+                     onerror="this.src='img/index/chuant.jpg'" />
+                <h2 class="item__title">宋代建筑</h2>
+                <div class="heart" id="heart-song"></div>
+            </a>
+            <a href="#" class="item" onclick="selectCategory(event, 'ming')">
+                <img class="item__image" src="img/architecture/ming_style.jpg" alt="明清建筑"
+                     onerror="this.src='img/index/jiyi.jpg'" />
+                <h2 class="item__title">明清建筑</h2>
+                <div class="heart" id="heart-ming"></div>
+            </a>
+            <a href="#" class="item" onclick="selectCategory(event, 'temple')">
+                <img class="item__image" src="img/architecture/temple.jpg" alt="寺庙建筑"
+                     onerror="this.src='img/index/yishu.jpg'" />
+                <h2 class="item__title">寺庙建筑</h2>
+                <div class="heart" id="heart-temple"></div>
+            </a>
+            <a href="#" class="item" onclick="selectCategory(event, 'garden')">
+                <img class="item__image" src="img/architecture/garden.jpg" alt="园林建筑"
+                     onerror="this.src='img/index/wenhua.jpg'" />
+                <h2 class="item__title">园林建筑</h2>
+                <div class="heart" id="heart-garden"></div>
+            </a>
+            <a href="#" class="item" onclick="selectCategory(event, 'palace')">
+                <img class="item__image" src="img/architecture/palace.jpg" alt="宫殿建筑"
+                     onerror="this.src='img/index/tiehua2.jpg'" />
+                <h2 class="item__title">宫殿建筑</h2>
+                <div class="heart" id="heart-palace"></div>
+            </a>
+            <a href="#" class="item" onclick="selectCategory(event, 'tower')">
+                <img class="item__image" src="img/architecture/tower.jpg" alt="塔式建筑"
+                     onerror="this.src='img/index/jiezhi.jpg'" />
+                <h2 class="item__title">塔式建筑</h2>
+                <div class="heart" id="heart-tower"></div>
+            </a>
+            <a href="#" class="item" onclick="selectCategory(event, 'folk')">
+                <img class="item__image" src="img/architecture/folk.jpg" alt="民居建筑"
+                     onerror="this.src='img/index/huodong.jpg'" />
+                <h2 class="item__title">民居建筑</h2>
+                <div class="heart" id="heart-folk"></div>
+            </a>
+        </section>
+
+        <!-- 操作按钮 -->
+        <div style="text-align: center; margin: 40px 0;">
+            <button class="custom-btn" onclick="startExploration()">
+                选择完毕，开启探索之旅
+            </button>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>© 2024 营造中华 - 中国古建筑史可视化平台</p>
+        <p>基于梁思成《中国建筑史》学术体系构建</p>
+    </footer>
+
+    <script src="js/classie.js"></script>
+    <script src="js/architecture_common.js"></script>
+    <script>
+        // 用户选择的数据
+        const userSelections = {
+            tang: false,
+            song: false,
+            ming: false,
+            temple: false,
+            garden: false,
+            palace: false,
+            tower: false,
+            folk: false
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 从localStorage恢复选择
+            const saved = localStorage.getItem('architectureSelections');
+            if (saved) {
+                const selections = JSON.parse(saved);
+                Object.keys(selections).forEach(key => {
+                    if (selections[key]) {
+                        userSelections[key] = true;
+                        const heart = document.getElementById('heart-' + key);
+                        if (heart) heart.classList.add('active');
+                    }
+                });
+            }
+        });
+
+        // 选择分类
+        function selectCategory(event, category) {
+            event.preventDefault();
+            
+            userSelections[category] = !userSelections[category];
+            
+            const heart = document.getElementById('heart-' + category);
+            if (heart) {
+                heart.classList.toggle('active', userSelections[category]);
+            }
+            
+            // 保存到localStorage
+            localStorage.setItem('architectureSelections', JSON.stringify(userSelections));
+            
+            console.log('选择状态:', userSelections);
+        }
+
+        // 开始探索
+        function startExploration() {
+            // 检查是否有选择
+            const hasSelection = Object.values(userSelections).some(v => v);
+            
+            if (!hasSelection) {
+                alert('请至少选择一个感兴趣的类别！');
+                return;
+            }
+            
+            // 构建查询参数
+            const selectedCategories = Object.keys(userSelections)
+                .filter(key => userSelections[key])
+                .join(',');
+            
+            // 跳转到探索页面
+            window.location.href = 'explore_architecture.html?categories=' + encodeURIComponent(selectedCategories);
+        }
+
+        // 触发按钮动画
+        (function() {
+            var container = document.getElementById('container');
+            var trigger = container.querySelector('button.trigger');
+
+            function toggleContent() {
+                if (classie.has(container, 'container--open')) {
+                    classie.remove(container, 'container--open');
+                    classie.remove(trigger, 'trigger--active');
+                    window.addEventListener('scroll', noscroll);
+                } else {
+                    classie.add(container, 'container--open');
+                    classie.add(trigger, 'trigger--active');
+                    window.removeEventListener('scroll', noscroll);
+                }
+            }
+
+            function noscroll() {
+                window.scrollTo(0, 0);
+            }
+
+            document.body.scrollTop = document.documentElement.scrollTop = 0;
+            window.addEventListener('scroll', noscroll);
+            trigger.addEventListener('click', toggleContent);
+        })();
+    </script>
+</body>
+</html>

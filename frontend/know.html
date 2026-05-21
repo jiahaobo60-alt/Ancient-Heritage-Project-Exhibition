@@ -1,0 +1,1363 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>民族之窗 — 飞檐翚影</title>
+    <link rel="stylesheet" href="css/architecture_common.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== 设计系统变量 ===== */
+        :root {
+            --primary:       #444C5E;
+            --primary-light: #5A6478;
+            --primary-dark:  #2A3246;
+            --secondary:     #A29192;
+            --accent:        #8A9BC5;
+            --bg:            #F0F2F5;
+            --bg-card:       #FFFFFF;
+            --bg-muted:      #E8EBF0;
+            --text-main:     #2A3246;
+            --text-sub:      #4A5568;
+            --text-muted:    #9E9E9E;
+            --border:        rgba(68,76,94,0.14);
+            --shadow-sm:     0 2px 8px rgba(42,50,70,0.08);
+            --shadow-md:     0 6px 20px rgba(42,50,70,0.12);
+            --shadow-lg:     0 16px 48px rgba(42,50,70,0.18);
+            --radius-sm:     6px;
+            --radius-md:     12px;
+            --transition:    0.32s cubic-bezier(0.4,0,0.2,1);
+            /* 分类色 */
+            --roof-color:    #A93226;
+            --structure-color: #1E8449;
+            --function-color: #8A9BC5;
+            --component-color: #444C5E;
+            --region-color:  #2471A3;
+            --building-color: #884EA0;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== 导航栏 ===== */
+        .nav-bar {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 64px;
+            background: #444C5E;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 0 48px;
+            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.22);
+        }
+        .nav-logo {
+            color: #F7F3ED; font-size: 1.4em; font-weight: bold;
+            text-decoration: none; display: flex; align-items: center;
+            gap: 10px; letter-spacing: 0.08em;
+        }
+        .nav-logo-icon {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: #F7F3ED;
+        }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-link {
+            color: rgba(245,245,220,0.85); text-decoration: none;
+            padding: 8px 14px; border-radius: var(--radius-sm);
+            transition: all var(--transition);
+            font-size: 0.95em; letter-spacing: 0.03em;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: #A29192; 
+            color: #F7F3ED;
+        }
+        .nav-user { display: flex; align-items: center; gap: 12px; }
+        .nav-user a {
+            color: rgba(245,245,220,0.85); text-decoration: none;
+            font-size: 0.9em; transition: color var(--transition);
+        }
+        .nav-user a:hover { color: #F7F3ED; }
+
+        /* ===== 页面头部 ===== */
+        .page-header {
+            padding-top: 96px; padding-bottom: 28px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(68,76,94,0.08) 0%, transparent 100%);
+            position: relative;
+        }
+        .page-header::after {
+            content: '';
+            position: absolute; bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 120px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--secondary), transparent);
+        }
+        .page-header h1 {
+            font-size: 2.2rem; color: var(--text-main);
+            letter-spacing: 0.12em; margin-bottom: 10px;
+        }
+        .page-header h1 span {
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .page-header p {
+            color: var(--text-sub); font-size: 0.95em;
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== 主布局 ===== */
+        .main-layout {
+            display: flex;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 24px 40px;
+            gap: 20px;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* ===== 左侧搜索面板 ===== */
+        .left-panel {
+            width: 240px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .panel-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            padding: 16px;
+        }
+
+        .panel-title {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .panel-title::before {
+            content: '';
+            width: 3px; height: 14px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+
+
+         /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139,69,19,0.15);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139,69,19,0.3);
+        }
+        
+        /* 搜索框 */
+        .search-box {
+            position: relative;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px 14px 10px 36px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 13px;
+            color: var(--text-main);
+            background: var(--bg);
+            outline: none;
+            transition: all var(--transition);
+        }
+        .search-box input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(212,165,116,0.15);
+            background: #fff;
+        }
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box .search-icon {
+            position: absolute; left: 12px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted); font-size: 14px;
+        }
+
+        /* 分类筛选 - 按建筑结构 */
+        .filter-group { display: flex; flex-direction: column; gap: 6px; }
+        .filter-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 13px;
+            color: var(--text-sub);
+            user-select: none;
+        }
+        .filter-item:hover { background: rgba(139,69,19,0.06); }
+        .filter-item.active { background: rgba(139,69,19,0.1); color: var(--primary); font-weight: 600; }
+        .filter-dot {
+            width: 12px; height: 12px; border-radius: 3px;
+            flex-shrink: 0;
+        }
+        .filter-count {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--bg-muted);
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        /* 图例 */
+        .legend-group { display: flex; flex-direction: column; gap: 8px; }
+        .legend-item {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 12px; color: var(--text-sub);
+        }
+        .legend-shape {
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .legend-circle {
+            border-radius: 50%;
+        }
+        .legend-diamond {
+            width: 12px; height: 12px;
+            transform: rotate(45deg);
+            border-radius: 2px;
+        }
+        .legend-rect {
+            border-radius: 3px;
+        }
+
+        /* ===== 中央图谱区域 ===== */
+        .graph-area {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+        }
+        .graph-wrapper {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            position: relative;
+            height: calc(100vh - 220px);
+            min-height: 560px;
+        }
+        #graph-svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FEFCFA 0%, #F7F3ED 50%, #F5F5DC 100%);
+        }
+
+        /* 图谱内工具条 */
+        .graph-toolbar {
+            position: absolute; top: 12px; right: 12px;
+            display: flex; gap: 6px; z-index: 10;
+        }
+        .toolbar-btn {
+            width: 34px; height: 34px;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            color: var(--text-sub);
+            font-size: 16px;
+            transition: all var(--transition);
+        }
+        .toolbar-btn:hover {
+            background: #fff;
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* 统计条 */
+        .graph-stats {
+            position: absolute; bottom: 12px; left: 12px;
+            display: flex; gap: 16px;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            border-radius: 8px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            z-index: 10;
+            font-size: 12px; color: var(--text-muted);
+        }
+        .stat-item span { color: var(--primary); font-weight: 600; }
+
+        /* SVG 节点样式 */
+        .link-line {
+            stroke: rgba(139,69,19,0.18);
+            stroke-width: 1.2;
+            transition: stroke 0.2s, stroke-width 0.2s, opacity 0.2s;
+        }
+        .link-line.highlighted {
+            stroke: rgba(196,30,58,0.45);
+            stroke-width: 2.2;
+        }
+        .link-line.dimmed {
+            opacity: 0.06;
+        }
+        .node-circle {
+            stroke: rgba(255,255,255,0.7);
+            stroke-width: 2;
+            cursor: pointer;
+            transition: opacity 0.2s, r 0.2s;
+        }
+        .node-circle:hover {
+            stroke-width: 3;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+        }
+        .node-circle.dimmed { opacity: 0.12; }
+        .node-circle.selected {
+            stroke: var(--accent);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 8px rgba(196,30,58,0.3));
+        }
+        .node-diamond {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .node-diamond:hover {
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+        }
+        .node-diamond.dimmed { opacity: 0.12; }
+        .node-diamond.selected {
+            stroke: var(--accent);
+            stroke-width: 2.5;
+        }
+        .node-label {
+            font-family: 'Noto Serif SC', serif;
+            fill: var(--text-main);
+            font-size: 11px;
+            pointer-events: none;
+            text-anchor: middle;
+            transition: opacity 0.2s;
+        }
+        .node-label.dimmed { opacity: 0.12; }
+        .node-label.highlighted {
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        /* ===== 右侧信息面板 ===== */
+        .right-panel {
+            width: 280px;
+            flex-shrink: 0;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .info-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .info-type-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #fff;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+        .info-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 0.04em;
+        }
+
+        .info-body {
+            padding: 16px;
+        }
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .info-row:last-child { margin-bottom: 0; }
+        .info-label {
+            color: var(--text-muted);
+            width: 64px;
+            flex-shrink: 0;
+            font-size: 12px;
+        }
+        .info-value {
+            color: var(--text-sub);
+            flex: 1;
+        }
+
+        .info-placeholder {
+            padding: 40px 16px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .info-placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.3;
+        }
+
+        /* 关联节点列表 */
+        .related-section {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+        }
+        .related-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            letter-spacing: 0.04em;
+        }
+        .related-list { display: flex; flex-wrap: wrap; gap: 6px; }
+        .related-tag {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: var(--bg-muted);
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .related-tag:hover {
+            background: rgba(139,69,19,0.12);
+            color: var(--primary);
+        }
+
+        /* ===== 底部 ===== */
+        footer {
+            background: var(--primary-dark);
+            color: rgba(245,245,220,0.6);
+            text-align: center;
+            padding: 20px 24px;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1100px) {
+            .left-panel { width: 200px; }
+            .right-panel { width: 240px; }
+        }
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column; }
+            .left-panel, .right-panel { width: 100%; }
+            .left-panel { flex-direction: row; flex-wrap: wrap; }
+            .left-panel .panel-card { flex: 1; min-width: 200px; }
+            .graph-wrapper { height: 500px; }
+            .nav-bar { padding: 0 16px; }
+            .nav-links { display: none; }
+        }
+        @media (max-width: 600px) {
+            .page-header h1 { font-size: 1.5rem; }
+            .graph-wrapper { height: 400px; }
+        }
+
+        /* ===== 入场动画 ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .page-header   { animation: fadeInUp 0.6s ease-out; }
+        .left-panel     { animation: fadeInUp 0.6s ease-out 0.1s both; }
+        .graph-area     { animation: fadeInUp 0.6s ease-out 0.2s both; }
+        .right-panel    { animation: fadeInUp 0.6s ease-out 0.3s both; }
+    </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="nav-bar">
+    <a href="index.html" class="nav-logo">
+        <img 
+        src="./img/logo.png" 
+        style="width:30px; height:30px; vertical-align:middle;"
+        >
+        飞檐翚影
+    </a>
+    <div class="nav-links">
+        <a href="space.html" class="nav-link">空间漫游</a>
+        <a href="know.html" class="nav-link active">民族之窗</a>
+        <a href="time.html" class="nav-link">时间之境</a>
+        <a href="3d_architecture.html" class="nav-link">3D展示</a>
+        <a href="museum_3d.html" class="nav-link">3D展厅</a>
+        <a href="indivisual.html" class="nav-link">喜好映射</a>
+        <a href="chat.html" class="nav-link">AI助手</a>
+    </div>
+    <div class="nav-user">
+        <a href="index.html">返回首页</a>
+    </div>
+</nav>
+
+<!-- 页面头部 -->
+<div class="page-header">
+    <h1><span>民族之窗</span> · 建筑结构图谱</h1>
+    <p>知识图谱揭示中国古建筑的结构体系与构造特征</p>
+</div>
+
+<!-- 主布局 -->
+<div class="main-layout">
+
+    <!-- 左侧搜索面板 -->
+    <div class="left-panel">
+        <!-- 搜索 -->
+        <div class="panel-card">
+            <div class="panel-title">搜索节点</div>
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="输入名称搜索...">
+            </div>
+        </div>
+
+        <!-- 分类筛选 - 按建筑结构特征 -->
+        <div class="panel-card">
+            <div class="panel-title">结构分类</div>
+            <div class="filter-group" id="filterGroup">
+                <div class="filter-item active" data-type="all">
+                    <span class="filter-dot" style="background:var(--primary);"></span>
+                    全部
+                    <span class="filter-count" id="countAll">0</span>
+                </div>
+                <div class="filter-item" data-type="roof">
+                    <span class="filter-dot" style="background:var(--roof-color);"></span>
+                    屋顶形式
+                    <span class="filter-count" id="countRoof">0</span>
+                </div>
+                <div class="filter-item" data-type="structure">
+                    <span class="filter-dot" style="background:var(--structure-color);"></span>
+                    结构体系
+                    <span class="filter-count" id="countStructure">0</span>
+                </div>
+                <div class="filter-item" data-type="function">
+                    <span class="filter-dot" style="background:var(--function-color);"></span>
+                    功能类型
+                    <span class="filter-count" id="countFunction">0</span>
+                </div>
+                <div class="filter-item" data-type="component">
+                    <span class="filter-dot" style="background:var(--component-color);"></span>
+                    建筑构件
+                    <span class="filter-count" id="countComponent">0</span>
+                </div>
+                <div class="filter-item" data-type="region">
+                    <span class="filter-dot" style="background:var(--region-color);"></span>
+                    地域风格
+                    <span class="filter-count" id="countRegion">0</span>
+                </div>
+                <div class="filter-item" data-type="building">
+                    <span class="filter-dot" style="background:var(--building-color);"></span>
+                    代表建筑
+                    <span class="filter-count" id="countBuilding">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图例 -->
+        <div class="panel-card">
+            <div class="panel-title">图例说明</div>
+            <div class="legend-group">
+                <div class="legend-item">
+                    <span class="legend-shape"><span class="legend-circle" style="width:16px;height:16px;background:var(--roof-color);"></span></span>
+                    屋顶形式（大圆）
+                </div>
+                <div class="legend-item">
+                    <span class="legend-shape"><span class="legend-circle" style="width:14px;height:14px;background:var(--structure-color);"></span></span>
+                    结构体系（中圆）
+                </div>
+                <div class="legend-item">
+                    <span class="legend-shape"><span class="legend-circle" style="width:12px;height:12px;background:var(--function-color);"></span></span>
+                    功能类型（中圆）
+                </div>
+                <div class="legend-item">
+                    <span class="legend-shape"><span class="legend-circle" style="width:10px;height:10px;background:var(--component-color);"></span></span>
+                    建筑构件（小圆）
+                </div>
+                <div class="legend-item">
+                    <span class="legend-shape"><span class="legend-diamond" style="background:var(--region-color);"></span></span>
+                    地域风格（菱形）
+                </div>
+                <div class="legend-item">
+                    <span class="legend-shape"><span class="legend-rect" style="width:14px;height:14px;background:var(--building-color);"></span></span>
+                    代表建筑（方块）
+                </div>
+                <div class="legend-item" style="margin-top:4px; padding-top:6px; border-top:1px solid var(--border);">
+                    <span class="legend-shape" style="width:24px; height:1px; background:rgba(139,69,19,0.3);"></span>
+                    包含/使用关系
+                </div>
+                <div class="legend-item">
+                    <span class="legend-shape" style="width:24px; height:2px; background:rgba(196,30,58,0.5);"></span>
+                    选中高亮
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 中央图谱 -->
+    <div class="graph-area">
+        <div class="graph-wrapper" id="graphWrapper">
+            <svg id="graph-svg"></svg>
+            <!-- 工具条 -->
+            <div class="graph-toolbar">
+                <div class="toolbar-btn" id="btnZoomIn" title="放大">＋</div>
+                <div class="toolbar-btn" id="btnZoomOut" title="缩小">－</div>
+                <div class="toolbar-btn" id="btnReset" title="重置视图">⟳</div>
+            </div>
+            <!-- 统计 -->
+            <div class="graph-stats" id="graphStats">
+                <span class="stat-item">节点 <span id="statNodes">0</span></span>
+                <span class="stat-item">关系 <span id="statLinks">0</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧信息面板 -->
+    <div class="right-panel">
+        <div class="info-card" id="infoCard">
+            <div class="info-placeholder" id="infoPlaceholder">
+                <div class="info-placeholder-icon">🏛</div>
+                <div>点击图谱中的节点<br>查看详细信息</div>
+            </div>
+            <div id="infoContent" style="display:none;">
+                <div class="info-header" id="infoHeader">
+                    <span class="info-type-badge" id="infoBadge">分类</span>
+                    <span class="info-name" id="infoName">—</span>
+                </div>
+                <div class="info-body" id="infoBody"></div>
+                <div class="related-section" id="relatedSection" style="display:none;">
+                    <div class="related-title">关联节点</div>
+                    <div class="related-list" id="relatedList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 底部 -->
+<footer>
+    <p>飞檐翚影 · 中国古建筑文化展示平台 | 传承千年营造智慧，守护中华建筑文明</p>
+</footer>
+
+<!-- D3.js -->
+<script src="js/d3.v4.min.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    /* =====================================================
+       知识图谱内置数据 - 按建筑结构和特征分类
+       ===================================================== */
+
+    // 分类颜色映射
+    var typeColors = {
+        roof:      '#A93226',  // 屋顶形式 - 红色
+        structure: '#1E8449',  // 结构体系 - 绿色
+        function:  '#8A9BC5',  // 功能类型 - 蓝灰
+        component: '#444C5E',  // 建筑构件 - 深蓝灰
+        region:    '#2471A3',  // 地域风格 - 清蓝
+        building:  '#884EA0'   // 代表建筑 - 紫色
+    };
+
+    // 节点数据 - 按建筑结构特征分类
+    var graphNodes = [
+        // ===== 屋顶形式（最高等级→最低等级） =====
+        { id: 'r_wdd',   name: '庑殿顶',     type: 'roof',      category: '屋顶', level: 1, desc: '中国古建筑屋顶最高等级，四面坡五条脊，用于宫殿和重要坛庙建筑。', example: '太和殿', dynasty: '明清' },
+        { id: 'r_xsd',   name: '歇山顶',     type: 'roof',      category: '屋顶', level: 2, desc: '九条脊的屋顶形式，兼有庑殿顶的庄重与悬山顶的灵巧，等级仅次于庑殿顶。', example: '天坛祈年殿', dynasty: '唐宋明清' },
+        { id: 'r_xsd2',  name: '悬山顶',     type: 'roof',      category: '屋顶', level: 3, desc: '五脊二坡式屋顶，屋檐悬出山墙之外，用于一般民居和次要建筑。', example: '民居', dynasty: '各代' },
+        { id: 'r_ysd',   name: '硬山顶',     type: 'roof',      category: '屋顶', level: 4, desc: '五脊二坡式屋顶，屋檐与山墙齐平，用于民居和次要建筑。', example: '四合院', dynasty: '明清' },
+        { id: 'r_cjd',   name: '攒尖顶',     type: 'roof',      category: '屋顶', level: 5, desc: '无正脊的圆锥或多边形攒尖顶，多用于亭、塔、楼阁。', example: '天坛祈年殿', dynasty: '各代' },
+        { id: 'r_jbd',   name: '卷棚顶',     type: 'roof',      category: '屋顶', level: 6, desc: '双坡屋面呈弧形，无明显屋脊，用于园林建筑。', example: '颐和园长廊', dynasty: '明清' },
+        { id: 'r_cyd',   name: '重檐庑殿',   type: 'roof',      category: '屋顶', level: 0, desc: '最高等级屋顶形式，两层檐，用于最尊贵的建筑。', example: '太和殿', dynasty: '明清' },
+
+        // ===== 结构体系 =====
+        { id: 's_tls',   name: '抬梁式',     type: 'structure', category: '结构', desc: '中国木构架主要形式之一，柱上搁梁、梁上搁檩，层层抬升，形成大空间。', region: '北方', feature: '室内空间大' },
+        { id: 's_cds',   name: '穿斗式',     type: 'structure', category: '结构', desc: '柱子直接承檩，用穿枋联系，用材经济。', region: '南方', feature: '用材经济' },
+        { id: 's_jgs',   name: '井干式',     type: 'structure', category: '结构', desc: '以圆木或方木层层叠加，构成墙体承重，无需立柱。', region: '西南林区', feature: '原木结构' },
+        { id: 's_tcd',   name: '抬梁穿斗混合', type: 'structure', category: '结构', desc: '结合抬梁式与穿斗式优点，形成复合结构体系。', region: '各地', feature: '灵活组合' },
+        { id: 's_qj',    name: '砌上明造',   type: 'structure', category: '结构', desc: '不设天花板的露明造，室内梁架完全暴露。', region: '南方', feature: '显露梁架' },
+
+        // ===== 功能类型 =====
+        { id: 'f_gd',    name: '宫殿建筑',   type: 'function',  category: '功能', desc: '皇帝处理朝政、居住的建筑群，规模宏大，等级最高。', example: '紫禁城', feature: '最高等级' },
+        { id: 'f_tm',    name: '坛庙建筑',   type: 'function',  category: '功能', desc: '祭祀天、地、祖先、神灵的建筑，包括坛、庙、祠等。', example: '天坛、地坛', feature: '祭祀功能' },
+        { id: 'f_fs',    name: '佛寺建筑',   type: 'function',  category: '功能', desc: '佛教寺庙建筑群，包括殿、堂、塔、廊等。', example: '佛光寺、白马寺', feature: '宗教功能' },
+        { id: 'f_dg',    name: '道观建筑',   type: 'function',  category: '功能', desc: '道教宫观建筑，融合道教理念与自然山水。', example: '武当山古建群', feature: '道教文化' },
+        { id: 'f_yl',    name: '园林建筑',   type: 'function',  category: '功能', desc: '私家园林或皇家园林中的建筑，包括亭、台、楼、阁、廊、榭。', example: '颐和园、拙政园', feature: '造景功能' },
+        { id: 'f_mj',    name: '民居建筑',   type: 'function',  category: '功能', desc: '各地民间居住建筑，因地制宜，形式多样。', example: '徽派民居、福建土楼', feature: '因地制宜' },
+        { id: 'f_lg',    name: '楼阁建筑',   type: 'function',  category: '功能', desc: '多层木构建筑，可登高远眺。', example: '岳阳楼、黄鹤楼', feature: '登高望远' },
+        { id: 'f_t',     name: '塔建筑',     type: 'function',  category: '功能', desc: '佛教或风水塔式建筑，造型丰富。', example: '应县木塔', feature: '宗教/景观' },
+
+        // ===== 建筑构件 =====
+        { id: 'c_dg',    name: '斗拱',       type: 'component', category: '构件', desc: '中国古建筑最具代表性的构件，承托屋檐出挑，传递荷载至柱子，兼具结构与装饰功能。', evolution: '汉→唐成熟→宋规范→明清装饰化' },
+        { id: 'c_sm',    name: '榫卯',       type: 'component', category: '构件', desc: '木构件凹凸结合的连接方式，无需钉件，体现了中国工匠的智慧结晶。', evolution: '河姆渡时期→商周完善' },
+        { id: 'c_z',     name: '柱子',       type: 'component', category: '构件', desc: '垂直承重构件，有圆柱、方柱、瓜柱等，材料有木、石、砖等。', evolution: '木柱为主→石柱发展' },
+        { id: 'c_lj',    name: '梁架',       type: 'component', category: '构件', desc: '木构架中的水平承重构件，包括梁、枋、檩、椽等。', evolution: '逐步完善' },
+        { id: 'c_tj',    name: '台基',       type: 'component', category: '构件', desc: '建筑底部的基础平台，有普通台基和须弥座两种形式。', evolution: '从简到繁' },
+        { id: 'c_xmz',   name: '须弥座',     type: 'component', category: '构件', desc: '源自佛教须弥山意象的台基形式，用于重要建筑的基座，雕刻精美。', evolution: '南北朝传入→唐宋成熟' },
+        { id: 'c_ch',    name: '彩画',       type: 'component', category: '构件', desc: '中国古建筑的彩绘装饰，兼具保护木材与美化建筑的双重功能，等级分明。', evolution: '先秦→唐宋丰富→明清程式化' },
+        { id: 'c_wy',    name: '屋瓦',       type: 'component', category: '构件', desc: '覆盖屋顶的瓦件，包括板瓦、筒瓦、滴水、勾头等。', evolution: '从茅草→瓦' },
+        { id: 'c_mq',    name: '门窗',       type: 'component', category: '构件', desc: '建筑的开洞口构件，包括门、窗、隔扇等。', evolution: '逐步完善' },
+
+        // ===== 地域风格 =====
+        { id: 'g_bf',    name: '北方官式',   type: 'region',    category: '地域', desc: '以北京为中心的中国北方官式建筑风格，规整庄重，用材硕大。', feature: '规整庄重' },
+        { id: 'g_jn',    name: '江南建筑',   type: 'region',    category: '地域', desc: '以太湖流域为中心的江南水乡建筑风格，轻巧秀丽，白墙黛瓦。', feature: '轻巧秀丽' },
+        { id: 'g_hp',    name: '徽派建筑',   type: 'region',    category: '地域', desc: '安徽地区传统建筑风格，以马头墙、青瓦白墙为特征。', feature: '马头墙' },
+        { id: 'g_fj',    name: '闽南建筑',   type: 'region',    category: '地域', desc: '福建南部及台湾传统建筑风格，出砖入石，燕尾脊。', feature: '红砖燕尾' },
+        { id: 'g_qg',    name: '客家建筑',   type: 'region',    category: '地域', desc: '客家民系的传统建筑，以围龙屋、土楼著称。', feature: '防御性强' },
+        { id: 'g_qd',    name: '青藏建筑',   type: 'region',    category: '地域', desc: '青藏高原地区传统建筑，以碉楼、布达拉宫为代表。', feature: '石砌厚重' },
+        { id: 'g_mz',    name: '民居风格',   type: 'region',    category: '地域', desc: '各地民居建筑风格，因气候、材料、文化而异。', feature: '因地制宜' },
+
+        // ===== 代表建筑 =====
+        { id: 'b_yxt',   name: '应县木塔',   type: 'building',  category: '塔', dynasty: '辽', region: '山西', desc: '世界现存最高最古老的木结构塔式建筑，辽清宁二年（1056年）建，高67.31米，九层六檐。' },
+        { id: 'b_fgs',   name: '佛光寺东大殿', type: 'building', category: '佛殿', dynasty: '唐', region: '山西', desc: '中国现存规模最大的唐代木构建筑，大中十一年（857年）重建。' },
+        { id: 'b_thd',   name: '太和殿',     type: 'building',  category: '宫殿', dynasty: '清', region: '北京', desc: '紫禁城核心建筑，重檐庑殿顶，九五开间，象征皇权至上。' },
+        { id: 'b_tnt',   name: '天坛祈年殿', type: 'building',  category: '坛庙', dynasty: '明', region: '北京', desc: '三重檐攒尖顶圆形大殿，蓝色琉璃瓦，用于祈谷。' },
+        { id: 'b_yyh',   name: '颐和园',     type: 'building',  category: '园林', dynasty: '清', region: '北京', desc: '中国现存最大的皇家园林，集传统造园艺术之大成。' },
+        { id: 'b_zjy',   name: '拙政园',     type: 'building',  category: '园林', dynasty: '明', region: '苏州', desc: '苏州四大名园之首，中国私家园林的典范。' },
+        { id: 'b_bmg',   name: '白马寺',     type: 'building',  category: '佛寺', dynasty: '汉', region: '河南', desc: '中国第一古刹，东汉明帝时期创建，佛教传入中国后的第一座官办寺院。' },
+        { id: 'b_xyl',   name: '悬空寺',     type: 'building',  category: '寺观', dynasty: '北魏', region: '山西', desc: '建于北魏，悬挂于恒山峭壁之上，佛道儒三教合一。' },
+        { id: 'b_wts',   name: '武当山古建群', type: 'building', category: '道观', dynasty: '明', region: '湖北', desc: '明代皇家道场，融合道教理念与自然山水，世界文化遗产。' },
+        { id: 'b_bgj',   name: '布达拉宫',   type: 'building',  category: '宫殿', dynasty: '清', region: '西藏', desc: '世界海拔最高的宫殿，藏传佛教圣地，融合藏汉建筑艺术。' },
+        { id: 'b_hfl',   name: '黄鹤楼',     type: 'building',  category: '楼阁', dynasty: '清', region: '武汉', desc: '江南三大名楼之一，钢筋混凝土结构仿清代风格。' },
+        { id: 'b_yyl',   name: '岳阳楼',     type: 'building',  category: '楼阁', dynasty: '清', region: '岳阳', desc: '江南三大名楼之一，纯木结构，范仲淹《岳阳楼记使其名闻天下。' }
+    ];
+
+    // 关系数据 - 基于结构特征的关联
+    var graphLinks = [
+        // ===== 屋顶形式 → 代表建筑 =====
+        { source: 'r_cyd',  target: 'b_thd',  relation: '采用' },
+        { source: 'r_wdd',   target: 'b_thd',  relation: '采用' },
+        { source: 'r_cjd',   target: 'b_tnt',  relation: '采用' },
+        { source: 'r_xsd2',  target: 'b_tnt',  relation: '采用' },
+        { source: 'r_jbd',   target: 'b_yyh',  relation: '采用' },
+        { source: 'r_xsd',   target: 'b_fgs',  relation: '采用' },
+        { source: 'r_xsd',   target: 'b_wts',  relation: '采用' },
+        { source: 'r_xsd2',  target: 'b_yyl',  relation: '采用' },
+        { source: 'r_xsd',   target: 'b_bgj',  relation: '采用' },
+
+        // ===== 结构体系 → 建筑 =====
+        { source: 's_tls',   target: 'b_fgs',  relation: '采用' },
+        { source: 's_tls',   target: 'b_thd',  relation: '采用' },
+        { source: 's_tls',   target: 'b_tnt',  relation: '采用' },
+        { source: 's_tcd',   target: 'b_yxt',  relation: '采用' },
+        { source: 's_cds',   target: 'b_xyl',  relation: '采用' },
+        { source: 's_cds',   target: 'b_yyl',  relation: '采用' },
+        { source: 's_tcd',   target: 'b_hfl',  relation: '采用' },
+
+        // ===== 建筑构件 → 建筑/屋顶/结构 =====
+        { source: 'c_dg',    target: 'b_yxt',  relation: '使用' },
+        { source: 'c_dg',    target: 'b_fgs',  relation: '使用' },
+        { source: 'c_dg',    target: 'b_thd',  relation: '使用' },
+        { source: 'c_dg',    target: 'r_cyd',  relation: '装饰' },
+        { source: 'c_dg',    target: 'r_wdd',  relation: '装饰' },
+        { source: 'c_sm',    target: 'b_yxt',  relation: '连接' },
+        { source: 'c_sm',    target: 'b_fgs',  relation: '连接' },
+        { source: 'c_sm',    target: 's_tls',  relation: '用于' },
+        { source: 'c_sm',    target: 's_cds',  relation: '用于' },
+        { source: 'c_tj',    target: 'b_thd',  relation: '基础' },
+        { source: 'c_xmz',   target: 'b_fgs',  relation: '采用' },
+        { source: 'c_ch',    target: 'b_thd',  relation: '装饰' },
+        { source: 'c_ch',    target: 'b_tnt',  relation: '装饰' },
+        { source: 'c_wy',    target: 'r_wdd',   relation: '覆盖' },
+        { source: 'c_wy',    target: 'r_xsd',   relation: '覆盖' },
+        { source: 'c_wy',    target: 'r_cjd',   relation: '覆盖' },
+
+        // ===== 功能类型 → 代表建筑 =====
+        { source: 'f_gd',    target: 'b_thd',  relation: '包含' },
+        { source: 'f_gd',    target: 'b_bgj',  relation: '包含' },
+        { source: 'f_tm',    target: 'b_tnt',  relation: '包含' },
+        { source: 'f_fs',    target: 'b_fgs',  relation: '包含' },
+        { source: 'f_fs',    target: 'b_bmg',  relation: '包含' },
+        { source: 'f_dg',    target: 'b_wts',  relation: '包含' },
+        { source: 'f_dg',    target: 'b_xyl',  relation: '包含' },
+        { source: 'f_yl',    target: 'b_yyh',  relation: '包含' },
+        { source: 'f_yl',    target: 'b_zjy',  relation: '包含' },
+        { source: 'f_lg',    target: 'b_hfl',  relation: '包含' },
+        { source: 'f_lg',    target: 'b_yyl',  relation: '包含' },
+        { source: 'f_t',     target: 'b_yxt',  relation: '包含' },
+
+        // ===== 屋顶形式等级关系 =====
+        { source: 'r_cyd',  target: 'r_wdd',   relation: '高于' },
+        { source: 'r_wdd',   target: 'r_xsd',  relation: '高于' },
+        { source: 'r_xsd',   target: 'r_xsd2', relation: '高于' },
+        { source: 'r_xsd2',  target: 'r_ysd',  relation: '高于' },
+
+        // ===== 结构体系特点 =====
+        { source: 's_tls',   target: 'g_bf',   relation: '主要' },
+        { source: 's_cds',   target: 'g_jn',   relation: '主要' },
+        { source: 's_jgs',   target: 'g_mz',   relation: '采用' },
+        { source: 's_qj',    target: 'g_jn',   relation: '常见' },
+
+        // ===== 功能类型与屋顶关系 =====
+        { source: 'f_gd',    target: 'r_cyd',  relation: '最高用' },
+        { source: 'f_tm',    target: 'r_wdd',  relation: '可用' },
+        { source: 'f_fs',    target: 'r_xsd',  relation: '常用' },
+        { source: 'f_yl',    target: 'r_jbd',  relation: '常用' },
+        { source: 'f_mj',    target: 'r_ysd',  relation: '常用' },
+        { source: 'f_lg',    target: 'r_cjd',  relation: '常用' },
+        { source: 'f_t',     target: 'r_cjd',  relation: '常用' },
+
+        // ===== 地域风格 → 建筑 =====
+        { source: 'g_bf',    target: 'b_thd',  relation: '代表' },
+        { source: 'g_bf',    target: 'b_tnt',  relation: '代表' },
+        { source: 'g_jn',    target: 'b_zjy',  relation: '代表' },
+        { source: 'g_qd',    target: 'b_bgj',  relation: '代表' },
+
+        // ===== 构件与构件关系 =====
+        { source: 'c_dg',    target: 'c_sm',   relation: '基于' },
+        { source: 'c_lj',    target: 'c_sm',   relation: '连接' },
+        { source: 'c_tj',    target: 'c_xmz',  relation: '发展' },
+
+        // ===== 功能类型间关系 =====
+        { source: 'f_gd',    target: 'f_tm',   relation: '最高' },
+        { source: 'f_fs',    target: 'f_dg',   relation: '并列' },
+        { source: 'f_mj',    target: 'f_yl',   relation: '基础' }
+    ];
+
+    /* =====================================================
+       D3.js 力导向图谱
+       ===================================================== */
+
+    var svg = d3.select('#graph-svg');
+    var wrapper = document.getElementById('graphWrapper');
+    var width = wrapper.clientWidth;
+    var height = wrapper.clientHeight;
+
+    svg.attr('width', width).attr('height', height);
+
+    // 缩放
+    var g = svg.append('g');
+    var zoom = d3.zoom()
+        .scaleExtent([0.2, 4])
+        .on('zoom', function() {
+            g.attr('transform', d3.event.transform);
+        });
+    svg.call(zoom);
+
+    // 创建容器
+    var linkGroup = g.append('g').attr('class', 'links');
+    var nodeGroup = g.append('g').attr('class', 'nodes');
+    var labelGroup = g.append('g').attr('class', 'labels');
+
+    // 力模拟
+    var simulation = d3.forceSimulation()
+        .force('link', d3.forceLink().id(function(d) { return d.id; }).distance(function(d) {
+            var sType = (typeof d.source === 'object') ? d.source.type : findNode(d.source).type;
+            var tType = (typeof d.target === 'object') ? d.target.type : findNode(d.target).type;
+            if (sType === tType) return 100;
+            if (sType === 'building' || tType === 'building') return 80;
+            if (sType === 'component' || tType === 'component') return 90;
+            return 110;
+        }))
+        .force('charge', d3.forceManyBody().strength(function(d) {
+            if (d.type === 'roof') return -400;
+            if (d.type === 'structure') return -300;
+            if (d.type === 'function') return -280;
+            if (d.type === 'building') return -180;
+            return -150;
+        }))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(function(d) {
+            return getRadius(d) + 10;
+        }))
+        .force('x', d3.forceX(width / 2).strength(0.04))
+        .force('y', d3.forceY(height / 2).strength(0.04));
+
+    function findNode(id) {
+        for (var i = 0; i < graphNodes.length; i++) {
+            if (graphNodes[i].id === id) return graphNodes[i];
+        }
+        return { type: 'unknown' };
+    }
+
+    function getRadius(d) {
+        switch(d.type) {
+            case 'roof':      return 26;
+            case 'structure': return 20;
+            case 'function':  return 18;
+            case 'component': return 12;
+            case 'region':    return 14;
+            case 'building':  return 15;
+            default:          return 10;
+        }
+    }
+
+    function getColor(d) {
+        return typeColors[d.type] || '#8A9BC5';
+    }
+
+    // 绘制连线
+    var linkSel = linkGroup.selectAll('line')
+        .data(graphLinks)
+        .enter().append('line')
+        .attr('class', 'link-line');
+
+    // 绘制节点
+    var nodeSel = nodeGroup.selectAll('g')
+        .data(graphNodes)
+        .enter().append('g')
+        .attr('class', function(d) { return 'node-g node-' + d.type; })
+        .call(d3.drag()
+            .on('start', dragStart)
+            .on('drag', dragging)
+            .on('end', dragEnd)
+        );
+
+    // 圆形节点：roof, structure, function, component, building
+    var circleNodes = nodeSel.filter(function(d) { return d.type !== 'region'; });
+    circleNodes.append('circle')
+        .attr('class', 'node-circle')
+        .attr('r', function(d) { return getRadius(d); })
+        .attr('fill', function(d) { return getColor(d); });
+
+    // 菱形节点：region
+    var diamondNodes = nodeSel.filter(function(d) { return d.type === 'region'; });
+    diamondNodes.append('rect')
+        .attr('class', 'node-diamond')
+        .attr('width', 18).attr('height', 18)
+        .attr('x', -9).attr('y', -9)
+        .attr('rx', 2).attr('ry', 2)
+        .attr('fill', function(d) { return getColor(d); })
+        .attr('stroke', 'rgba(255,255,255,0.7)')
+        .attr('stroke-width', 1.5)
+        .attr('transform', 'rotate(45)');
+
+    // 标签
+    var labelSel = labelGroup.selectAll('text')
+        .data(graphNodes)
+        .enter().append('text')
+        .attr('class', 'node-label')
+        .attr('dy', function(d) { return getRadius(d) + 14; })
+        .text(function(d) { return d.name; });
+
+    // 点击节点
+    nodeSel.on('click', function(d) {
+        selectNode(d);
+    });
+
+    // 启动模拟
+    simulation.nodes(graphNodes).on('tick', ticked);
+    simulation.force('link').links(graphLinks);
+
+    function ticked() {
+        linkSel
+            .attr('x1', function(d) { return d.source.x; })
+            .attr('y1', function(d) { return d.source.y; })
+            .attr('x2', function(d) { return d.target.x; })
+            .attr('y2', function(d) { return d.target.y; });
+
+        nodeSel.attr('transform', function(d) {
+            return 'translate(' + d.x + ',' + d.y + ')';
+        });
+
+        labelSel
+            .attr('x', function(d) { return d.x; })
+            .attr('y', function(d) { return d.y; });
+    }
+
+    // 初始缩放
+    var initScale = 0.6;
+    svg.call(zoom.transform,
+        d3.zoomIdentity.translate(
+            width / 2 * (1 - initScale),
+            height / 2 * (1 - initScale)
+        ).scale(initScale)
+    );
+
+    // 拖拽
+    function dragStart(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x; d.fy = d.y;
+    }
+    function dragging(d) {
+        d.fx = d3.event.x; d.fy = d3.event.y;
+    }
+    function dragEnd(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null; d.fy = null;
+    }
+
+    /* =====================================================
+       交互逻辑
+       ===================================================== */
+
+    var selectedNode = null;
+    var activeFilter = 'all';
+
+    // 选中节点 → 高亮关联
+    function selectNode(d) {
+        if (selectedNode && selectedNode.id === d.id) {
+            clearSelection();
+            return;
+        }
+        selectedNode = d;
+
+        // 找出关联节点ID
+        var connectedIds = new Set();
+        connectedIds.add(d.id);
+        graphLinks.forEach(function(l) {
+            var sId = (typeof l.source === 'object') ? l.source.id : l.source;
+            var tId = (typeof l.target === 'object') ? l.target.id : l.target;
+            if (sId === d.id) connectedIds.add(tId);
+            if (tId === d.id) connectedIds.add(sId);
+        });
+
+        // 更新连线
+        linkSel.attr('class', function(l) {
+            var sId = (typeof l.source === 'object') ? l.source.id : l.source;
+            var tId = (typeof l.target === 'object') ? l.target.id : l.target;
+            if (sId === d.id || tId === d.id) return 'link-line highlighted';
+            return 'link-line dimmed';
+        });
+
+        // 更新节点
+        nodeSel.each(function(n) {
+            var el = d3.select(this);
+            var isConnected = connectedIds.has(n.id);
+            el.select('.node-circle, .node-diamond')
+                .classed('dimmed', !isConnected)
+                .classed('selected', n.id === d.id);
+        });
+
+        // 更新标签
+        labelSel.attr('class', function(n) {
+            if (n.id === d.id) return 'node-label highlighted';
+            if (connectedIds.has(n.id)) return 'node-label';
+            return 'node-label dimmed';
+        });
+
+        // 更新信息面板
+        showInfo(d, connectedIds);
+    }
+
+    function clearSelection() {
+        selectedNode = null;
+        linkSel.attr('class', 'link-line');
+        nodeSel.selectAll('.node-circle, .node-diamond').classed('dimmed', false).classed('selected', false);
+        labelSel.attr('class', 'node-label');
+        hideInfo();
+    }
+
+    // 显示信息面板
+    function showInfo(d, connectedIds) {
+        document.getElementById('infoPlaceholder').style.display = 'none';
+        document.getElementById('infoContent').style.display = 'block';
+
+        var badge = document.getElementById('infoBadge');
+        var typeNames = {
+            roof: '屋顶形式',
+            structure: '结构体系',
+            function: '功能类型',
+            component: '建筑构件',
+            region: '地域风格',
+            building: '代表建筑'
+        };
+        badge.textContent = typeNames[d.type] || d.type;
+        badge.style.background = getColor(d);
+
+        document.getElementById('infoName').textContent = d.name;
+
+        var body = document.getElementById('infoBody');
+        body.innerHTML = '';
+
+        if (d.desc) {
+            addInfoRow(body, '简介', d.desc);
+        }
+        if (d.level !== undefined && d.level !== null) {
+            var levelNames = ['最高（重檐）', '第一等', '第二等', '第三等', '第四等', '园林用'];
+            addInfoRow(body, '等级', levelNames[d.level] || '');
+        }
+        if (d.category) {
+            addInfoRow(body, '分类', d.category);
+        }
+        if (d.dynasty) {
+            addInfoRow(body, '时代', d.dynasty);
+        }
+        if (d.region) {
+            addInfoRow(body, '地域', d.region);
+        }
+        if (d.feature) {
+            addInfoRow(body, '特征', d.feature);
+        }
+        if (d.evolution) {
+            addInfoRow(body, '演变', d.evolution);
+        }
+        if (d.example) {
+            addInfoRow(body, '代表', d.example);
+        }
+
+        // 关联节点
+        var relatedSection = document.getElementById('relatedSection');
+        var relatedList = document.getElementById('relatedList');
+        relatedList.innerHTML = '';
+        var related = [];
+        connectedIds.forEach(function(id) {
+            if (id !== d.id) {
+                var nd = findNode(id);
+                if (nd && nd.name) related.push(nd);
+            }
+        });
+        if (related.length > 0) {
+            relatedSection.style.display = 'block';
+            related.forEach(function(nd) {
+                var tag = document.createElement('span');
+                tag.className = 'related-tag';
+                tag.textContent = nd.name;
+                tag.style.borderLeft = '3px solid ' + getColor(nd);
+                tag.addEventListener('click', function() {
+                    selectNode(nd);
+                    // 移动图谱视图到该节点
+                    if (nd.x !== undefined && nd.y !== undefined) {
+                        svg.transition().duration(500).call(
+                            zoom.transform,
+                            d3.zoomIdentity.translate(
+                                width / 2 - nd.x * initScale,
+                                height / 2 - nd.y * initScale
+                            ).scale(initScale)
+                        );
+                    }
+                });
+                relatedList.appendChild(tag);
+            });
+        } else {
+            relatedSection.style.display = 'none';
+        }
+    }
+
+    function addInfoRow(container, label, value) {
+        if (!value) return;
+        var row = document.createElement('div');
+        row.className = 'info-row';
+        row.innerHTML = '<span class="info-label">' + label + '</span><span class="info-value">' + value + '</span>';
+        container.appendChild(row);
+    }
+
+    function hideInfo() {
+        document.getElementById('infoPlaceholder').style.display = 'block';
+        document.getElementById('infoContent').style.display = 'none';
+    }
+
+    /* =====================================================
+       搜索功能
+       ===================================================== */
+
+    document.getElementById('searchInput').addEventListener('input', function() {
+        var keyword = this.value.trim();
+        if (!keyword) {
+            if (!selectedNode) clearSelection();
+            return;
+        }
+
+        // 搜索匹配的节点
+        var matchedIds = new Set();
+        graphNodes.forEach(function(n) {
+            if (n.name.indexOf(keyword) >= 0 || (n.desc && n.desc.indexOf(keyword) >= 0)) {
+                matchedIds.add(n.id);
+            }
+        });
+
+        // 扩展到关联节点
+        var expandedIds = new Set(matchedIds);
+        graphLinks.forEach(function(l) {
+            var sId = (typeof l.source === 'object') ? l.source.id : l.source;
+            var tId = (typeof l.target === 'object') ? l.target.id : l.target;
+            if (matchedIds.has(sId)) expandedIds.add(tId);
+            if (matchedIds.has(tId)) expandedIds.add(sId);
+        });
+
+        // 更新视觉
+        linkSel.attr('class', function(l) {
+            var sId = (typeof l.source === 'object') ? l.source.id : l.source;
+            var tId = (typeof l.target === 'object') ? l.target.id : l.target;
+            if (matchedIds.has(sId) || matchedIds.has(tId)) return 'link-line highlighted';
+            return 'link-line dimmed';
+        });
+
+        nodeSel.each(function(n) {
+            var el = d3.select(this);
+            el.select('.node-circle, .node-diamond')
+                .classed('dimmed', !expandedIds.has(n.id))
+                .classed('selected', matchedIds.has(n.id));
+        });
+
+        labelSel.attr('class', function(n) {
+            if (matchedIds.has(n.id)) return 'node-label highlighted';
+            if (expandedIds.has(n.id)) return 'node-label';
+            return 'node-label dimmed';
+        });
+    });
+
+    /* =====================================================
+       分类筛选
+       ===================================================== */
+
+    document.querySelectorAll('.filter-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.filter-item').forEach(function(el) {
+                el.classList.remove('active');
+            });
+            this.classList.add('active');
+
+            var filterType = this.getAttribute('data-type');
+            activeFilter = filterType;
+
+            if (filterType === 'all') {
+                // 显示全部
+                nodeSel.each(function(n) {
+                    d3.select(this).select('.node-circle, .node-diamond').classed('dimmed', false);
+                });
+                labelSel.attr('class', 'node-label');
+                linkSel.attr('class', 'link-line');
+            } else {
+                // 筛选类型
+                var visibleIds = new Set();
+                graphNodes.forEach(function(n) {
+                    if (n.type === filterType) visibleIds.add(n.id);
+                });
+                // 扩展关联
+                var expandedIds = new Set(visibleIds);
+                graphLinks.forEach(function(l) {
+                    var sId = (typeof l.source === 'object') ? l.source.id : l.source;
+                    var tId = (typeof l.target === 'object') ? l.target.id : l.target;
+                    if (visibleIds.has(sId)) expandedIds.add(tId);
+                    if (visibleIds.has(tId)) expandedIds.add(sId);
+                });
+
+                nodeSel.each(function(n) {
+                    d3.select(this).select('.node-circle, .node-diamond')
+                        .classed('dimmed', !expandedIds.has(n.id))
+                        .classed('selected', visibleIds.has(n.id));
+                });
+                labelSel.attr('class', function(n) {
+                    if (visibleIds.has(n.id)) return 'node-label highlighted';
+                    if (expandedIds.has(n.id)) return 'node-label';
+                    return 'node-label dimmed';
+                });
+                linkSel.attr('class', function(l) {
+                    var sId = (typeof l.source === 'object') ? l.source.id : l.source;
+                    var tId = (typeof l.target === 'object') ? l.target.id : l.target;
+                    if (visibleIds.has(sId) || visibleIds.has(tId)) return 'link-line highlighted';
+                    return 'link-line dimmed';
+                });
+            }
+        });
+    });
+
+    /* =====================================================
+       工具栏按钮
+       ===================================================== */
+
+    document.getElementById('btnZoomIn').addEventListener('click', function() {
+        svg.transition().duration(300).call(zoom.scaleBy, 1.4);
+    });
+    document.getElementById('btnZoomOut').addEventListener('click', function() {
+        svg.transition().duration(300).call(zoom.scaleBy, 0.7);
+    });
+    document.getElementById('btnReset').addEventListener('click', function() {
+        clearSelection();
+        document.getElementById('searchInput').value = '';
+        activeFilter = 'all';
+        document.querySelectorAll('.filter-item').forEach(function(el) { el.classList.remove('active'); });
+        document.querySelector('.filter-item[data-type="all"]').classList.add('active');
+        svg.transition().duration(500).call(
+            zoom.transform,
+            d3.zoomIdentity.translate(
+                width / 2 * (1 - initScale),
+                height / 2 * (1 - initScale)
+            ).scale(initScale)
+        );
+    });
+
+    /* =====================================================
+       统计更新
+       ===================================================== */
+
+    function updateCounts() {
+        var counts = {
+            all: graphNodes.length,
+            roof: 0,
+            structure: 0,
+            function: 0,
+            component: 0,
+            region: 0,
+            building: 0
+        };
+        graphNodes.forEach(function(n) {
+            if (counts[n.type] !== undefined) counts[n.type]++;
+        });
+        document.getElementById('countAll').textContent = counts.all;
+        document.getElementById('countRoof').textContent = counts.roof;
+        document.getElementById('countStructure').textContent = counts.structure;
+        document.getElementById('countFunction').textContent = counts.function;
+        document.getElementById('countComponent').textContent = counts.component;
+        document.getElementById('countRegion').textContent = counts.region;
+        document.getElementById('countBuilding').textContent = counts.building;
+
+        document.getElementById('statNodes').textContent = graphNodes.length;
+        document.getElementById('statLinks').textContent = graphLinks.length;
+    }
+    updateCounts();
+
+    /* =====================================================
+       点击空白处取消选中
+       ===================================================== */
+
+    svg.on('click', function() {
+        if (d3.event.target.tagName === 'svg' || d3.event.target.tagName === 'rect') {
+            clearSelection();
+        }
+    });
+
+    /* =====================================================
+       窗口大小变化
+       ===================================================== */
+
+    window.addEventListener('resize', function() {
+        width = wrapper.clientWidth;
+        height = wrapper.clientHeight;
+        svg.attr('width', width).attr('height', height);
+        simulation.force('center', d3.forceCenter(width / 2, height / 2));
+        simulation.force('x', d3.forceX(width / 2).strength(0.04));
+        simulation.force('y', d3.forceY(height / 2).strength(0.04));
+        simulation.alpha(0.3).restart();
+    });
+
+})();
+</script>
+</body>
+</html>

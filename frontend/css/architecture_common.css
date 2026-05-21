@@ -1,0 +1,718 @@
+/**
+ * 中国古建筑网站 - 通用样式
+ * Architecture Common CSS - Shared styles
+ * v2.0 — 升级为统一设计系统
+ */
+
+/* ==================== 全站设计系统变量 ==================== */
+:root {
+    /* 主色调 - #8B4513 统一色系 */
+    --primary:       #8B4513;
+    --primary-light: #A0522D;
+    --primary-dark:  #5D2B0A;
+    --secondary:     #D4A574;
+    --accent:        #C9A84C;
+    --accent-light:  #E8D5B5;
+
+    /* 背景与表面 */
+    --bg:            #F7F3ED;
+    --bg-card:       #FFFFFF;
+    --bg-muted:      #F5F5DC;
+
+    /* 文字 */
+    --text-main:     #3E2723;
+    --text-sub:      #A0522D;
+    --text-muted:    #C9A84C;
+    --text-light:    rgba(255,255,255,0.9);
+
+    /* 边框与阴影 */
+    --border:        rgba(68,76,94,0.14);
+    --border-light:  rgba(68,76,94,0.08);
+    --shadow-sm:     0 2px 8px rgba(68,76,94,0.08);
+    --shadow-md:     0 6px 20px rgba(68,76,94,0.12);
+    --shadow-lg:     0 16px 48px rgba(68,76,94,0.18);
+    --shadow-xl:     0 24px 64px rgba(68,76,94,0.24);
+
+    /* 圆角 */
+    --radius-xs:     4px;
+    --radius-sm:     6px;
+    --radius-md:     12px;
+    --radius-lg:     20px;
+    --radius-xl:     28px;
+    --radius-full:   9999px;
+
+    /* 过渡 */
+    --transition:    0.32s cubic-bezier(0.4,0,0.2,1);
+    --transition-fast: 0.18s ease;
+    --transition-slow: 0.55s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ==================== 基础 Reset ==================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* ==================== 加载动画 ==================== */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--primary);
+}
+
+/* 新版加载动画（圆环） */
+.loading-ring {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--bg-muted);
+    border-top: 3px solid var(--primary);
+    border-right: 3px solid var(--secondary);
+    border-radius: 50%;
+    animation: spin 0.85s linear infinite;
+    margin-bottom: 18px;
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    color: var(--text-muted);
+    font-size: 0.92em;
+    gap: 16px;
+}
+
+/* 旧版加载（向后兼容） */
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--bg-muted);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==================== 错误信息 ==================== */
+.error-message {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--accent);
+}
+
+.error-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.retry-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 20px;
+    transition: all var(--transition);
+}
+
+.retry-btn:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ==================== 空状态 ==================== */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.empty-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 8px;
+    opacity: 0.5;
+}
+
+/* ==================== 分页样式 ==================== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 40px;
+    padding: 20px;
+}
+
+.page-btn {
+    min-width: 38px;
+    height: 38px;
+    border: 1.5px solid var(--border);
+    background: var(--bg-card);
+    color: var(--primary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+}
+
+.page-btn:hover:not(.disabled) {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.page-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.page-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+
+.page-ellipsis {
+    color: var(--text-muted);
+    padding: 0 8px;
+}
+
+/* ==================== 模态框动画 ==================== */
+.modal {
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition);
+}
+
+.modal.modal-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    transform: scale(0.92) translateY(-16px);
+    transition: all var(--transition);
+}
+
+.modal.modal-active .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+/* ==================== 滚动入场动画 ==================== */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-on-scroll.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==================== 导航栏滚动效果 ==================== */
+.navbar {
+    transition: background var(--transition), box-shadow var(--transition), padding var(--transition);
+}
+
+.navbar-scrolled {
+    background: rgba(139, 69, 19, 0.98) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.28) !important;
+    padding: 10px 48px !important;
+}
+
+/* ==================== 图片懒加载 ==================== */
+img.lazy {
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    min-height: 80px;
+    background: var(--bg-muted);
+}
+
+img.lazy.loaded {
+    opacity: 1;
+}
+
+/* ==================== 工具提示 ==================== */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 7px 12px;
+    background: rgba(62,39,35,0.92);
+    color: #F7F3ED;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-fast);
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: calc(100% + 6px);
+}
+
+/* ==================== 徽章样式 ==================== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.badge-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.badge-secondary {
+    background: var(--secondary);
+    color: var(--text-main);
+}
+
+.badge-accent {
+    background: var(--accent);
+    color: white;
+}
+
+.badge-outline {
+    background: transparent;
+    border: 1.5px solid var(--primary);
+    color: var(--primary);
+}
+
+/* ==================== 区块标题 ==================== */
+.section-tag {
+    display: inline-block;
+    background: rgba(139,69,19,0.1);
+    color: var(--primary);
+    font-size: 0.8em;
+    padding: 4px 14px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    border: 1px solid rgba(139,69,19,0.2);
+}
+
+/* ==================== 按钮组 ==================== */
+.btn-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-group .btn {
+    flex: 1;
+    min-width: 100px;
+}
+
+/* ==================== 通用按钮 ==================== */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: #F7F3ED;
+    border: none;
+    padding: 12px 28px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: all var(--transition);
+    box-shadow: 0 4px 14px rgba(139,69,19,0.35);
+    font-family: inherit;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(139,69,19,0.5);
+}
+
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--primary);
+    border: 1.5px solid var(--border);
+    padding: 10px 24px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-size: 0.93em;
+    transition: all var(--transition);
+    font-family: inherit;
+    text-decoration: none;
+}
+
+.btn-ghost:hover {
+    background: rgba(139,69,19,0.08);
+    border-color: var(--secondary);
+    color: var(--primary);
+}
+
+/* ==================== 卡片悬停效果 ==================== */
+.card-hover {
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ==================== 标签芯片（筛选用） ==================== */
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 16px;
+    background: var(--bg-card);
+    color: var(--text-sub);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-full);
+    font-size: 0.88em;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+    font-family: inherit;
+}
+
+.filter-chip:hover {
+    border-color: var(--secondary);
+    color: var(--primary);
+    background: rgba(139,69,19,0.05);
+}
+
+.filter-chip.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ==================== 标签云 ==================== */
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px;
+}
+
+.tag-cloud .tag {
+    padding: 5px 14px;
+    background: var(--bg-muted);
+    color: var(--primary);
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: 1px solid var(--border);
+}
+
+.tag-cloud .tag:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.tag-cloud .tag.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+/* ==================== 面包屑导航 ==================== */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.breadcrumb a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.breadcrumb a:hover {
+    color: var(--accent);
+}
+
+.breadcrumb-separator {
+    color: var(--border);
+    font-size: 0.8em;
+}
+
+.breadcrumb-current {
+    color: var(--text-muted);
+}
+
+/* ==================== 进度条 ==================== */
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-muted);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: var(--radius-full);
+    transition: width 0.5s ease;
+}
+
+/* ==================== 评分星星 ==================== */
+.rating {
+    display: flex;
+    gap: 4px;
+}
+
+.rating-star {
+    font-size: 18px;
+    color: var(--border);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.rating-star.active,
+.rating-star:hover {
+    color: #FFD700;
+}
+
+/* ==================== 时间线入场动画 ==================== */
+.timeline-item {
+    opacity: 0;
+    animation: fadeInUp 0.55s ease forwards;
+}
+
+.timeline-item:nth-child(1)  { animation-delay: 0.08s; }
+.timeline-item:nth-child(2)  { animation-delay: 0.16s; }
+.timeline-item:nth-child(3)  { animation-delay: 0.24s; }
+.timeline-item:nth-child(4)  { animation-delay: 0.32s; }
+.timeline-item:nth-child(5)  { animation-delay: 0.40s; }
+.timeline-item:nth-child(6)  { animation-delay: 0.48s; }
+.timeline-item:nth-child(7)  { animation-delay: 0.56s; }
+.timeline-item:nth-child(8)  { animation-delay: 0.64s; }
+.timeline-item:nth-child(9)  { animation-delay: 0.72s; }
+.timeline-item:nth-child(10) { animation-delay: 0.80s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(40px); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+}
+
+/* ==================== 图片画廊 ==================== */
+.img-gallery-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: #111;
+}
+
+.img-gallery-slider {
+    display: flex;
+    transition: transform var(--transition-slow);
+    will-change: transform;
+}
+
+.img-gallery-slide {
+    min-width: 100%;
+    flex-shrink: 0;
+}
+
+.img-gallery-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.img-gallery-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    background: rgba(0,0,0,0.42);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    font-size: 1.1em;
+}
+
+.img-gallery-nav:hover {
+    background: rgba(139,69,19,0.85);
+}
+
+.img-gallery-nav-prev { left: 10px; }
+.img-gallery-nav-next { right: 10px; }
+
+.img-gallery-dots {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    z-index: 2;
+}
+
+.img-gallery-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.45);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding: 0;
+}
+
+.img-gallery-dot.active {
+    background: white;
+    transform: scale(1.35);
+}
+
+/* ==================== 打印样式 ==================== */
+@media print {
+    .nav-bar,
+    .navbar,
+    .filter-bar,
+    .modal-overlay {
+        display: none !important;
+    }
+
+    .main-content {
+        margin: 0 !important;
+        padding: 20px !important;
+    }
+
+    body {
+        background: white !important;
+    }
+}
+
+/* ==================== 响应式调整 ==================== */
+@media (max-width: 768px) {
+    .pagination {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .page-btn {
+        min-width: 34px;
+        height: 34px;
+        font-size: 12px;
+    }
+
+    .btn-group {
+        flex-direction: column;
+    }
+
+    .btn-group .btn {
+        width: 100%;
+    }
+
+    .tag-cloud {
+        justify-content: center;
+    }
+}
+
+/* ==================== 无障碍支持 ==================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 焦点样式 */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* 高对比度 */
+@media (prefers-contrast: high) {
+    .page-btn { border-width: 2.5px; }
+    .modal-overlay { background: rgba(0, 0, 0, 0.9); }
+}

@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营造知识 - 建筑词云与图谱</title>
+    <link rel="stylesheet" href="css/architecture_common.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.5/build/d3.layout.cloud.min.js"></script>
+    <style>
+        /* ===== 设计系统变量 ===== */
+        :root {
+            --primary:       #8B4513;
+            --primary-light: #A0522D;
+            --primary-dark:  #5D2B0A;
+            --secondary:     #D4A574;
+            --accent:        #8B4513;
+            --bg:            #F7F3ED;
+            --bg-card:       #FFFFFF;
+            --bg-muted:      #F5F5DC;
+            --text-main:     #3E2723;
+            --text-sub:      #6D4C41;
+            --text-muted:    #9E9E9E;
+            --border:        rgba(139,69,19,0.14);
+            --shadow-sm:     0 2px 8px rgba(62,39,35,0.08);
+            --shadow-md:     0 6px 20px rgba(62,39,35,0.12);
+            --shadow-lg:     0 16px 48px rgba(62,39,35,0.18);
+            --radius-sm:     6px;
+            --radius-md:     12px;
+            --transition:    0.32s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== 导航栏 ===== */
+        .nav-bar {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 64px;
+            background: rgba(93,43,10,0.95);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 0 48px;
+            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.22);
+        }
+        .nav-logo {
+            color: #F7F3ED; font-size: 1.4em; font-weight: bold;
+            text-decoration: none; display: flex; align-items: center;
+            gap: 10px; letter-spacing: 0.08em;
+        }
+        .nav-logo-icon {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: #F7F3ED;
+        }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-link {
+            color: rgba(245,245,220,0.85); text-decoration: none;
+            padding: 8px 14px; border-radius: var(--radius-sm);
+            transition: all var(--transition);
+            font-size: 0.95em; letter-spacing: 0.03em;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(212,165,116,0.35); color: #F7F3ED;
+        }
+        .nav-user { display: flex; align-items: center; gap: 12px; }
+        .nav-user a {
+            color: rgba(245,245,220,0.85); text-decoration: none;
+            font-size: 0.9em; transition: color var(--transition);
+        }
+        .nav-user a:hover { color: #F7F3ED; }
+
+        /* ===== 朝代选择器 ===== */
+        .dynasty-selector {
+            margin-top: 80px;
+            padding: 16px 48px;
+            background: linear-gradient(180deg, rgba(139,69,19,0.06) 0%, transparent 100%);
+            position: sticky;
+            top: 64px;
+            z-index: 100;
+        }
+        .dynasty-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .dynasty-tab {
+            padding: 8px 20px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 0.95em;
+            color: var(--text-sub);
+            white-space: nowrap;
+        }
+        .dynasty-tab:hover {
+            border-color: var(--secondary);
+            background: rgba(212,165,116,0.1);
+        }
+        .dynasty-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #F7F3ED;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(139,69,19,0.25);
+        }
+
+        /* ===== 主布局 ===== */
+        .main-layout {
+            display: flex;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 24px;
+            gap: 20px;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* ===== 左侧面板 ===== */
+        .left-panel {
+            width: 320px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .panel-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .panel-title {
+            font-size: 1rem;
+            color: var(--primary);
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .panel-title::before {
+            content: '';
+            width: 4px; height: 16px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* 词云容器 */
+        .wordcloud-container {
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(135deg, rgba(139,69,19,0.02), rgba(212,165,116,0.02));
+            position: relative;
+        }
+        #wordcloud {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 术语列表 */
+        .term-list {
+            padding: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .term-item {
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition);
+            border-left: 3px solid transparent;
+            margin-bottom: 6px;
+        }
+        .term-item:hover {
+            background: rgba(139,69,19,0.06);
+            border-left-color: var(--secondary);
+        }
+        .term-item.active {
+            background: rgba(139,69,19,0.12);
+            border-left-color: var(--accent);
+        }
+        .term-name {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .term-category-badge {
+            font-size: 0.75em;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: var(--bg-muted);
+            color: var(--text-muted);
+        }
+        .term-desc {
+            font-size: 0.85em;
+            color: var(--text-sub);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ===== 中央图谱区域 ===== */
+        .graph-area {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+        }
+        .graph-wrapper {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            position: relative;
+            height: calc(100vh - 280px);
+            min-height: 500px;
+        }
+        #graph-svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FEFCFA 0%, #F7F3ED 50%, #F5F5DC 100%);
+        }
+
+        /* 图谱工具条 */
+        .graph-toolbar {
+            position: absolute; top: 12px; right: 12px;
+            display: flex; gap: 6px; z-index: 10;
+        }
+        .toolbar-btn {
+            width: 34px; height: 34px;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            color: var(--text-sub);
+            font-size: 16px;
+            transition: all var(--transition);
+        }
+        .toolbar-btn:hover {
+            background: #fff;
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* 统计条 */
+        .graph-stats {
+            position: absolute; bottom: 12px; left: 12px;
+            display: flex; gap: 16px;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            border-radius: 8px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            z-index: 10;
+            font-size: 12px; color: var(--text-muted);
+        }
+        .stat-item span { color: var(--primary); font-weight: 600; }
+
+        /* ===== 右侧详情面板 ===== */
+        .right-panel {
+            width: 340px;
+            flex-shrink: 0;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            position: sticky;
+            top: 160px;
+        }
+
+        .info-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: #F7F3ED;
+        }
+        .info-category {
+            font-size: 0.85em;
+            padding: 3px 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .info-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        .info-alias {
+            font-size: 0.9em;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+
+        .info-body {
+            padding: 20px;
+        }
+        .info-section {
+            margin-bottom: 18px;
+        }
+        .info-section:last-child { margin-bottom: 0; }
+        .info-section-title {
+            font-size: 0.85em;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .info-section-content {
+            color: var(--text-sub);
+            line-height: 1.7;
+            font-size: 0.95em;
+        }
+
+        .dynasty-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .dynasty-tag {
+            padding: 4px 12px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: #fff;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .example-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .example-list li {
+            padding: 10px 12px;
+            background: var(--bg-muted);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all var(--transition);
+            border-left: 3px solid var(--secondary);
+        }
+        .example-list li:hover {
+            background: var(--secondary);
+            color: #fff;
+            border-left-color: var(--accent);
+        }
+
+        .related-terms {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .related-term {
+            padding: 6px 14px;
+            background: var(--bg-muted);
+            color: var(--primary);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 0.9em;
+        }
+        .related-term:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .info-placeholder {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .info-placeholder-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.25;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1200px) {
+            .left-panel { width: 280px; }
+            .right-panel { width: 300px; }
+        }
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column; }
+            .left-panel, .right-panel { width: 100%; }
+            .graph-wrapper { height: 500px; }
+            .nav-bar { padding: 0 16px; }
+            .dynasty-selector { padding: 12px 16px; }
+        }
+        @media (max-width: 600px) {
+            .graph-wrapper { height: 400px; }
+        }
+
+        /* ===== 入场动画 ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .dynasty-selector { animation: fadeInUp 0.5s ease-out; }
+        .left-panel       { animation: fadeInUp 0.6s ease-out 0.1s both; }
+        .graph-area       { animation: fadeInUp 0.6s ease-out 0.2s both; }
+        .right-panel      { animation: fadeInUp 0.6s ease-out 0.3s both; }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-muted);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="nav-bar">
+    <a href="index.html" class="nav-logo">
+        <span class="nav-logo-icon">築</span>
+        营造中华
+    </a>
+    <div class="nav-links">
+        <a href="explore_architecture.html" class="nav-link">建筑探索</a>
+        <a href="timeline_architecture.html" class="nav-link">时间之境</a>
+        <a href="know.html" class="nav-link active">营造知识</a>
+        <a href="dictionary.html" class="nav-link">古建词典</a>
+        <a href="3d_architecture.html" class="nav-link">3D展示</a>
+    </div>
+    <div class="nav-user">
+        <a href="index_architecture.html">返回首页</a>
+    </div>
+</nav>
+
+<!-- 朝代选择器 -->
+<div class="dynasty-selector">
+    <div class="dynasty-tabs" id="dynastyTabs">
+        <div class="dynasty-tab active" data-dynasty="all">全部朝代</div>
+        <div class="dynasty-tab" data-dynasty="隋">隋 (581-618)</div>
+        <div class="dynasty-tab" data-dynasty="唐">唐 (618-907)</div>
+        <div class="dynasty-tab" data-dynasty="宋">宋 (960-1279)</div>
+        <div class="dynasty-tab" data-dynasty="辽">辽 (907-1125)</div>
+        <div class="dynasty-tab" data-dynasty="金">金 (1115-1234)</div>
+        <div class="dynasty-tab" data-dynasty="元">元 (1271-1368)</div>
+        <div class="dynasty-tab" data-dynasty="明">明 (1368-1644)</div>
+        <div class="dynasty-tab" data-dynasty="清">清 (1644-1912)</div>
+    </div>
+</div>
+
+<!-- 主布局 -->
+<div class="main-layout">
+
+    <!-- 左侧面板：词云与术语列表 -->
+    <div class="left-panel">
+        <!-- 词云 -->
+        <div class="panel-card">
+            <div class="panel-header">
+                <h3 class="panel-title">建筑词云</h3>
+            </div>
+            <div class="wordcloud-container">
+                <svg id="wordcloud"></svg>
+            </div>
+        </div>
+
+        <!-- 术语列表 -->
+        <div class="panel-card">
+            <div class="panel-header">
+                <h3 class="panel-title">术语列表</h3>
+                <span id="termCount" style="margin-left: auto; font-size: 0.85em; color: var(--text-muted);">20个术语</span>
+            </div>
+            <div class="term-list" id="termList">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 中央：知识图谱 -->
+    <div class="graph-area">
+        <div class="graph-wrapper">
+            <svg id="graph-svg"></svg>
+            <div class="graph-toolbar">
+                <div class="toolbar-btn" id="btnZoomIn" title="放大">＋</div>
+                <div class="toolbar-btn" id="btnZoomOut" title="缩小">－</div>
+                <div class="toolbar-btn" id="btnReset" title="重置视图">⟳</div>
+            </div>
+            <div class="graph-stats">
+                <span class="stat-item">节点 <span id="statNodes">0</span></span>
+                <span class="stat-item">关系 <span id="statLinks">0</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧：详情面板 -->
+    <div class="right-panel">
+        <div class="info-card">
+            <div class="info-placeholder" id="infoPlaceholder">
+                <div class="info-placeholder-icon">🏛️</div>
+                <div>点击词云或术语<br>查看详细信息</div>
+            </div>
+            <div id="infoContent" style="display:none;">
+                <div class="info-header">
+                    <div class="info-category" id="infoCategory">分类</div>
+                    <h2 class="info-name" id="infoName">术语名称</h2>
+                    <div class="info-alias" id="infoAlias">别名：</div>
+                </div>
+                <div class="info-body" id="infoBody">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== 全局变量 =====
+let dictionaryData = null;
+let allTerms = [];
+let currentDynasty = 'all';
+let selectedTerm = null;
+
+// ===== 初始化 =====
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadDictionary();
+    initializeDynastyTabs();
+    generateWordCloud();
+    updateTermList();
+});
+
+// ===== 加载词典数据 =====
+async function loadDictionary() {
+    try {
+        const response = await fetch('data/architecture_dictionary.json');
+        dictionaryData = await response.json();
+        
+        // 扁平化所有术语
+        for (const [categoryName, categoryData] of Object.entries(dictionaryData.categories)) {
+            categoryData.terms.forEach(term => {
+                allTerms.push({
+                    ...term,
+                    category: categoryName,
+                    categoryIcon: categoryData.icon,
+                    categoryColor: categoryData.color
+                });
+            });
+        }
+        
+        console.log(`词典数据加载成功，共 ${allTerms.length} 个术语`);
+    } catch (error) {
+        console.error('加载词典数据失败:', error);
+    }
+}
+
+// ===== 初始化朝代选择器 =====
+function initializeDynastyTabs() {
+    document.querySelectorAll('.dynasty-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.dynasty-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            currentDynasty = this.dataset.dynasty;
+            generateWordCloud();
+            updateTermList();
+            clearSelection();
+        });
+    });
+}
+
+// ===== 筛选当前朝代的术语 =====
+function filterTermsByDynasty() {
+    if (currentDynasty === 'all') {
+        return allTerms;
+    }
+    return allTerms.filter(term => term.dynasty.includes(currentDynasty));
+}
+
+// ===== 生成词云 =====
+function generateWordCloud() {
+    const container = document.querySelector('.wordcloud-container');
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    
+    const svg = d3.select('#wordcloud')
+        .attr('width', width)
+        .attr('height', height);
+    
+    svg.selectAll('*').remove();
+    
+    const filteredTerms = filterTermsByDynasty();
+    
+    if (filteredTerms.length === 0) {
+        svg.append('text')
+            .attr('x', width / 2)
+            .attr('y', height / 2)
+            .attr('text-anchor', 'middle')
+            .attr('fill', '#9E9E9E')
+            .attr('font-size', '14px')
+            .text('该朝代暂无相关术语');
+        return;
+    }
+    
+    // 准备词云数据
+    const words = filteredTerms.map(term => ({
+        text: term.name,
+        size: 16 + Math.random() * 24,
+        term: term
+    }));
+    
+    // 词云布局
+    const layout = d3.layout.cloud()
+        .size([width, height])
+        .words(words)
+        .padding(5)
+        .rotate(() => (Math.random() > 0.6 ? 0 : 90))
+        .font('Noto Serif SC')
+        .fontSize(d => d.size)
+        .on('end', draw);
+    
+    layout.start();
+    
+    function draw(words) {
+        svg.append('g')
+            .attr('transform', `translate(${width/2},${height/2})`)
+            .selectAll('text')
+            .data(words)
+            .enter()
+            .append('text')
+            .style('font-size', d => `${d.size}px`)
+            .style('font-family', 'Noto Serif SC')
+            .style('font-weight', '600')
+            .style('fill', (d, i) => {
+                const colors = ['#8B4513', '#8B4513', '#D4A574', '#6B4423', '#8B6914'];
+                return colors[i % colors.length];
+            })
+            .style('cursor', 'pointer')
+            .attr('text-anchor', 'middle')
+            .attr('transform', d => `translate(${d.x},${d.y}) rotate(${d.rotate})`)
+            .text(d => d.text)
+            .on('click', function(event, d) {
+                showTermDetail(d.term);
+            })
+            .on('mouseover', function() {
+                d3.select(this)
+                    .transition()
+                    .duration(200)
+                    .style('transform', function(d) {
+                        return `translate(${d.x}px,${d.y}px) rotate(${d.rotate}deg) scale(1.15)`;
+                    });
+            })
+            .on('mouseout', function() {
+                d3.select(this)
+                    .transition()
+                    .duration(200)
+                    .style('transform', function(d) {
+                        return `translate(${d.x}px,${d.y}px) rotate(${d.rotate}deg) scale(1)`;
+                    });
+            });
+    }
+}
+
+// ===== 更新术语列表 =====
+function updateTermList() {
+    const termList = document.getElementById('termList');
+    const filteredTerms = filterTermsByDynasty();
+    
+    document.getElementById('termCount').textContent = `${filteredTerms.length}个术语`;
+    
+    termList.innerHTML = filteredTerms.map(term => `
+        <div class="term-item ${selectedTerm && selectedTerm.id === term.id ? 'active' : ''}" 
+             onclick="showTermDetail(allTerms.find(t => t.id === '${term.id}'))">
+            <div class="term-name">
+                <span>${term.categoryIcon}</span>
+                ${term.name}
+                <span class="term-category-badge">${term.category}</span>
+            </div>
+            <div class="term-desc">${term.definition}</div>
+        </div>
+    `).join('');
+}
+
+// ===== 显示术语详情 =====
+function showTermDetail(term) {
+    selectedTerm = term;
+    
+    document.getElementById('infoPlaceholder').style.display = 'none';
+    document.getElementById('infoContent').style.display = 'block';
+    
+    document.getElementById('infoCategory').textContent = `${term.categoryIcon} ${term.category}`;
+    document.getElementById('infoCategory').style.background = term.categoryColor;
+    document.getElementById('infoName').textContent = term.name;
+    document.getElementById('infoAlias').textContent = `别名：${term.alias.join('、')}`;
+    
+    document.getElementById('infoBody').innerHTML = `
+        <div class="info-section">
+            <div class="info-section-title">📅 适用朝代</div>
+            <div class="dynasty-tags">
+                ${term.dynasty.map(d => `<span class="dynasty-tag">${d}</span>`).join('')}
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-section-title">📖 定义</div>
+            <div class="info-section-content">${term.definition}</div>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-section-title">✨ 主要特征</div>
+            <div class="info-section-content">${term.features}</div>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-section-title">🏛️ 应用场景</div>
+            <div class="info-section-content">${term.usage}</div>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-section-title">📈 演变历程</div>
+            <div class="info-section-content">${term.evolution}</div>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-section-title">🏞️ 典型实例</div>
+            <ul class="example-list">
+                ${term.examples.map(e => `<li onclick="searchBuilding('${e}')">${e}</li>`).join('')}
+            </ul>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-section-title">🔗 相关术语</div>
+            <div class="related-terms">
+                ${term.related_terms.map(rt => `<span class="related-term" onclick="searchRelatedTerm('${rt}')">${rt}</span>`).join('')}
+            </div>
+        </div>
+    `;
+    
+    // 更新术语列表选中状态
+    document.querySelectorAll('.term-item').forEach(item => {
+        item.classList.remove('active');
+    });
+}
+
+// ===== 清除选择 =====
+function clearSelection() {
+    selectedTerm = null;
+    document.getElementById('infoPlaceholder').style.display = 'block';
+    document.getElementById('infoContent').style.display = 'none';
+    document.querySelectorAll('.term-item').forEach(item => {
+        item.classList.remove('active');
+    });
+}
+
+// ===== 搜索相关术语 =====
+function searchRelatedTerm(termName) {
+    const term = allTerms.find(t => t.name === termName || t.alias.includes(termName));
+    if (term) {
+        showTermDetail(term);
+    }
+}
+
+// ===== 搜索建筑 =====
+function searchBuilding(buildingName) {
+    window.location.href = `explore_architecture.html?search=${encodeURIComponent(buildingName)}`;
+}
+
+// ===== 窗口大小变化时重新生成词云 =====
+window.addEventListener('resize', () => {
+    clearTimeout(window.resizeTimer);
+    window.resizeTimer = setTimeout(generateWordCloud, 500);
+});
+</script>
+
+<!-- D3.js v4 for graph -->
+<script src="js/d3.v4.min.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    /* =====================================================
+       知识图谱数据
+       ===================================================== */
+
+    var typeColors = {
+        roof:      '#8B4513',
+        structure: '#2E8B57',
+        function:  '#D4A574',
+        component: '#8B4513',
+        region:    '#4169E1',
+        building:  '#D4A574'
+    };
+
+    var graphNodes = [
+        // 屋顶形式
+        { id: 'r_wdd',   name: '庑殿顶',     type: 'roof',      category: '屋顶', level: 1, desc: '中国古建筑屋顶最高等级，四面坡五条脊，用于宫殿和重要坛庙建筑。' },
+        { id: 'r_xsd',   name: '歇山顶',     type: 'roof',      category: '屋顶', level: 2, desc: '九条脊的屋顶形式，兼有庑殿顶的庄重与悬山顶的灵巧。' },
+        { id: 'r_xsd2',  name: '悬山顶',     type: 'roof',      category: '屋顶', level: 3, desc: '五脊二坡式屋顶，屋檐悬出山墙之外。' },
+        { id: 'r_ysd',   name: '硬山顶',     type: 'roof',      category: '屋顶', level: 4, desc: '五脊二坡式屋顶，屋檐与山墙齐平。' },
+        { id: 'r_cjd',   name: '攒尖顶',     type: 'roof',      category: '屋顶', level: 5, desc: '无正脊的圆锥或多边形攒尖顶，多用于亭、塔、楼阁。' },
+        { id: 'r_jbd',   name: '卷棚顶',     type: 'roof',      category: '屋顶', level: 6, desc: '双坡屋面呈弧形，无明显屋脊，用于园林建筑。' },
+        
+        // 结构体系
+        { id: 's_tls',   name: '抬梁式',     type: 'structure', category: '结构', desc: '中国木构架主要形式之一，柱上搁梁、梁上搁檩，层层抬升。' },
+        { id: 's_cds',   name: '穿斗式',     type: 'structure', category: '结构', desc: '柱子直接承檩，用穿枋联系，用材经济。' },
+        { id: 's_jgs',   name: '井干式',     type: 'structure', category: '结构', desc: '以圆木或方木层层叠加，构成墙体承重。' },
+        
+        // 功能类型
+        { id: 'f_gd',    name: '宫殿建筑',   type: 'function',  category: '功能', desc: '皇帝处理朝政、居住的建筑群，规模宏大，等级最高。' },
+        { id: 'f_tm',    name: '坛庙建筑',   type: 'function',  category: '功能', desc: '祭祀天、地、祖先、神灵的建筑。' },
+        { id: 'f_fs',    name: '佛寺建筑',   type: 'function',  category: '功能', desc: '佛教寺庙建筑群。' },
+        { id: 'f_yl',    name: '园林建筑',   type: 'function',  category: '功能', desc: '私家园林或皇家园林中的建筑。' },
+        { id: 'f_lg',    name: '楼阁建筑',   type: 'function',  category: '功能', desc: '多层木构建筑，可登高远眺。' },
+        
+        // 建筑构件
+        { id: 'c_dg',    name: '斗拱',       type: 'component', category: '构件', desc: '中国古建筑最具代表性的构件，承托屋檐出挑，传递荷载至柱子。' },
+        { id: 'c_sm',    name: '榫卯',       type: 'component', category: '构件', desc: '木构件凹凸结合的连接方式，无需钉件。' },
+        { id: 'c_lj',    name: '梁架',       type: 'component', category: '构件', desc: '木构架中的水平承重构件。' },
+        
+        // 代表建筑
+        { id: 'b_yxt',   name: '应县木塔',   type: 'building',  category: '塔', dynasty: '辽', desc: '世界现存最高最古老的木结构塔式建筑。' },
+        { id: 'b_fgs',   name: '佛光寺东大殿', type: 'building', category: '佛殿', dynasty: '唐', desc: '中国现存规模最大的唐代木构建筑。' },
+        { id: 'b_thd',   name: '太和殿',     type: 'building',  category: '宫殿', dynasty: '清', desc: '紫禁城核心建筑，重檐庑殿顶。' },
+        { id: 'b_tnt',   name: '天坛祈年殿', type: 'building',  category: '坛庙', dynasty: '明', desc: '三重檐攒尖顶圆形大殿，蓝色琉璃瓦。' }
+    ];
+
+    var graphLinks = [
+        { source: 'r_wdd',   target: 'b_thd',  relation: '采用' },
+        { source: 'r_cjd',   target: 'b_tnt',  relation: '采用' },
+        { source: 'r_xsd',   target: 'b_fgs',  relation: '采用' },
+        { source: 's_tls',   target: 'b_fgs',  relation: '采用' },
+        { source: 's_tls',   target: 'b_thd',  relation: '采用' },
+        { source: 'c_dg',    target: 'b_yxt',  relation: '使用' },
+        { source: 'c_dg',    target: 'b_fgs',  relation: '使用' },
+        { source: 'c_sm',    target: 'b_yxt',  relation: '连接' },
+        { source: 'f_gd',    target: 'b_thd',  relation: '包含' },
+        { source: 'f_tm',    target: 'b_tnt',  relation: '包含' },
+        { source: 'f_fs',    target: 'b_fgs',  relation: '包含' },
+        { source: 'c_dg',    target: 'r_wdd',  relation: '装饰' },
+        { source: 's_tls',   target: 'c_dg',   relation: '使用' },
+        { source: 's_tls',   target: 'c_sm',   relation: '连接' }
+    ];
+
+    /* =====================================================
+       D3.js 力导向图谱
+       ===================================================== */
+
+    var svg = d3.select('#graph-svg');
+    var wrapper = document.getElementById('graph-svg').parentElement;
+    var width = wrapper.clientWidth;
+    var height = wrapper.clientHeight;
+
+    svg.attr('width', width).attr('height', height);
+
+    var g = svg.append('g');
+    var zoom = d3.zoom()
+        .scaleExtent([0.2, 4])
+        .on('zoom', function() {
+            g.attr('transform', d3.event.transform);
+        });
+    svg.call(zoom);
+
+    var linkGroup = g.append('g').attr('class', 'links');
+    var nodeGroup = g.append('g').attr('class', 'nodes');
+    var labelGroup = g.append('g').attr('class', 'labels');
+
+    var simulation = d3.forceSimulation()
+        .force('link', d3.forceLink().id(function(d) { return d.id; }).distance(100))
+        .force('charge', d3.forceManyBody().strength(-300))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(40));
+
+    function getRadius(d) {
+        switch(d.type) {
+            case 'roof':      return 22;
+            case 'structure': return 18;
+            case 'function':  return 16;
+            case 'component': return 12;
+            case 'building':  return 14;
+            default:          return 10;
+        }
+    }
+
+    function getColor(d) {
+        return typeColors[d.type] || '#D4A574';
+    }
+
+    var linkSel = linkGroup.selectAll('line')
+        .data(graphLinks)
+        .enter().append('line')
+        .attr('stroke', 'rgba(139,69,19,0.2)')
+        .attr('stroke-width', 1.5);
+
+    var nodeSel = nodeGroup.selectAll('g')
+        .data(graphNodes)
+        .enter().append('g')
+        .attr('class', 'node-g')
+        .call(d3.drag()
+            .on('start', dragStart)
+            .on('drag', dragging)
+            .on('end', dragEnd)
+        );
+
+    nodeSel.append('circle')
+        .attr('r', function(d) { return getRadius(d); })
+        .attr('fill', function(d) { return getColor(d); })
+        .attr('stroke', 'rgba(255,255,255,0.8)')
+        .attr('stroke-width', 2)
+        .style('cursor', 'pointer');
+
+    var labelSel = labelGroup.selectAll('text')
+        .data(graphNodes)
+        .enter().append('text')
+        .attr('dy', function(d) { return getRadius(d) + 14; })
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '11px')
+        .attr('font-family', 'Noto Serif SC')
+        .attr('fill', '#3E2723')
+        .text(function(d) { return d.name; });
+
+    simulation.nodes(graphNodes).on('tick', ticked);
+    simulation.force('link').links(graphLinks);
+
+    function ticked() {
+        linkSel
+            .attr('x1', function(d) { return d.source.x; })
+            .attr('y1', function(d) { return d.source.y; })
+            .attr('x2', function(d) { return d.target.x; })
+            .attr('y2', function(d) { return d.target.y; });
+
+        nodeSel.attr('transform', function(d) {
+            return 'translate(' + d.x + ',' + d.y + ')';
+        });
+
+        labelSel
+            .attr('x', function(d) { return d.x; })
+            .attr('y', function(d) { return d.y; });
+    }
+
+    var initScale = 0.8;
+    svg.call(zoom.transform,
+        d3.zoomIdentity.translate(
+            width / 2 * (1 - initScale),
+            height / 2 * (1 - initScale)
+        ).scale(initScale)
+    );
+
+    function dragStart(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x; d.fy = d.y;
+    }
+    function dragging(d) {
+        d.fx = d3.event.x; d.fy = d3.event.y;
+    }
+    function dragEnd(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null; d.fy = null;
+    }
+
+    document.getElementById('btnZoomIn').addEventListener('click', function() {
+        svg.transition().duration(300).call(zoom.scaleBy, 1.4);
+    });
+    document.getElementById('btnZoomOut').addEventListener('click', function() {
+        svg.transition().duration(300).call(zoom.scaleBy, 0.7);
+    });
+    document.getElementById('btnReset').addEventListener('click', function() {
+        svg.transition().duration(500).call(
+            zoom.transform,
+            d3.zoomIdentity.translate(
+                width / 2 * (1 - initScale),
+                height / 2 * (1 - initScale)
+            ).scale(initScale)
+        );
+    });
+
+    document.getElementById('statNodes').textContent = graphNodes.length;
+    document.getElementById('statLinks').textContent = graphLinks.length;
+
+    window.addEventListener('resize', function() {
+        width = wrapper.clientWidth;
+        height = wrapper.clientHeight;
+        svg.attr('width', width).attr('height', height);
+        simulation.force('center', d3.forceCenter(width / 2, height / 2));
+        simulation.alpha(0.3).restart();
+    });
+})();
+</script>
+</body>
+</html>

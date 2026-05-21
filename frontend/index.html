@@ -1,0 +1,1188 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞檐翚影 — 中国古建筑文化展示平台</title>
+    <link rel="stylesheet" href="css/architecture_common.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== 设计系统变量（#444C5E + #A29192 色系） ===== */
+        :root {
+            --primary:       #444C5E;
+            --primary-light: #5A6180;
+            --primary-dark:  #2A2F40;
+            --secondary:     #A29192;
+            --accent:        #8A9BC5;
+            --accent-light:  #B8C4D9;
+            --bg:            #F0F2F5;
+            --bg-card:       #FFFFFF;
+            --bg-muted:      #E8EBF0;
+            --text-main:     #2a3246;
+            --text-sub:      #4b5d88;
+            --text-muted:    #9E9E9E;
+            --text-light:    rgba(245,245,220,0.85);
+            --border:        rgba(68,76,94,0.15);
+            --shadow-sm:     0 2px 8px rgba(68,76,94,0.08);
+            --shadow-md:     0 6px 20px rgba(68,76,94,0.12);
+            --shadow-lg:     0 16px 48px rgba(68,76,94,0.18);
+            --radius-sm:     6px;
+            --radius-md:     12px;
+            --radius-lg:     20px;
+            --transition:    0.32s cubic-bezier(0.4,0,0.2,1);
+            /* 朝代色 */
+            --han-red:       #B22222;
+            --tang-red:      #444C5E;
+            --song-green:    #2E8B57;
+            --liao-gold:     #A29192;
+            --yuan-brown:    #444C5E;
+            --ming-brown:    #5A6180;
+            --qing-blue:     #4169E1;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* ===== 导航栏 ===== */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: #444C5E;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 0 48px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.22);
+            transition: background var(--transition), box-shadow var(--transition);
+        }
+
+        .nav-logo {
+            color: #F5F5DC;
+            font-size: 1.4em;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.08em;
+        }
+
+        .nav-logo-icon {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: #F5F5DC;
+        }
+
+        .nav-links { display: flex; gap: 4px; }
+
+        .nav-link {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+            font-size: 0.95em;
+            letter-spacing: 0.03em;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #A29192;
+            color: #F5F5DC;
+        }
+
+        .nav-user {
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .nav-user a {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color var(--transition);
+        }
+
+        .nav-user a:hover { color: #F5F5DC; }
+
+        /* 移动端菜单按钮 */
+        .nav-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #F5F5DC;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        /* 移动端侧边菜单 */
+        .nav-mobile-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        .nav-mobile-overlay.active { display: block; }
+
+        .nav-mobile-menu {
+            position: fixed;
+            top: 0; right: -280px;
+            width: 280px;
+            height: 100vh;
+            background: rgba(68,76,94,0.98);
+            z-index: 1001;
+            padding: 80px 24px 24px;
+            transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .nav-mobile-menu.active { right: 0; }
+
+        .nav-mobile-menu a {
+            color: rgba(245,245,220,0.9);
+            text-decoration: none;
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 1.05em;
+            letter-spacing: 0.05em;
+            transition: background var(--transition);
+        }
+        .nav-mobile-menu a:hover,
+        .nav-mobile-menu a.active {
+            background: rgba(162,145,146,0.3);
+        }
+
+        .nav-mobile-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            background: none;
+            border: none;
+            color: #F5F5DC;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        /* ===== 英雄区 ===== */
+        .hero {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, #1a1d24 0%, #2A2F40 25%, #3A4050 55%, #444C5E 80%, #5A6180 100%);
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(196,30,58,0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 30%, rgba(201,168,76,0.10) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(46,139,87,0.08) 0%, transparent 50%);
+        }
+
+        /* 古建筑纹理底纹 */
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect fill="none" width="120" height="120"/><path fill="rgba(162,145,146,0.025)" d="M0 0h60v60H0zm60 60h60v60H60z"/><path fill="none" stroke="rgba(162,145,146,0.03)" stroke-width="0.5" d="M0 60h120M60 0v120"/></svg>');
+        }
+
+        /* 浮动装饰粒子 */
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .hero-particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10vh) scale(1);
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #F5F5DC;
+            padding: 0 24px;
+            max-width: 860px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 20px;
+            border: 1px solid #A2919266;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            color: var(--secondary);
+            letter-spacing: 0.15em;
+            margin-bottom: 24px;
+            backdrop-filter: blur(6px);
+            background: rgba(162,145,146,0.08);
+        }
+
+        .hero-title {
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+            line-height: 1.3;
+        }
+
+        .hero-title-accent {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            font-weight: 400;
+            color: rgba(245,245,220,0.75);
+            margin-bottom: 40px;
+            letter-spacing: 0.15em;
+            text-shadow: 0 1px 10px #00000066;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #F5F5DC;
+            text-decoration: none;
+            border-radius: var(--radius-lg);
+            font-size: 1.1em;
+            letter-spacing: 0.08em;
+            box-shadow: 0 4px 20px rgba(68,76,94,0.4);
+            transition: all var(--transition);
+            border: 1px solid rgba(162,145,146,0.3);
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px #444C5E;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+        }
+
+        .hero-cta-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 36px;
+            background: transparent;
+            color: #F5F5DC;
+            text-decoration: none;
+            border-radius: var(--radius-lg);
+            font-size: 1.1em;
+            letter-spacing: 0.08em;
+            border: 1.5px solid #A29192;
+            transition: all var(--transition);
+            backdrop-filter: blur(4px);
+        }
+
+        .hero-cta-outline:hover {
+            background: #A2919226;
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .hero-scroll-hint {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(245,245,220,0.5);
+            font-size: 0.85em;
+            letter-spacing: 0.1em;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-scroll-hint span {
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+
+        .hero-scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(68,76,94,0.5), transparent);
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollLine {
+            0% { opacity: 0; transform: scaleY(0); transform-origin: top; }
+            50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+            100% { opacity: 0; transform: scaleY(1); transform-origin: bottom; }
+        }
+
+        /* ===== 兴趣标签选择区 ===== */
+        .interest-section {
+            padding: 80px 48px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: rgba(68,76,94,0.1);
+            color: var(--primary);
+            font-size: 0.8em;
+            padding: 4px 14px;
+            border-radius: var(--radius-full);
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+            border: 1px solid rgba(68,76,94,0.2);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            letter-spacing: 0.08em;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--secondary));
+            margin: 16px auto 0;
+            border-radius: 2px;
+        }
+
+        .section-desc {
+            font-size: 1rem;
+            color: var(--text-sub);
+            letter-spacing: 0.05em;
+        }
+
+        .interest-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .interest-card {
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            cursor: pointer;
+            aspect-ratio: 4/3;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .interest-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .interest-card.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(196,30,58,0.2), var(--shadow-md);
+        }
+
+        .interest-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .interest-card:hover img {
+            transform: scale(1.08);
+        }
+
+        .interest-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(68,76,94,0.85) 0%, rgba(68,76,94,0.2) 60%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            transition: background var(--transition);
+        }
+
+        .interest-card:hover .interest-card-overlay {
+            background: linear-gradient(to top, rgba(68,76,94,0.9) 0%, rgba(68,76,94,0.3) 60%, transparent 100%);
+        }
+
+        .interest-card-title {
+            color: #F5F5DC;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+        }
+
+        .interest-card-desc {
+            color: rgba(245,245,220,0.65);
+            font-size: 0.85rem;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all var(--transition);
+        }
+
+        .interest-card:hover .interest-card-desc {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .interest-card-heart {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+            font-size: 18px;
+        }
+
+        .interest-card.selected .interest-card-heart {
+            background: var(--accent);
+            color: white;
+            transform: scale(1.15);
+        }
+
+        .interest-card-heart::before {
+            content: '♡';
+            color: #F5F5DC;
+        }
+
+        .interest-card.selected .interest-card-heart::before {
+            content: '♥';
+        }
+
+        /* 选中时卡片内的红色心形标记动画 */
+        .interest-card.selected .interest-card-heart {
+            animation: heartPop 0.35s ease;
+        }
+
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1.15); }
+        }
+
+        /* 提交按钮 */
+        .submit-area {
+            text-align: center;
+            padding: 20px 0 40px;
+        }
+
+        .submit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 48px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: #F5F5DC;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1.15rem;
+            font-family: 'Noto Serif SC', serif;
+            letter-spacing: 0.12em;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(93,43,10,0.35);
+            transition: all var(--transition);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(93,43,10,0.5);
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .selected-count {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            border-radius: var(--radius-full);
+            min-width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            font-size: 0.8rem;
+            padding: 0 8px;
+        }
+
+
+         /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(68,76,94,0.15);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(68,76,94,0.3);
+        }
+
+        /* ===== 功能入口区 ===== */
+        .features-section {
+            padding: 80px 48px;
+            background: var(--bg-muted);
+            position: relative;
+        }
+
+        /* 装饰性背景图案 */
+        .features-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect fill="none" width="60" height="60"/><circle fill="rgba(68,76,94,0.02)" cx="30" cy="30" r="12"/></svg>');
+            pointer-events: none;
+        }
+
+        .features-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 36px 28px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0; right: 0;
+            height: 3px;
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--secondary);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: transform var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        .feature-desc {
+            font-size: 0.88rem;
+            color: var(--text-sub);
+            line-height: 1.7;
+        }
+
+        .feature-arrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 16px;
+            color: var(--primary);
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: all var(--transition);
+        }
+
+        .feature-card:hover .feature-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* 功能卡片顶部渐变色条 */
+        .feature-card[data-color="green"]::before  { background: linear-gradient(90deg, var(--song-green), #3CB371); }
+        .feature-card[data-color="gold"]::before   { background: linear-gradient(90deg, var(--liao-gold), #DAA520); }
+        .feature-card[data-color="red"]::before    { background: linear-gradient(90deg, var(--accent), var(--accent-light)); }
+        .feature-card[data-color="blue"]::before   { background: linear-gradient(90deg, var(--qing-blue), #6495ED); }
+        .feature-card[data-color="brown"]::before  { background: linear-gradient(90deg, var(--primary), var(--primary-light)); }
+        .feature-card[data-color="hanred"]::before { background: linear-gradient(90deg, var(--han-red), #CD5C5C); }
+
+        /* ===== 数据亮点条 ===== */
+        .stats-bar {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-bar::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect fill="none" width="80" height="80"/><path fill="rgba(162,145,146,0.04)" d="M40 0L80 40L40 80L0 40Z"/></svg>');
+        }
+
+        .stats-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: #F5F5DC;
+        }
+
+        .stat-number {
+            font-size: clamp(1.8rem, 3vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(245,245,220,0.65);
+            letter-spacing: 0.08em;
+        }
+
+        /* ===== 底部 ===== */
+        footer {
+            background: var(--primary-dark);
+            color: rgba(245,245,220,0.6);
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        footer a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+
+        footer .footer-brand {
+            color: rgba(245,245,220,0.85);
+            font-size: 1.1em;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        /* ===== 入场动画 ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stats-inner {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-bar { padding: 0 16px; }
+            .nav-links { display: none; }
+            .nav-menu-btn { display: block; }
+            .interest-section { padding: 60px 20px; }
+            .interest-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .features-section { padding: 40px 16px 60px; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .stats-bar { padding: 32px 16px; }
+            .stats-inner { grid-template-columns: repeat(2, 1fr); }
+            .hero-cta-group { flex-direction: column; align-items: center; }
+        }
+
+        @media (max-width: 480px) {
+            .interest-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+            .stats-inner { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== 导航栏 ===== -->
+<nav class="nav-bar" id="navBar">
+    <a href="index.html" class="nav-logo">
+        <img 
+        src="./img/logo.png" 
+        style="width:30px; height:30px; vertical-align:middle;"
+        >
+        飞檐翚影
+    </a>
+    <div class="nav-links">
+        <a href="space.html" class="nav-link">空间漫游</a>
+        <a href="know.html" class="nav-link">民族之窗</a>
+        <a href="time.html" class="nav-link">时间之境</a>
+        <a href="3d_architecture.html" class="nav-link">3D展示</a>
+        <a href="museum_3d.html" class="nav-link">3D展厅</a>
+        <a href="indivisual.html" class="nav-link">喜好映射</a>
+        <a href="chat.html" class="nav-link">AI助手</a>
+    </div>
+    <div class="nav-user">
+        <a href="login.html">登录</a>
+    </div>
+    <button class="nav-menu-btn" onclick="toggleMobileMenu()" aria-label="打开菜单">☰</button>
+</nav>
+
+<!-- 移动端侧边菜单 -->
+<div class="nav-mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+<div class="nav-mobile-menu" id="mobileMenu">
+    <button class="nav-mobile-close" onclick="toggleMobileMenu()" aria-label="关闭菜单">✕</button>
+    <a href="index.html" class="active">首页</a>
+    <a href="explore_architecture.html">建筑探索</a>
+    <a href="3d_architecture.html">3D展示</a>
+    <a href="museum_3d.html">3D展厅</a>
+    <a href="timeline_architecture.html">历史时间轴</a>
+    <a href="data_visualization.html">数据可视</a>
+    <a href="panorama_architecture.html">全景漫游</a>
+    <a href="login.html">登录</a>
+</div>
+
+<!-- ===== 英雄区 ===== -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-particles" id="heroParticles"></div>
+    <div class="hero-content">
+        <div class="hero-badge">✦ 千年营造 · 匠心传承 ✦</div>
+        <h1 class="hero-title">
+            <span class="hero-title-accent">飞檐翚影</span><br>
+            中国古建筑文化展示平台
+        </h1>
+        <p class="hero-subtitle">探索千年营造之美</p>
+        <div class="hero-cta-group">
+            <a href="#interest" class="hero-cta">
+                开始探索 →
+            </a>
+            <a href="space.html" class="hero-cta-outline">
+                空间漫游 ◈
+            </a>
+        </div>
+    </div>
+    <div class="hero-scroll-hint">
+        <div class="hero-scroll-line"></div>
+        <span>↓ 向下探索</span>
+    </div>
+</section>
+
+<!-- ===== 兴趣标签选择区 ===== -->
+<section class="interest-section" id="interest">
+    <div class="section-header">
+        <span class="section-tag">个性化推荐</span>
+        <h2 class="section-title">选择你感兴趣的建筑主题</h2>
+        <p class="section-desc">点击卡片选择感兴趣的主题，我们将为你推荐个性化的文旅内容</p>
+    </div>
+
+    <div class="interest-grid" id="interestGrid">
+        <!-- 动态生成 -->
+    </div>
+
+    <div class="submit-area">
+        <button class="submit-btn" onclick="handleSubmit()">
+            选择完毕，开启图鉴
+            <span class="selected-count" id="selectedCount">0</span>
+        </button>
+    </div>
+</section>
+
+<!-- ===== 数据亮点 ===== -->
+<section class="stats-bar">
+    <div class="stats-inner">
+        <div class="stat-item">
+            <div class="stat-number">200+</div>
+            <div class="stat-label">古建筑数据</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">8</div>
+            <div class="stat-label">朝代时序</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">34</div>
+            <div class="stat-label">省域覆盖</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">12</div>
+            <div class="stat-label">建筑分类</div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== 功能入口 ===== -->
+<section class="features-section">
+    <div class="features-inner">
+        <div class="section-header">
+            <span class="section-tag">多维探索</span>
+            <h2 class="section-title">探索方式</h2>
+            <p class="section-desc">多种视角，全方位了解中国古建筑</p>
+        </div>
+        <div class="features-grid">
+            <a href="space.html" class="feature-card" data-color="green">
+                <div class="feature-icon" style="background:linear-gradient(135deg,#2E8B57,#3CB371);color:#fff;">🗺️</div>
+                <h3 class="feature-title">空间漫游</h3>
+                <p class="feature-desc">在地图上探索古建筑的地理分布与地域特色</p>
+                <span class="feature-arrow">前往探索 →</span>
+            </a>
+            <a href="time.html" class="feature-card" data-color="gold">
+                <div class="feature-icon" style="background:linear-gradient(135deg,#C9A84C,#DAA520);color:#fff;">⏳</div>
+                <h3 class="feature-title">时间之镜</h3>
+                <p class="feature-desc">穿越千年，纵览各朝代建筑风格的变迁</p>
+                <span class="feature-arrow">前往探索 →</span>
+            </a>
+            <a href="indivisual.html" class="feature-card" data-color="red">
+                <div class="feature-icon" style="background:linear-gradient(135deg,#C41E3A,#E53553);color:#fff;">👤</div>
+                <h3 class="feature-title">喜好映射</h3>
+                <p class="feature-desc">基于你的兴趣，智能推荐最对味的古建筑</p>
+                <span class="feature-arrow">前往探索 →</span>
+            </a>
+            <a href="know.html" class="feature-card" data-color="blue">
+                <div class="feature-icon" style="background:linear-gradient(135deg,#4169E1,#6495ED);color:#fff;">🕸️</div>
+                <h3 class="feature-title">民族之窗</h3>
+                <p class="feature-desc">知识图谱揭示非遗与建筑的深层关联</p>
+                <span class="feature-arrow">前往探索 →</span>
+            </a>
+            <a href="3d_architecture.html" class="feature-card" data-color="brown">
+                <div class="feature-icon" style="background:linear-gradient(135deg,#444C5E,#5A6180);color:#fff;">🏛️</div>
+                <h3 class="feature-title">3D 展示</h3>
+                <p class="feature-desc">沉浸式三维模型，感受古建筑的空间之美</p>
+                <span class="feature-arrow">前往探索 →</span>
+            </a>
+            <a href="exhibition.html" class="feature-card" data-color="hanred">
+                <div class="feature-icon" style="background:linear-gradient(135deg,#B22222,#CD5C5C);color:#fff;">🔥</div>
+                <h3 class="feature-title">热点追踪</h3>
+                <p class="feature-desc">实时追踪古建筑文化热点与保护动态</p>
+                <span class="feature-arrow">前往探索 →</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== 底部 ===== -->
+<footer>
+    <div class="footer-brand">飞檐翚影</div>
+    <p>中国古建筑文化展示平台 | 传承千年营造智慧，守护中华建筑文明</p>
+</footer>
+
+<script>
+// ===== 兴趣标签数据（古建筑主题） =====
+const interestItems = [
+    { id: 1,  title: '殿宇', desc: '帝王宫殿与宗庙殿堂', img: 'img/殿宇.jpg', tag: '宫殿建筑' },
+    { id: 2,  title: '佛塔', desc: '千年古塔与佛教圣迹', img: 'img/应县木塔-辽代-山西应县/yingxian_01.jpg', tag: '宗教建筑' },
+    { id: 3,  title: '楼阁', desc: '凌空飞檐与层叠楼台', img: 'img/楼阁.jpg', tag: '楼阁建筑' },
+    { id: 4,  title: '园林', desc: '江南园林与山水意境', img: 'img/拙政园-明代-江苏苏州/zhuozheng_01.jpg', tag: '园林建筑' },
+    { id: 5,  title: '民居', desc: '民间居所与地域风情', img: 'img/民居.jpg', tag: '民居建筑' },
+    { id: 6,  title: '陵墓', desc: '帝陵王墓与地下宫殿', img: 'img/陵墓.jpg', tag: '陵墓建筑' },
+    { id: 7,  title: '城墙', desc: '城防壁垒与万里长城', img: 'img/chengqiang.jpg', tag: '军事建筑' },
+    { id: 8,  title: '石窟', desc: '石雕造像与壁画宝库', img: 'img/石窟.jpg', tag: '宗教建筑' },
+    { id: 9,  title: '斗拱', desc: '榫卯咬合的承重之美', img: 'img/斗拱.jpg', tag: '建筑结构' },
+    { id: 10, title: '榫卯', desc: '无钉无铆的匠心之艺', img: 'img/榫卯.jpg', tag: '建筑结构' },
+    { id: 11, title: '彩画', desc: '雕梁画栋与彩绘装饰', img: 'img/彩画.jpg', tag: '建筑装饰' },
+    { id: 12, title: '瓦作', desc: '琉璃瓦当与屋脊装饰', img: 'img/瓦作.jpg', tag: '建筑装饰' },
+];
+
+const selectedItems = new Set();
+
+// ===== 渲染兴趣卡片 =====
+function renderInterestCards() {
+    const grid = document.getElementById('interestGrid');
+    grid.innerHTML = interestItems.map(item => `
+        <div class="interest-card" data-id="${item.id}" onclick="toggleInterest(${item.id})">
+            <img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.src='img/宫殿建筑-故宫太和殿/taihe_01.jpg'">
+            <div class="interest-card-overlay">
+                <div class="interest-card-title">${item.title}</div>
+                <div class="interest-card-desc">${item.desc}</div>
+            </div>
+            <div class="interest-card-heart"></div>
+        </div>
+    `).join('');
+
+    // 恢复之前的选择状态
+    restoreSelections();
+}
+
+// ===== 恢复之前的选择状态 =====
+function restoreSelections() {
+    try {
+        const savedCounters = localStorage.getItem('counters');
+        if (savedCounters) {
+            const counters = savedCounters.split(',');
+            counters.forEach((val, idx) => {
+                if (val === '1' && idx < interestItems.length) {
+                    selectedItems.add(interestItems[idx].id);
+                    const card = document.querySelector(`.interest-card[data-id="${interestItems[idx].id}"]`);
+                    if (card) card.classList.add('selected');
+                }
+            });
+            document.getElementById('selectedCount').textContent = selectedItems.size;
+        }
+    } catch (e) {
+        // 忽略解析错误
+    }
+}
+
+// ===== 切换选中状态 =====
+function toggleInterest(id) {
+    const card = document.querySelector(`.interest-card[data-id="${id}"]`);
+    if (selectedItems.has(id)) {
+        selectedItems.delete(id);
+        card.classList.remove('selected');
+    } else {
+        selectedItems.add(id);
+        card.classList.add('selected');
+    }
+    document.getElementById('selectedCount').textContent = selectedItems.size;
+}
+
+// ===== 提交处理 =====
+function handleSubmit() {
+    if (selectedItems.size === 0) {
+        alert('请至少选择一个感兴趣的建筑主题！');
+        return;
+    }
+
+    // 构建类型偏好（古建筑分类）
+    const typeslike = {
+        "宫殿建筑": 0,
+        "宗教建筑": 0,
+        "楼阁建筑": 0,
+        "园林建筑": 0,
+        "民居建筑": 0,
+        "陵墓建筑": 0,
+        "军事建筑": 0,
+        "建筑结构": 0,
+        "建筑装饰": 0
+    };
+
+    selectedItems.forEach(id => {
+        const item = interestItems.find(i => i.id === id);
+        if (item && typeslike.hasOwnProperty(item.tag)) {
+            typeslike[item.tag]++;
+        }
+    });
+
+    localStorage.setItem("typeslike", JSON.stringify(typeslike));
+
+    // 构建 counter 参数
+    const counters = interestItems.map(item => selectedItems.has(item.id) ? 1 : 0);
+    localStorage.setItem("counters", counters.join(","));
+
+    // 跳转
+    const params = counters.map((c, i) => `counter${i+1}=${c}`).join('&');
+    location.href = "space.html?" + params;
+}
+
+// ===== 初始化 =====
+renderInterestCards();
+
+// ===== 英雄区粒子效果 =====
+function createParticles() {
+    const container = document.getElementById('heroParticles');
+    const colors = [
+        'rgba(162,145,146,0.4)',
+        'rgba(201,168,76,0.35)',
+        'rgba(196,30,58,0.25)',
+        'rgba(46,139,87,0.2)',
+        'rgba(245,245,220,0.3)'
+    ];
+
+    for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'hero-particle';
+        const size = Math.random() * 4 + 2;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.cssText = `
+            width: ${size}px;
+            height: ${size}px;
+            left: ${Math.random() * 100}%;
+            background: ${color};
+            animation-duration: ${Math.random() * 12 + 8}s;
+            animation-delay: ${Math.random() * 10}s;
+        `;
+        container.appendChild(particle);
+    }
+}
+createParticles();
+
+// ===== 导航栏滚动效果 =====
+window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navBar');
+    if (window.scrollY > 100) {
+        nav.style.background = 'rgba(68,76,94,0.95)';
+        nav.style.boxShadow = '0 4px 24px rgba(0,0,0,0.3)';
+    } else {
+        nav.style.background = '#444C5E';
+        nav.style.boxShadow = '0 2px 16px rgba(0,0,0,0.22)';
+    }
+});
+
+// ===== 移动端菜单 =====
+function toggleMobileMenu() {
+    const overlay = document.getElementById('mobileOverlay');
+    const menu = document.getElementById('mobileMenu');
+    const isOpen = menu.classList.contains('active');
+
+    if (isOpen) {
+        overlay.classList.remove('active');
+        menu.classList.remove('active');
+        document.body.style.overflow = '';
+    } else {
+        overlay.classList.add('active');
+        menu.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// ===== 滚动入场动画 =====
+const observerOptions = {
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.interest-card, .feature-card, .stat-item').forEach(el => {
+    el.classList.add('fade-in');
+    observer.observe(el);
+});
+</script>
+</body>
+</html>

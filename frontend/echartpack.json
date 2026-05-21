@@ -1,0 +1,87 @@
+{
+    "name": "echarts",
+    "size": 1000,
+    "children": [
+      {
+        "name": "传统",
+        "size": 77,
+        "children": [
+          {
+            "name": "技艺",
+            "size": 11,
+            "children": [
+              {
+                "name": "剪纸",
+                "size": 5,
+                "value": 5
+              },
+              {
+                "name": "酿酒",
+                "size": 5,
+                "value": 5
+              }
+            ],
+            "value": 11
+          },
+          {
+            "name": "美术",
+            "size": 11,
+            "value": 11
+          },
+          {
+            "name": "体育",
+            "size": 11,
+            "value": 11
+          },
+          {
+            "name": "舞蹈",
+            "size": 11,
+            "value": 11
+          },
+          {
+            "name": "戏剧",
+            "size": 11,
+            "value": 11
+          },
+          {
+            "name": "医药",
+            "size": 11,
+            "value": 11
+          },
+          {
+            "name": "音乐",
+            "size": 11,
+            "value": 11
+          }
+        ],
+        "value": 77
+      },
+      {
+        "name": "民间",
+        "size": 44,
+        "children": [
+          {
+            "name": "文学",
+            "size": 11,
+            "value": 11
+          },
+          {
+            "name": "传说",
+            "size": 11,
+            "value": 11
+          },
+          {
+            "name": "曲艺",
+            "size": 11,
+            "value": 11
+          },
+          {
+            "name": "民俗",
+            "size": 11,
+            "value": 11
+          }
+        ],
+        "value": 44
+      }
+    ]
+  }

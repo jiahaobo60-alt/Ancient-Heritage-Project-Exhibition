@@ -1,0 +1,293 @@
+/*
+ * 中国传统建筑色彩方案 - 增强版
+ * 基于故宫、敦煌、园林等传统配色体系
+ */
+
+:root {
+    /* ========== 主色调 - #8B4513 统一色系 ========== */
+    --palace-red-deep: #8B4513;        /* 深主色 */
+    --palace-red-primary: #8B4513;     /* 标准主色 */
+    --palace-red-medium: #A0522D;      /* 中主色 */
+    --palace-red-light: #D4A574;       /* 浅主色 */
+    --palace-red-pale: #C9A84C;        /* 淡主色 */
+    
+    /* ========== 辅助色 - 灰蓝色系 ========== */
+    --glazed-yellow-deep: #5D2B0A;     /* 深灰蓝 */
+    --glazed-yellow-primary: #D4A574;  /* 标准灰蓝 */
+    --glazed-yellow-medium: #C9A84C;  /* 中灰蓝 */
+    --glazed-yellow-light: #E8D5B5;    /* 浅灰蓝 */
+    --glazed-yellow-pale: #C8D0E0;    /* 淡灰蓝 */
+    
+    /* ========== 辅助色 - 深浅配合系列 ========== */
+    --wood-brown-deep: #3E2723;        /* 深色 */
+    --wood-brown-primary: #8B4513;    /* 标准主色 */
+    --wood-brown-medium: #A0522D;     /* 中色 */
+    --wood-brown-light: #D4A574;      /* 浅色 */
+    --wood-brown-pale: #F5F5DC;       /* 淡色 */
+    
+    /* ========== 点缀色 - 蓝调系列 ========== */
+    --court-blue-deep: #5D2B0A;       /* 深灰蓝 */
+    --court-blue-primary: #8B4513;     /* 标准灰蓝 */
+    --court-green-deep: #3A4A5E;      /* 深蓝灰 */
+    --court-green-primary: #4A6A7E;   /* 中蓝灰 */
+    
+    /* ========== 点缀色 - 辅助强调 ========== */
+    --cinnabar-red: #C9A84C;           /* 强调色 - 淡蓝 */
+    --azurite-blue: #D4A574;          /* 石青蓝 */
+    --malachite-green: #5A8A7E;       /* 青绿 */
+    
+    /* ========== 中性色 - 背景与文字 ========== */
+    --rice-paper: #F7F3ED;            /* 背景色 */
+    --rice-paper-light: #FFFDF5;      /* 亮背景 */
+    --rice-paper-dark: #F5F5DC;       /* 暗背景 */
+    --rice-paper-warm: #F9F5E7;       /* 暖灰 */
+    
+    --ink-black: #3E2723;             /* 深文字 */
+    --charcoal-gray: #8B4513;         /* 主要灰 */
+    --smoke-gray: #D4A574;            /* 次要灰 */
+    --mist-gray: #C9A84C;             /* 弱化灰 */
+    
+    /* ========== 背景渐变方案 ========== */
+    --bg-gradient-primary: linear-gradient(160deg, 
+        var(--rice-paper) 0%, 
+        var(--rice-paper-dark) 40%, 
+        var(--wood-brown-pale) 100%
+    );
+    
+    --bg-gradient-warm: linear-gradient(135deg, 
+        var(--rice-paper-warm) 0%, 
+        var(--rice-paper) 50%, 
+        var(--glazed-yellow-pale) 100%
+    );
+    
+    --bg-gradient-cool: linear-gradient(135deg, 
+        var(--court-blue-deep) 0%, 
+        var(--court-blue-primary) 50%, 
+        var(--rice-paper) 100%
+    );
+    
+    --bg-gradient-royal: linear-gradient(135deg, 
+        var(--palace-red-deep) 0%, 
+        var(--palace-red-medium) 30%, 
+        var(--glazed-yellow-primary) 70%, 
+        var(--wood-brown-medium) 100%
+    );
+    
+    /* ========== 卡片背景色 ========== */
+    --card-bg-primary: rgba(255, 255, 255, 0.95);  /* 主卡片背景 */
+    --card-bg-accent: rgba(240, 242, 245, 0.95);   /* 强调卡片背景 */
+    --card-bg-dark: rgba(42, 47, 64, 0.9);         /* 深色卡片背景 */
+    --card-bg-transparent: rgba(240, 242, 245, 0.7); /* 透明卡片背景 */
+    
+    /* ========== 阴影系统 ========== */
+    --shadow-sm: 0 2px 8px rgba(139, 69, 19, 0.12);
+    --shadow-md: 0 6px 24px rgba(139, 69, 19, 0.16);
+    --shadow-lg: 0 12px 40px rgba(139, 69, 19, 0.22);
+    --shadow-xl: 0 20px 60px rgba(139, 69, 19, 0.28);
+    
+    --shadow-royal: 0 8px 32px rgba(139, 69, 19, 0.25);
+    --shadow-gold: 0 6px 24px rgba(106, 122, 161, 0.3);
+    --shadow-wood: 0 4px 16px rgba(139, 69, 19, 0.2);
+    
+    /* ========== 文字颜色 ========== */
+    --text-primary: var(--wood-brown-deep);      /* 主要文字 */
+    --text-secondary: var(--wood-brown-medium); /* 次要文字 */
+    --text-muted: var(--mist-gray);              /* 弱化文字 */
+    --text-accent: var(--palace-red-primary);    /* 强调文字 */
+    --text-gold: var(--glazed-yellow-primary);   /* 强调色文字 */
+    
+    --text-light-primary: var(--rice-paper);     /* 亮背景主要文字 */
+    --text-light-muted: rgba(240, 242, 245, 0.85); /* 亮背景弱化文字 */
+    
+    /* ========== 边框颜色 ========== */
+    --border-primary: var(--wood-brown-pale);
+    --border-secondary: var(--glazed-yellow-light);
+    --border-accent: var(--palace-red-primary);
+    --border-gold: var(--glazed-yellow-primary);
+    
+    /* ========== 渐变文字 ========== */
+    --text-gradient-gold: linear-gradient(135deg, var(--glazed-yellow-primary), var(--glazed-yellow-light));
+    --text-gradient-royal: linear-gradient(135deg, var(--palace-red-primary), var(--glazed-yellow-primary));
+    --text-gradient-bronze: linear-gradient(135deg, var(--wood-brown-medium), var(--glazed-yellow-primary));
+}
+
+/* ========== 色彩应用工具类 ========== */
+
+/* 背景色 */
+.bg-palace-red { background-color: var(--palace-red-primary); }
+.bg-palace-red-light { background-color: var(--palace-red-light); }
+.bg-glazed-yellow { background-color: var(--glazed-yellow-primary); }
+.bg-wood-brown { background-color: var(--wood-brown-medium); }
+.bg-wood-brown-light { background-color: var(--wood-brown-light); }
+.bg-cinnabar { background-color: var(--cinnabar-red); }
+.bg-rice-paper { background-color: var(--rice-paper); }
+
+/* 文字色 */
+.text-palace-red { color: var(--palace-red-primary); }
+.text-glazed-yellow { color: var(--glazed-yellow-primary); }
+.text-wood-brown { color: var(--wood-brown-medium); }
+.text-cinnabar { color: var(--cinnabar-red); }
+.text-court-blue { color: var(--court-blue-primary); }
+
+/* 渐变文字 */
+.text-gradient-gold {
+    background: var(--text-gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-gradient-royal {
+    background: var(--text-gradient-royal);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 边框色 */
+.border-palace-red { border-color: var(--palace-red-primary); }
+.border-glazed-yellow { border-color: var(--glazed-yellow-primary); }
+.border-wood-brown { border-color: var(--wood-brown-medium); }
+.border-cinnabar { border-color: var(--cinnabar-red); }
+
+/* 阴影 */
+.shadow-royal { box-shadow: var(--shadow-royal); }
+.shadow-gold { box-shadow: var(--shadow-gold); }
+.shadow-wood { box-shadow: var(--shadow-wood); }
+
+/* ========== 增强的背景渐变 ========== */
+
+.bg-enhanced-primary {
+    background: var(--bg-gradient-primary);
+    min-height: 100vh;
+}
+
+.bg-enhanced-warm {
+    background: var(--bg-gradient-warm);
+    min-height: 100vh;
+}
+
+.bg-enhanced-cool {
+    background: var(--bg-gradient-cool);
+    min-height: 100vh;
+}
+
+.bg-enhanced-royal {
+    background: var(--bg-gradient-royal);
+    min-height: 100vh;
+}
+
+.bg-enhanced-paper {
+    background: 
+        linear-gradient(rgba(245, 245, 220, 0.9), rgba(245, 245, 220, 0.9)),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(139, 69, 19, 0.03) 2px,
+            rgba(139, 69, 19, 0.03) 4px
+        );
+    min-height: 100vh;
+}
+
+/* ========== 动态色彩效果 ========== */
+
+/* 呼吸光效 - 金色 */
+@keyframes breathe-gold {
+    0%, 100% { 
+        box-shadow: 0 0 5px rgba(107, 122, 161, 0.5);
+        background-color: rgba(107, 122, 161, 0.1);
+    }
+    50% { 
+        box-shadow: 0 0 20px rgba(107, 122, 161, 0.8);
+        background-color: rgba(107, 122, 161, 0.2);
+    }
+}
+
+.breathe-gold {
+    animation: breathe-gold 3s ease-in-out infinite;
+}
+
+/* 呼吸光效 - 红色 */
+@keyframes breathe-red {
+    0%, 100% { 
+        box-shadow: 0 0 5px rgba(139, 69, 19, 0.5);
+        background-color: rgba(139, 69, 19, 0.1);
+    }
+    50% { 
+        box-shadow: 0 0 20px rgba(139, 69, 19, 0.8);
+        background-color: rgba(139, 69, 19, 0.2);
+    }
+}
+
+.breathe-red {
+    animation: breathe-red 3s ease-in-out infinite;
+}
+
+/* 渐变流动 */
+@keyframes gradient-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.gradient-flow {
+    background: linear-gradient(135deg, var(--palace-red-primary), var(--glazed-yellow-primary), var(--wood-brown-medium));
+    background-size: 400% 400%;
+    animation: gradient-flow 8s ease infinite;
+}
+
+/* lantern-glow 更新为灰色系 */
+@keyframes lantern-glow {
+    0%, 100% {
+        box-shadow: 
+            0 0 20px rgba(139, 69, 19, 0.6),
+            0 0 40px rgba(139, 69, 19, 0.4),
+            inset 0 0 10px rgba(255, 255, 255, 0.3);
+        background: radial-gradient(circle, #8B4513, #A0522D);
+    }
+    50% {
+        box-shadow: 
+            0 0 30px rgba(139, 69, 19, 0.8),
+            0 0 60px rgba(139, 69, 19, 0.6),
+            inset 0 0 15px rgba(255, 255, 255, 0.4);
+        background: radial-gradient(circle, #A0522D, #D4A574);
+    }
+}
+
+/* ========== 响应式色彩调整 ========== */
+
+@media (max-width: 768px) {
+    :root {
+        /* 移动端降低色彩饱和度 */
+        --palace-red-primary: #8B4513;
+        --glazed-yellow-primary: #D4A574;
+        --wood-brown-medium: #A0522D;
+        
+        /* 减少阴影强度 */
+        --shadow-sm: 0 1px 4px rgba(139, 69, 19, 0.1);
+        --shadow-md: 0 3px 12px rgba(139, 69, 19, 0.12);
+        --shadow-lg: 0 6px 20px rgba(139, 69, 19, 0.15);
+    }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --rice-paper: #3E2723;
+        --rice-paper-light: #5D2B0A;
+        --rice-paper-dark: #1E2230;
+        --rice-paper-warm: #323848;
+        
+        --text-primary: var(--rice-paper);
+        --text-secondary: var(--glazed-yellow-pale);
+        --text-muted: var(--mist-gray);
+        
+        --card-bg-primary: rgba(42, 47, 64, 0.95);
+        --card-bg-accent: rgba(54, 59, 74, 0.95);
+        --card-bg-dark: rgba(30, 34, 48, 0.9);
+        
+        --border-primary: rgba(138, 155, 197, 0.5);
+        --border-secondary: rgba(107, 122, 161, 0.4);
+    }
+}

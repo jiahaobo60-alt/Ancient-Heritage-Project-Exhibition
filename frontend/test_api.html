@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API测试</title>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/config.js"></script>
+</head>
+<body>
+    <h1>API测试</h1>
+    <button onclick="testAPI()">测试建筑列表API</button>
+    <div id="result"></div>
+    
+    <script>
+        function testAPI() {
+            console.log('测试API:', BASE_URL + '/architecture/buildings/');
+            $.ajax({
+                url: BASE_URL + '/architecture/buildings/',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    console.log('成功:', response);
+                    document.getElementById('result').innerHTML = 
+                        '<pre>' + JSON.stringify(response, null, 2) + '</pre>';
+                },
+                error: function(xhr, status, error) {
+                    console.error('失败:', error);
+                    console.error('响应:', xhr.responseText);
+                    document.getElementById('result').innerHTML = 
+                        '<p>错误: ' + error + '</p><p>响应: ' + xhr.responseText + '</p>';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

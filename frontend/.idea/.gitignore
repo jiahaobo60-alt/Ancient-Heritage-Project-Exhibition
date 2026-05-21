@@ -1,0 +1,9 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequest/
+Cultural-frontend.iml
+modules.xml
+vcs.xml
+

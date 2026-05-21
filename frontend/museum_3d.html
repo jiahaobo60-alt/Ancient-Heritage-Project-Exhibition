@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D展厅 - 飞檐翚影</title>
+    <link rel="stylesheet" href="css/architecture_common.css">
+    <link rel="stylesheet" href="css/museum_3d.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">
+            <img src="./img/logo.png" alt="飞檐翚影" style="width:30px; height:30px; vertical-align:middle;">
+            飞檐翚影
+        </a>
+        <div class="nav-links">
+            <a href="space.html" class="nav-link">空间漫游</a>
+            <a href="know.html" class="nav-link">民族之窗</a>
+            <a href="time.html" class="nav-link">时间之境</a>
+            <a href="3d_architecture.html" class="nav-link">3D展示</a>
+            <a href="museum_3d.html" class="nav-link active">3D展厅</a>
+            <a href="indivisual.html" class="nav-link">喜好映射</a>
+            <a href="chat.html" class="nav-link">AI助手</a>
+        </div>
+        <div class="nav-user">
+            <a href="index.html">返回首页</a>
+        </div>
+    </nav>
+
+    <main class="museum-shell">
+        <section class="museum-viewport" aria-label="3D古建筑数字展馆">
+            <div id="museumCanvas" class="museum-canvas"></div>
+
+            <div class="museum-title">
+                <span class="museum-kicker">沉浸式古建筑数字展馆</span>
+                <h1>3D展厅</h1>
+                <p>在可漫游展厅中浏览应县木塔、佛光寺东大殿、太和殿与拙政园。</p>
+            </div>
+
+            <aside class="museum-panel" id="museumPanel">
+                <div class="panel-tag" id="panelTag">当前展品</div>
+                <h2 id="panelTitle">应县木塔</h2>
+                <p id="panelMeta">辽代 · 山西应县 · 木构塔式建筑</p>
+                <p id="panelDesc">世界现存最高、最古老的木构塔式建筑，以纯木构架和多样斗拱体系展现辽代营造智慧。</p>
+                <div class="panel-details" id="panelDetails"></div>
+            </aside>
+
+            <div class="museum-toolbar" aria-label="展厅视角切换">
+                <button type="button" class="view-btn active" data-view="walk">漫游</button>
+                <button type="button" class="view-btn" data-view="center">中庭</button>
+                <button type="button" class="view-btn" data-view="overlook">俯瞰</button>
+                <button type="button" class="view-btn" data-view="focus">展品</button>
+            </div>
+
+            <div class="museum-guide">
+                <span>WASD / 方向键移动</span>
+                <span>鼠标拖拽旋转视角</span>
+                <span>点击展品切换内容</span>
+            </div>
+        </section>
+    </main>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "./gallery-master/node_modules/three/build/three.module.js"
+        }
+    }
+    </script>
+    <script type="module" src="js/museum_3d.js"></script>
+</body>
+</html>

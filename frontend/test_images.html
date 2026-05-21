@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片路径测试</title>
+</head>
+<body>
+    <h1>测试古建筑图片路径</h1>
+    
+    <h2>使用相对路径 ../img/</h2>
+    <img src="../img/岳阳楼-明代-华中/岳阳楼_01.jpg" alt="岳阳楼测试" style="max-width:300px">
+    <p>路径: ../img/岳阳楼-明代-华中/岳阳楼_01.jpg</p>
+    
+    <h2>使用相对于根目录的路径</h2>
+    <img src="/img/岳阳楼-明代-华中/岳阳楼_01.jpg" alt="岳阳楼测试2" style="max-width:300px">
+    <p>路径: /img/岳阳楼-明代-华中/岳阳楼_01.jpg</p>
+    
+    <h2>使用直接路径</h2>
+    <img src="http://localhost:5500/img/岳阳楼-明代-华中/岳阳楼_01.jpg" alt="岳阳楼测试3" style="max-width:300px">
+    <p>路径: http://localhost:5500/img/岳阳楼-明代-华中/岳阳楼_01.jpg</p>
+    
+    <hr>
+    
+    <h2>测试其他建筑</h2>
+    <img src="../img/颐和园-清代-华北/颐和园_1.jpg" alt="颐和园" style="max-width:200px">
+    <img src="../img/长城-明代-华北/长城_01.jpg" alt="长城" style="max-width:200px">
+    <img src="../img/黄鹤楼-明代-华中/黄鹤楼_1.jpg" alt="黄鹤楼" style="max-width:200px">
+    
+    <script>
+        // 测试 getBuildingImages 函数
+        console.log("测试 getBuildingImages 函数:");
+        console.log("岳阳楼:", getBuildingImages("岳阳楼"));
+        console.log("颐和园:", getBuildingImages("颐和园"));
+        console.log("长城:", getBuildingImages("长城"));
+    </script>
+    
+    <script src="js/building_images.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+[
+  {
+    "region_id": 1,
+    "region_name": "华北"
+  },
+  {
+    "region_id": 2,
+    "region_name": "华东"
+  },
+  {
+    "region_id": 3,
+    "region_name": "华中"
+  },
+  {
+    "region_id": 4,
+    "region_name": "华南"
+  },
+  {
+    "region_id": 5,
+    "region_name": "西南"
+  },
+  {
+    "region_id": 6,
+    "region_name": "西北"
+  },
+  {
+    "region_id": 7,
+    "region_name": "东北"
+  }
+]

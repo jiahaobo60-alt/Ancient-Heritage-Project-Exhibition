@@ -1,0 +1,1863 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D古建筑展示 -飞檐翚影</title>
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 古建筑主题配色 - 与其他页面保持一致 */
+        :root {
+            --primary:       #444C5E;
+            --primary-light: #5A6180;
+            --primary-dark:  #2A2F40;
+            --secondary:     #A29192;
+            --accent:        #8A9BC5;
+            --accent-light:  #A29192;
+            --bg:            #F0F2F5;
+            --bg-card:       #FFFFFF;
+            --bg-muted:      #E8EBF0;
+            --text-main:     #4b5d88;
+            --text-sub:      #2a3246;
+            --text-muted:    #9E9E9E;
+            --text-light:    rgba(245,245,220,0.85);
+            --border:        #343b4d;
+            --shadow-sm:     0 2px 8px rgba(68,76,94,0.08);
+            --shadow-md:     0 6px 20px rgba(68,76,94,0.12);
+            --shadow-lg:     0 16px 48px rgba(68,76,94,0.18);
+            --radius-sm:     6px;
+            --radius-md:     12px;
+            --radius-lg:     20px;
+            --transition:    0.32s cubic-bezier(0.4,0,0.2,1);
+            /* 朝代色 */
+            --han-red:       #B22222;
+            --tang-red:      #444C5E;
+            --song-green:    #2E8B57;
+            --liao-gold:     #A29192;
+            --yuan-brown:    #444C5E;
+            --ming-brown:    #5A6180;
+            --qing-blue:     #4169E1;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+
+        /* 导航栏样式 - 与其他页面一致 */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: #444C5E;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 0 48px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+            transition: background var(--transition), box-shadow var(--transition);
+        }
+
+        .nav-logo {
+            color: #F5F5DC;
+            font-size: 1.4em;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.08em;
+        }
+
+        .nav-logo-icon {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: #F5F5DC;
+        }
+
+        .nav-links { display: flex; gap: 4px; }
+
+        .nav-link {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+            font-size: 0.95em;
+            letter-spacing: 0.03em;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #A29192;
+            color: #F5F5DC;
+        }
+
+        .nav-user {
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .nav-user a {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color var(--transition);
+        }
+
+        .nav-user a:hover { color: #F5F5DC; }
+        .nav-mobile-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #00000080;
+            z-index: 999;
+        }
+        .nav-mobile-overlay.active { display: block; }
+
+        .nav-mobile-menu {
+            position: fixed;
+            top: 0; right: -280px;
+            width: 280px;
+            height: 100vh;
+            background: rgba(93,43,10,0.98);
+            z-index: 1001;
+            padding: 80px 24px 24px;
+            transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .nav-mobile-menu.active { right: 0; }
+
+        .nav-mobile-menu a {
+            color: rgba(245,245,220,0.9);
+            text-decoration: none;
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 1.05em;
+            letter-spacing: 0.05em;
+            transition: background var(--transition);
+        }
+        .nav-mobile-menu a:hover,
+        .nav-mobile-menu a.active {
+            background: #A2919299;
+        }
+
+        .nav-mobile-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            background: none;
+            border: none;
+            color: #F5F5DC;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+
+         /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139,69,19,0.15);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139,69,19,0.3);
+        }
+
+        /* 移动端菜单按钮 */
+        .nav-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #F5F5DC;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .nav-mobile-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        .nav-mobile-overlay.active { display: block; }
+
+        .nav-mobile-menu {
+            position: fixed;
+            top: 0; right: -280px;
+            width: 280px;
+            height: 100vh;
+            background: rgba(68,76,94,0.98);
+            z-index: 1001;
+            padding: 80px 24px 24px;
+            transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .nav-mobile-menu.active { right: 0; }
+
+        .nav-mobile-menu a {
+            color: rgba(245,245,220,0.9);
+            text-decoration: none;
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 1.05em;
+            letter-spacing: 0.05em;
+            transition: background var(--transition);
+        }
+        .nav-mobile-menu a:hover,
+        .nav-mobile-menu a.active {
+            background: rgba(162,145,146,0.3);
+        }
+
+        .nav-mobile-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            background: none;
+            border: none;
+            color: #F5F5DC;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        @media (max-width: 900px) {
+            .nav-menu-btn { display: block; }
+            .nav-links, .nav-user { display: none; }
+        }
+
+        /* 主容器 */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+        }
+
+        /* 内容卡片样式 - 与其他页面一致 */
+        .content-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.2);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #444C5E 0%, #5A6180 100%);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .card-header:hover {
+            background: linear-gradient(135deg, #5A6180 0%, #444C5E 100%);
+        }
+
+        .card-title {
+            color: #F5F5DC;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .card-toggle {
+            color: #F5F5DC;
+            font-size: 0.9em;
+            transition: transform 0.3s ease;
+        }
+
+        .card-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .card-content {
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card-content.collapsed {
+            display: none;
+        }
+
+        /* 3D 查看器容器 - 全屏显示 */
+        .viewer-3d-container {
+            width: 100vw;
+            height: calc(100vh - 64px);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            position: fixed;
+            top: 64px;
+            left: 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        #canvas-3d {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Sketchfab iframe 查看器 */
+        .sketchfab-viewer {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        .sketchfab-viewer iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .sketchfab-viewer.active {
+            display: block;
+        }
+
+        .threejs-viewer {
+            width: 100%;
+            height: 100%;
+        }
+
+        .threejs-viewer.hidden {
+            display: none;
+        }
+
+       
+        /* VR 提示信息 */
+        .vr-info {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            max-width: 250px;
+            display: none;
+            z-index: 100;
+        }
+
+        .vr-info.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .control-btn {
+            background: transparent;
+            border: 2px solid #A29192;
+            color: #F5F5DC;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .control-btn:hover, .control-btn.active {
+            background: #A29192;
+            color: #2A3246;
+        }
+
+        /* 建筑选择器 - 悬浮层样式 */
+        .building-selector-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 280px;
+            max-height: calc(100% - 40px);
+            overflow-y: auto;
+            z-index: 100;
+            background: rgba(240, 242, 245, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .building-selector-overlay.hidden {
+            transform: translateX(calc(100% + 40px));
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 切换按钮 */
+        .selector-toggle-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            background: rgba(240, 242, 245, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            cursor: pointer;
+            z-index: 101;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #444C5E;
+            transition: all 0.3s ease;
+        }
+
+        .selector-toggle-btn:hover {
+            background: #444C5E;
+            color: #F5F5DC;
+        }
+
+        .selector-toggle-btn.shifted {
+            right: 300px;
+        }
+
+
+
+        .building-selector-overlay::-webkit-scrollbar {
+            width: 4px;
+        }
+        .building-selector-overlay::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .building-selector-overlay::-webkit-scrollbar-thumb {
+            background: rgba(68, 76, 94, 0.3);
+            border-radius: 2px;
+        }
+
+        /* 建筑选择器 */
+        .building-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .building-card {
+            background: #F0F2F5;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(139, 69, 19, 0.1);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .building-card:hover {
+            border-color: #A29192;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.2);
+        }
+
+        .building-card.active {
+            border-color: #444C5E;
+            background: rgba(68, 76, 94, 0.1);
+        }
+
+        .building-card img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            border: 1px solid #A29192;
+        }
+
+        .building-card h4 {
+            color: #444C5E;
+            margin: 0 0 5px 0;
+            font-size: 1em;
+        }
+
+        .building-card p {
+            color: #444C5E;
+            margin: 0;
+            font-size: 0.85em;
+        }
+
+        /* 3D模型标识标签 */
+        .building-card .model-badge {
+            position: absolute;
+            top: 20px;
+            right: 15px;
+            background: linear-gradient(135deg, #8A9BC5, #8A9BC5);
+            color: white;
+            font-size: 0.7em;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+
+        /* 特性展示面板 */
+        .features-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: #F0F2F5;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #444C5E;
+            box-shadow: 0 2px 8px rgba(139, 69, 19, 0.1);
+        }
+
+        .feature-card h4 {
+            color: #444C5E;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card p {
+            color: #2A3246;
+            margin: 0;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        /* 交互式标注 */
+        .annotation-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #8A9BC5;
+            border-radius: 50%;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 20px rgba(196, 30, 58, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        .annotation-tooltip {
+            position: absolute;
+            background: #F0F2F5;
+            color: #2A3246;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            max-width: 250px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: none;
+            border: 1px solid #A29192;
+        }
+
+        .annotation-tooltip.show {
+            display: block;
+        }
+
+        /* 代码单元格样式 */
+        .code-cell {
+            background: #2A3246;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+            border: 1px solid #A29192;
+        }
+
+        .code-cell pre {
+            margin: 0;
+            color: #F5F5DC;
+        }
+
+        /* ===== 底部 ===== */
+        footer {
+            background: var(--primary-dark);
+            color: rgba(245,245,220,0.6);
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        footer .footer-brand {
+            color: rgba(245,245,220,0.85);
+            font-size: 1.1em;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        /* ===== 英雄区 ===== */
+        .hero {
+            position: relative;
+            height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.03" d="M0,160L48,170.7C96,181,192,203,288,197.3C384,192,480,160,576,165.3C672,171,768,213,864,218.7C960,224,1056,192,1152,165.3C1248,139,1344,117,1392,106.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: bottom;
+        }
+
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .hero-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(245,245,220,0.3);
+            border-radius: 50%;
+            animation: floatParticle 8s ease-in-out infinite;
+        }
+
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-30px) rotate(180deg); opacity: 0.6; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(245,245,220,0.1);
+            border: 1px solid rgba(245,245,220,0.2);
+            border-radius: 20px;
+            color: rgba(245,245,220,0.8);
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            color: #F5F5DC;
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+
+        .hero-title-accent {
+            color: var(--secondary);
+        }
+
+        .hero-subtitle {
+            color: rgba(245,245,220,0.75);
+            font-size: 1.15rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== 通用区块 ===== */
+        .interest-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(162,145,146,0.15);
+            border: 1px solid #A29192;
+            border-radius: 20px;
+            color: var(--secondary);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--text-main);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .section-desc {
+            color: var(--text-sub);
+            font-size: 1rem;
+            letter-spacing: 0.03em;
+        }
+
+        /* 内容卡片样式 */
+        .content-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            background: var(--primary);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .card-header:hover {
+            background: var(--primary-light);
+        }
+
+        .card-title {
+            color: #F5F5DC;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-toggle {
+            color: rgba(245,245,220,0.7);
+            transition: transform var(--transition);
+            font-size: 0.8rem;
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .current-building-header {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-muted);
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+        }
+
+        .current-building-header h2 {
+            font-size: 1.8rem;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .current-building-header p {
+            color: var(--text-sub);
+            font-size: 1rem;
+        }
+
+        /* 加载动画 */
+        .loading-3d {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #F5F5DC;
+            z-index: 5;
+        }
+
+        .loading-spinner-3d {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #444C5E;
+            border-top: 4px solid #A29192;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .viewer-3d-container {
+                height: 400px;
+            }
+            
+            .controls-3d {
+                flex-wrap: wrap;
+                padding: 10px 15px;
+            }
+            
+            .building-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* 页面标题 - 已合并到 page-hero */
+
+        /* Sketchfab 模型信息面板 */
+        .sketchfab-info-panel {
+            display: none;
+        }
+
+        .sketchfab-info-panel.active {
+            display: block;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .info-detail-card {
+            background: #F0F2F5;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #A29192;
+            box-shadow: 0 2px 8px rgba(139, 69, 19, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-detail-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.15);
+        }
+
+        .info-detail-card h3 {
+            color: #444C5E;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(212, 165, 116, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-detail-card p {
+            line-height: 1.8;
+            color: #444C5E;
+            font-size: 0.95rem;
+        }
+
+        .info-data-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-data-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(212, 165, 116, 0.2);
+            display: flex;
+            justify-content: space-between;
+            color: #444C5E;
+        }
+
+        .info-data-list li:last-child {
+            border-bottom: none;
+        }
+
+        .info-data-list .label {
+            color: #444C5E;
+            font-weight: bold;
+        }
+
+        .info-data-list .value {
+            color: #A29192;
+            font-weight: 600;
+        }
+
+        /* 模型来源 */
+       footer {
+            background: var(--primary-dark);
+            color: #f5f5dc99;
+            text-align: center;
+            padding: 20px 24px;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            position: relative;
+            border-top: 2px solid var(--secondary);
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M0,10 Q25,2 50,10 T100,10 L100,0 L0,0 Z' fill='%23D4A574'/%3E%3C/svg%3E") top left/50px 6px repeat-x;
+        }
+
+        /* 当前建筑标题区 */
+        .current-building-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+
+        .current-building-header h2 {
+            color: #444C5E;
+            font-size: 1.6em;
+            margin-bottom: 5px;
+        }
+
+        .current-building-header p {
+            color: #444C5E;
+            font-size: 1em;
+        }
+
+        .hero-badge {
+  transform: translateY(-50px); /* 负数 = 往上移 */
+}
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="nav-bar" id="navBar">
+    <a href="index.html" class="nav-logo">
+        <img 
+        src="./img/logo.png" 
+        style="width:30px; height:30px; vertical-align:middle;"
+        >
+        飞檐翚影
+    </a>
+    <div class="nav-links">
+        <a href="space.html" class="nav-link">空间漫游</a>
+        <a href="know.html" class="nav-link">民族之窗</a>
+        <a href="time.html" class="nav-link">时间之境</a>
+        <a href="3d_architecture.html" class="nav-link active">3D展示</a>
+        <a href="museum_3d.html" class="nav-link">3D展厅</a>
+        <a href="indivisual.html" class="nav-link">喜好映射</a>
+        <a href="chat.html" class="nav-link">AI助手</a>
+    </div>
+    <div class="nav-user">
+        <a href="index.html">返回首页</a>
+    </div>
+    <button class="nav-menu-btn" onclick="toggleMobileMenu()" aria-label="打开菜单">☰</button>
+</nav>
+
+<!-- 移动端侧边菜单 -->
+<div class="nav-mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+<div class="nav-mobile-menu" id="mobileMenu">
+    <button class="nav-mobile-close" onclick="toggleMobileMenu()" aria-label="关闭菜单">✕</button>
+    <a href="index.html">首页</a>
+    <a href="space.html">空间漫游</a>
+    <a href="know.html">民族之窗</a>
+    <a href="time.html">时间之境</a>
+    <a href="3d_architecture.html" class="active">3D展示</a>
+    <a href="museum_3d.html">3D展厅</a>
+    <a href="indivisual.html">喜好映射</a>
+    <a href="chat.html">AI助手</a>
+    <a href="login.html">登录</a>
+</div>
+
+    <!-- ===== 英雄区 ===== -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-particles" id="heroParticles"></div>
+        <div class="hero-content">
+            <div class="hero-badge">✦ 3D 展示 · 沉浸体验 ✦</div>
+        </div>
+    </section>
+
+    <!-- ===== 3D 全屏查看器 ===== -->
+    <div class="viewer-3d-container" id="viewer3d">
+        <!-- 顶部建筑信息 -->
+
+        <!-- 建筑切换器 -->
+        <button class="selector-toggle-btn" id="selectorToggle" onclick="toggleSelector()" title="切换建筑列表">☰</button>
+        <div class="building-selector-overlay" id="buildingSelector">
+            <!-- 动态生成 -->
+        </div>
+
+        <!-- Three.js 查看器 -->
+                    <!-- Three.js 查看器 -->
+                    <div class="threejs-viewer" id="threejsViewer">
+                        <canvas id="canvas-3d"></canvas>
+                    </div>
+
+                    <!-- Sketchfab iframe 查看器 -->
+                    <div class="sketchfab-viewer" id="sketchfabViewer">
+                        <iframe 
+                            id="sketchfabIframe"
+                            title="3D模型"
+                            frameborder="0"
+                            allowfullscreen
+                            mozallowfullscreen="true"
+                            webkitallowfullscreen="true"
+                            allow="autoplay; fullscreen; xr-spatial-tracking"
+                            xr-spatial-tracking
+                            execution-while-out-of-viewport
+                            execution-while-not-rendered
+                            web-share
+                            src="">
+                        </iframe>
+                    </div>
+                    
+                    <!-- VR 按钮 -->
+                    <button class="vr-btn" id="vrBtn" onclick="toggleVR()" disabled>
+                        🥽 进入VR
+                    </button>
+                    
+                    <!-- VR 提示信息 -->
+                    <div class="vr-info" id="vrInfo">
+                        <strong>VR模式</strong><br>
+                        请佩戴VR设备<br>
+                        使用手柄进行交互<br>
+                        <small>按ESC键退出</small>
+                    </div>
+                    
+                    <div class="loading-3d" id="loading3d">
+                        <div class="loading-spinner-3d"></div>
+                        <p>正在加载模型...</p>
+                    </div>
+                    
+                    <div class="controls-3d" id="controls3d">
+                        <button class="control-btn active" onclick="setViewMode('rotate')">🔄 旋转</button>
+                        <button class="control-btn" onclick="setViewMode('zoom')">🔍 缩放</button>
+                        <button class="control-btn" onclick="setViewMode('pan')">✋ 平移</button>
+                        <button class="control-btn" onclick="resetView()">↺ 重置</button>
+                        <button class="control-btn" onclick="toggleAnnotations()">📍 标注</button>
+                    </div>
+                    
+                    <div class="annotation-tooltip" id="annotationTooltip"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 建筑特性面板（Three.js 模式） -->
+        <div class="features-panel-overlay" id="featuresPanel">
+            <!-- 动态加载特性卡片 -->
+        </div>
+
+        <!-- Sketchfab 详细信息面板 -->
+        <div class="sketchfab-info-overlay" id="sketchfabInfoPanel">
+            <div class="card-header" onclick="toggleCard(this)">
+                <h3 class="card-title">✨ 建筑特色详解</h3>
+                <span class="card-toggle">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="features-panel" id="featuresPanel">
+                    <!-- 动态加载特性卡片 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Sketchfab 模型详细信息面板 -->
+        <div class="sketchfab-info-panel" id="sketchfabInfoPanel">
+            <div class="content-card">
+                <div class="card-header" onclick="toggleCard(this)">
+                    <h3 class="card-title">📜 建筑详细信息</h3>
+                    <span class="card-toggle">▼</span>
+                </div>
+                <div class="card-content">
+                    <div class="info-grid" id="infoGrid">
+                        <!-- 动态加载 -->
+                    </div>
+                    <div class="source-info" id="sourceInfo">
+                        <p>3D模型来源：<a href="https://sketchfab.com" target="_blank">Sketchfab</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+    <!-- ===== 底部 ===== -->
+    <footer>
+        <div class="footer-brand">飞檐翚影</div>
+        <p>中国古建筑文化展示平台 | 传承千年营造智慧</p>
+    </footer>
+
+    <!-- 配置和通用功能 (注意加载顺序：config.js 必须先于 architecture_common.js) -->
+    <script src="js/config.js"></script>
+    <script src="js/architecture_common.js"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    
+    <script>
+        // 全局变量
+        let scene, camera, renderer, controls;
+        let currentBuilding = null;
+        let annotations = [];
+        let showAnnotations = true;
+        let viewMode = 'rotate';
+        let vrSession = null;
+        let vrReferenceSpace = null;
+        let isVRMode = false;
+        let threejsInitialized = false;
+        
+        // ========== 性能优化：模型缓存 ==========
+        let geometryCache = new Map();  // Three.js 几何体缓存
+        let sketchfabPreloaded = new Set();  // 已预加载的 Sketchfab 模型
+        let isPreloading = false;  // 是否正在预加载
+
+        // 建筑数据
+        const buildingsData = [
+            {
+                id: 1,
+                name: '应县木塔',
+                dynasty: '辽代',
+                location: '山西应县',
+                image: 'img/index/chuant.jpg',
+                description: '世界上现存最古老最高大的木塔',
+                subtitle: '世界最高木塔 · 千年不倒传奇',
+                useSketchfab: true,
+                sketchfabUrl: 'https://sketchfab.com/models/27f74118bdd24801a30c03cfdc6957a1/embed?autostart=1&ui_controls=1&ui_infos=0&ui_inspector=0&ui_stop=0&ui_watermark=0&ui_watermark_link=0&ui_annotations=0&ui_help=0',
+                sketchfabSource: {
+                    author: '康托耶夫',
+                    authorUrl: 'https://sketchfab.com/KangYuying',
+                    modelUrl: 'https://sketchfab.com/3d-models/27f74118bdd24801a30c03cfdc6957a1'
+                },
+                infoCards: [
+                    {
+                        title: '◈ 建筑概况',
+                        content: '应县木塔全称佛宫寺释迦塔，位于山西省朔州市应县，高67.31米，建于辽清宁二年（公元1056年），是中国现存最高最古老的木构塔式建筑，与意大利比萨斜塔、法国埃菲尔铁塔并称"世界三大奇塔"。'
+                    },
+                    {
+                        title: '◈ 建筑数据',
+                        dataList: [
+                            { label: '建造年代', value: '辽代（1056年）' },
+                            { label: '建筑高度', value: '67.31 米' },
+                            { label: '结构层数', value: '9 层（含暗层）' },
+                            { label: '建筑材料', value: '红松木料' },
+                            { label: '塔身重量', value: '约 2600 吨' }
+                        ]
+                    },
+                    {
+                        title: '◈ 建筑特色',
+                        content: '全塔采用纯木结构，无一颗铁钉，全靠榫卯咬合。塔身呈八角形，外形稳重雄伟。斗拱结构形式多达54种，堪称中国斗拱博物馆。历经千年风雨、多次地震仍屹立不倒，展现了古代匠师的高超技艺。'
+                    },
+                    {
+                        title: '◈ 历史价值',
+                        content: '应县木塔是中国古代木构建筑的巅峰之作，是研究辽代建筑技术的活标本。1961年被国务院公布为首批全国重点文物保护单位，2016年获得吉尼斯世界纪录认定为"世界最高的木塔"。'
+                    }
+                ],
+                features: [
+                    { icon: '🗼', title: '塔身结构', desc: '八角五层六檐，明五暗四，共九层' },
+                    { icon: '⚡', title: '抗震设计', desc: '双层套筒结构，暗层加固，柔性连接' },
+                    { icon: '🔧', title: '斗拱种类', desc: '54种斗拱，480朵，集斗拱之大成' },
+                    { icon: '📏', title: '高度规模', desc: '高67.31米，底层直径30.27米' }
+                ],
+                annotations: [
+                    { x: 0, y: 0.5, z: 0, title: '塔刹', desc: '铁制塔刹，高14米' },
+                    { x: 0.4, y: 0, z: 0.4, title: '明层', desc: '供奉佛像的明层' },
+                    { x: -0.4, y: -0.3, z: 0.4, title: '暗层', desc: '结构加固的暗层' }
+                ]
+            },
+            {
+                id: 2,
+                name: '佛光寺东大殿',
+                dynasty: '唐代',
+                location: '山西五台山',
+                image: 'img/殿宇.jpg',
+                description: '中国现存最早的木构建筑之一',
+                subtitle: '唐代木构 · 海内孤例',
+                useSketchfab: false,
+                features: [
+                    { icon: '🏛️', title: '斗拱结构', desc: '柱头斗拱七铺作，双杪双下昂，总高约为柱高的一半' },
+                    { icon: '🏗️', title: '屋顶形式', desc: '单檐庑殿顶，坡度平缓，出檐深远' },
+                    { icon: '📐', title: '平面布局', desc: '面阔七间，进深四间，金厢斗底槽' },
+                    { icon: '🎨', title: '彩绘装饰', desc: '保存有唐代壁画和彩画' }
+                ],
+                annotations: [
+                    { x: 0.2, y: 0.3, z: 0.5, title: '斗拱', desc: '七铺作斗拱，雄大有力' },
+                    { x: -0.3, y: 0.6, z: 0.2, title: '鸱吻', desc: '唐代鸱吻造型' },
+                    { x: 0, y: -0.2, z: 0.8, title: '台基', desc: '石质台基，稳固厚重' }
+                ]
+            },
+            {
+                id: 3,
+                name: '太和殿',
+                dynasty: '清代',
+                location: '北京故宫',
+                image: 'img/index/jiyi.jpg',
+                description: '中国现存最大的木结构大殿',
+                subtitle: '皇家至尊 · 巍峨天下',
+                useSketchfab: false,
+                features: [
+                    { icon: '👑', title: '等级最高', desc: '重檐庑殿顶，金龙和玺彩画' },
+                    { icon: '🐉', title: '龙纹装饰', desc: '殿内外龙纹装饰达13844条' },
+                    { icon: '🏛️', title: '开间规模', desc: '面阔十一间，进深五间' },
+                    { icon: '📐', title: '建筑尺寸', desc: '高26.92米，建筑面积2377平方米' }
+                ],
+                annotations: [
+                    { x: 0, y: 0.7, z: 0, title: '正脊', desc: '大吻高3.4米' },
+                    { x: 0.5, y: 0.2, z: 0, title: '檐角', desc: '10个走兽' },
+                    { x: 0, y: -0.4, z: 0.6, title: '月台', desc: '三层汉白玉月台' }
+                ]
+            },
+            {
+                id: 4,
+                name: '拙政园',
+                dynasty: '明代',
+                location: '江苏苏州',
+                image: 'img/index/wenhua.jpg',
+                description: '中国四大名园之一',
+                subtitle: '江南园林 · 天下名园',
+                useSketchfab: false,
+                features: [
+                    { icon: '🌊', title: '水景布局', desc: '以水为中心，山水萦绕' },
+                    { icon: '🏡', title: '厅堂轩榭', desc: '远香堂、小飞虹等经典建筑' },
+                    { icon: '🌿', title: '植物配置', desc: '四季花木，步移景异' },
+                    { icon: '🪟', title: '借景手法', desc: '远借北寺塔，扩大空间感' }
+                ],
+                annotations: [
+                    { x: 0.3, y: 0.1, z: 0.4, title: '远香堂', desc: '主厅，四面通透' },
+                    { x: -0.2, y: -0.1, z: 0.5, title: '小飞虹', desc: '廊桥，分隔水面' },
+                    { x: 0, y: 0.3, z: -0.3, title: '假山', desc: '黄石假山，气势雄浑' }
+                ]
+            }
+        ];
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            renderBuildingSelector();
+            loadBuilding(0);
+        });
+
+        // 切换卡片折叠
+        function toggleCard(header) {
+            const content = header.nextElementSibling;
+            const toggle = header.querySelector('.card-toggle');
+            content.classList.toggle('collapsed');
+            toggle.classList.toggle('collapsed');
+        }
+
+        // 初始化 3D 查看器（Three.js）
+        function init3DViewer() {
+            if (threejsInitialized) return;
+            
+            const container = document.getElementById('viewer3d');
+            const canvas = document.getElementById('canvas-3d');
+            
+            // 场景
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x2A3246);
+            scene.fog = new THREE.Fog(0x2A3246, 10, 50);
+            
+            // 相机
+            camera = new THREE.PerspectiveCamera(
+                75, 
+                container.clientWidth / container.clientHeight, 
+                0.1, 
+                1000
+            );
+            camera.position.set(5, 3, 5);
+            
+            // 渲染器
+            renderer = new THREE.WebGLRenderer({ 
+                canvas: canvas, 
+                antialias: true,
+                alpha: true 
+            });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            
+            // 控制器
+            controls = new THREE.OrbitControls(camera, canvas);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 2;
+            controls.maxDistance = 20;
+            
+            // 灯光
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 10, 7);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+            
+            const pointLight = new THREE.PointLight(0xA29192, 0.5, 10);
+            pointLight.position.set(0, 2, 0);
+            scene.add(pointLight);
+            
+            // 地面
+            const groundGeometry = new THREE.PlaneGeometry(20, 20);
+            const groundMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x444C5E,
+                roughness: 0.8,
+                metalness: 0.2
+            });
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -1;
+            ground.receiveShadow = true;
+            scene.add(ground);
+            
+            // 网格辅助
+            const gridHelper = new THREE.GridHelper(20, 20, 0xA29192, 0x444C5E);
+            gridHelper.position.y = -0.99;
+            scene.add(gridHelper);
+            
+            threejsInitialized = true;
+            
+            // 动画循环
+            animate();
+            
+            // 窗口大小调整
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        // 动画循环
+        function animate() {
+            requestAnimationFrame(animate);
+            if (controls) {
+                controls.update();
+            }
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
+            updateAnnotations();
+        }
+
+        // 窗口大小调整
+        function onWindowResize() {
+            const container = document.getElementById('viewer3d');
+            if (camera && container) {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+            }
+            if (renderer && container) {
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            }
+        }
+
+        // 切换建筑选择器显示/隐藏
+        function toggleSelector() {
+            const selector = document.getElementById('buildingSelector');
+            const btn = document.getElementById('selectorToggle');
+            selector.classList.toggle('hidden');
+            btn.classList.toggle('shifted');
+            const isHidden = selector.classList.contains('hidden');
+            btn.innerHTML = isHidden ? '☰' : '✕';
+            // 收起时按钮贴到最右边，展开时恢复
+            if (isHidden) {
+                btn.style.right = '0';
+                btn.style.borderRadius = '8px 0 0 8px';
+            } else {
+                btn.style.right = '';
+                btn.style.borderRadius = '';
+            }
+        }
+
+        // 渲染建筑选择器（悬浮层样式）
+        function renderBuildingSelector() {
+            const selector = document.getElementById('buildingSelector');
+            selector.innerHTML = buildingsData.map((building, index) => `
+                <div class="building-card ${index === 0 ? 'active' : ''}" 
+                     onclick="loadBuilding(${index})" 
+                     data-index="${index}">
+                    ${building.useSketchfab ? '<span class="model-badge">3D实景</span>' : ''}
+                    <img src="${building.image}" alt="${building.name}" 
+                         onerror="this.src='img/殿宇.jpg'">
+                    <h4>${building.name}</h4>
+                    <p>${building.dynasty} · ${building.location}</p>
+                </div>
+            `).join('');
+        }
+
+        // 加载建筑
+        function loadBuilding(index) {
+            currentBuilding = buildingsData[index];
+            
+            // 更新悬浮层选中状态
+            const selector = document.getElementById('buildingSelector');
+            if (selector) {
+                selector.querySelectorAll('.building-card').forEach((card, i) => {
+                    card.classList.toggle('active', i === index);
+                });
+            }
+            
+            // 更新悬浮层标题
+            const titleEl = document.getElementById('currentBuildingTitle');
+            const subEl = document.getElementById('currentBuildingSub');
+            if (titleEl) titleEl.textContent = currentBuilding.name;
+            if (subEl) subEl.textContent = currentBuilding.subtitle || currentBuilding.description;
+            
+            // 隐藏加载动画
+            document.getElementById('loading3d').style.display = 'none';
+
+            // 判断是否使用 Sketchfab
+            if (currentBuilding.useSketchfab) {
+                switchToSketchfab(currentBuilding);
+            } else {
+                switchToThreeJS(currentBuilding);
+            }
+        }
+
+        // 切换到 Sketchfab 模式（带预加载优化）
+        function switchToSketchfab(building) {
+            const threejsViewer = document.getElementById('threejsViewer');
+            const sketchfabViewer = document.getElementById('sketchfabViewer');
+            const controls3d = document.getElementById('controls3d');
+            const featuresPanel = document.getElementById('featuresPanel');
+            const sketchfabPanel = document.getElementById('sketchfabInfoPanel');
+            const loading3d = document.getElementById('loading3d');
+
+            // 隐藏 Three.js，显示 Sketchfab
+            threejsViewer.classList.add('hidden');
+            sketchfabViewer.classList.add('active');
+            controls3d.style.display = 'none';
+
+            // 显示加载提示
+            loading3d.style.display = 'flex';
+            loading3d.querySelector('p').textContent = '正在加载 3D 实景模型...';
+
+            // 加载 Sketchfab iframe（使用 srcdoc 预加载）
+            const iframe = document.getElementById('sketchfabIframe');
+            
+            // 如果已经预加载过，直接显示
+            if (sketchfabPreloaded.has(building.id)) {
+                iframe.src = building.sketchfabUrl;
+                loading3d.style.display = 'none';
+            } else {
+                // 首次加载，先显示背景页面，延迟加载 iframe
+                iframe.src = '';
+                setTimeout(() => {
+                    iframe.src = building.sketchfabUrl;
+                    sketchfabPreloaded.add(building.id);
+                    loading3d.style.display = 'none';
+                }, 100);
+            }
+
+            // 切换信息面板（悬浮层）
+            if (featuresPanel) featuresPanel.style.display = 'none';
+            if (sketchfabPanel) sketchfabPanel.classList.add('active');
+
+            // 渲染 Sketchfab 信息面板
+            renderSketchfabInfoPanel(building);
+        }
+
+        // 切换到 Three.js 模式（带异步优化）
+        function switchToThreeJS(building) {
+            const threejsViewer = document.getElementById('threejsViewer');
+            const sketchfabViewer = document.getElementById('sketchfabViewer');
+            const controls3d = document.getElementById('controls3d');
+            const featuresPanel = document.getElementById('featuresPanel');
+            const sketchfabPanel = document.getElementById('sketchfabInfoPanel');
+            const loading3d = document.getElementById('loading3d');
+
+            // 显示 Three.js，隐藏 Sketchfab
+            threejsViewer.classList.remove('hidden');
+            sketchfabViewer.classList.remove('active');
+            controls3d.style.display = 'flex';
+            
+            // 清空 Sketchfab iframe 以释放资源
+            document.getElementById('sketchfabIframe').src = '';
+
+            // 切换信息面板（悬浮层）
+            if (featuresPanel) featuresPanel.style.display = 'block';
+            if (sketchfabPanel) sketchfabPanel.classList.remove('active');
+
+            // 显示简短加载提示
+            loading3d.style.display = 'flex';
+            loading3d.querySelector('p').textContent = '加载模型中...';
+
+            // 使用 requestAnimationFrame 延迟初始化，避免阻塞
+            requestAnimationFrame(() => {
+                // 初始化 Three.js（如果还没有）
+                init3DViewer();
+                
+                // 清除现有模型
+                const existingModel = scene.getObjectByName('buildingModel');
+                if (existingModel) {
+                    scene.remove(existingModel);
+                }
+                
+                // 创建简化的建筑模型
+                createSimplifiedBuilding(building);
+                
+                // 渲染特性面板
+                renderFeaturesPanel();
+                
+                // 创建标注
+                createAnnotations();
+                
+                // 隐藏加载提示
+                loading3d.style.display = 'none';
+            });
+        }
+
+        // 渲染 Sketchfab 信息面板
+        function renderSketchfabInfoPanel(building) {
+            const infoGrid = document.getElementById('infoGrid');
+            const sourceInfo = document.getElementById('sourceInfo');
+
+            let cardsHtml = '';
+            
+            if (building.infoCards) {
+                building.infoCards.forEach(card => {
+                    let contentHtml = '';
+                    if (card.content) {
+                        contentHtml = `<p>${card.content}</p>`;
+                    } else if (card.dataList) {
+                        contentHtml = `<ul class="info-data-list">
+                            ${card.dataList.map(item => `
+                                <li>
+                                    <span class="label">${item.label}</span>
+                                    <span class="value">${item.value}</span>
+                                </li>
+                            `).join('')}
+                        </ul>`;
+                    }
+                    
+                    cardsHtml += `
+                        <div class="info-detail-card">
+                            <h3>${card.title}</h3>
+                            ${contentHtml}
+                        </div>
+                    `;
+                });
+            }
+
+            infoGrid.innerHTML = cardsHtml;
+
+            // 来源信息
+            if (building.sketchfabSource) {
+                sourceInfo.innerHTML = `
+                    <p>
+                        3D模型来源：<a href="${building.sketchfabSource.authorUrl}" target="_blank">${building.sketchfabSource.author}</a> 
+                        · 
+                        <a href="${building.sketchfabSource.modelUrl}" target="_blank">查看原模型</a>
+                        · 
+                        <a href="https://sketchfab.com" target="_blank">Sketchfab</a>
+                    </p>
+                `;
+            }
+        }
+
+        // 创建简化建筑模型（带几何体缓存优化）
+        function createSimplifiedBuilding(building) {
+            const group = new THREE.Group();
+            group.name = 'buildingModel';
+            
+            // 检查缓存中是否有该建筑的几何体
+            const cacheKey = building.id + '_' + building.dynasty;
+            let cachedModel = geometryCache.get(cacheKey);
+            
+            if (cachedModel) {
+                // 复用缓存的模型
+                cachedModel.traverse((child) => {
+                    if (child.isMesh) {
+                        const clonedMesh = child.clone();
+                        clonedMesh.material = child.material.clone();
+                        clonedMesh.castShadow = true;
+                        clonedMesh.receiveShadow = true;
+                        group.add(clonedMesh);
+                    }
+                });
+            } else {
+                // 创建新几何体并缓存
+                const baseGeometry = new THREE.BoxGeometry(3, 0.5, 2);
+                const baseMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x8B4513,
+                    roughness: 0.9
+                });
+                const base = new THREE.Mesh(baseGeometry, baseMaterial);
+                base.position.y = -0.75;
+                base.castShadow = true;
+                base.receiveShadow = true;
+                group.add(base);
+                
+                const bodyGeometry = new THREE.BoxGeometry(2.5, 1.5, 1.5);
+                const bodyMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0xD4A574,
+                    roughness: 0.7
+                });
+                const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+                body.position.y = 0.25;
+                body.castShadow = true;
+                group.add(body);
+                
+                const roofGeometry = new THREE.ConeGeometry(2, 1, 4);
+                const roofMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x2c3e50,
+                    roughness: 0.6
+                });
+                const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+                roof.position.y = 1.5;
+                roof.rotation.y = Math.PI / 4;
+                roof.scale.set(1.2, 0.8, 1.2);
+                roof.castShadow = true;
+                group.add(roof);
+                
+                for (let i = 0; i < 4; i++) {
+                    const columnGeometry = new THREE.CylinderGeometry(0.08, 0.08, 1.5);
+                    const columnMaterial = new THREE.MeshStandardMaterial({ 
+                        color: 0x8B4513 
+                    });
+                    const column = new THREE.Mesh(columnGeometry, columnMaterial);
+                    const angle = (i / 4) * Math.PI * 2;
+                    column.position.set(
+                        Math.cos(angle) * 1,
+                        0.25,
+                        Math.sin(angle) * 0.6
+                    );
+                    column.castShadow = true;
+                    group.add(column);
+                }
+                
+                // 缓存几何体（只缓存几何体，不缓存带位置的组）
+                geometryCache.set(cacheKey, {
+                    base: base.geometry,
+                    body: body.geometry,
+                    roof: roof.geometry,
+                    column: column.geometry,
+                    baseMaterial: base.material,
+                    bodyMaterial: body.material,
+                    roofMaterial: roof.material,
+                    columnMaterial: column.material
+                });
+            }
+            
+            scene.add(group);
+            resetView();
+        }
+
+        // 渲染特性面板
+        function renderFeaturesPanel() {
+            const panel = document.getElementById('featuresPanel');
+            if (!currentBuilding) return;
+            
+            panel.innerHTML = currentBuilding.features.map(feature => `
+                <div class="feature-card">
+                    <h4><span>${feature.icon}</span> ${feature.title}</h4>
+                    <p>${feature.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        // 创建标注
+        function createAnnotations() {
+            // 清除旧标注
+            annotations.forEach(ann => scene.remove(ann.mesh));
+            annotations = [];
+            
+            if (!currentBuilding || !showAnnotations) return;
+            
+            currentBuilding.annotations.forEach((ann, index) => {
+                const geometry = new THREE.SphereGeometry(0.08, 16, 16);
+                const material = new THREE.MeshBasicMaterial({ 
+                    color: 0xC41E3A,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(ann.x * 2, ann.y * 2 + 1, ann.z * 2);
+                mesh.userData = { ...ann, id: index };
+                scene.add(mesh);
+                annotations.push({ mesh, data: ann });
+            });
+        }
+
+        // 更新标注位置（用于屏幕空间投影）
+        function updateAnnotations() {
+            // 标注的屏幕空间更新逻辑
+        }
+
+        // 设置视图模式
+        function setViewMode(mode) {
+            viewMode = mode;
+            document.querySelectorAll('.controls-3d .control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (controls) {
+                controls.enableRotate = mode === 'rotate';
+                controls.enableZoom = mode === 'zoom' || mode === 'rotate';
+                controls.enablePan = mode === 'pan';
+            }
+        }
+
+        // 重置视图
+        function resetView() {
+            if (camera && controls) {
+                camera.position.set(5, 3, 5);
+                camera.lookAt(0, 0, 0);
+                controls.reset();
+            }
+        }
+
+        // 切换标注显示
+        function toggleAnnotations() {
+            showAnnotations = !showAnnotations;
+            event.target.classList.toggle('active', showAnnotations);
+            
+            annotations.forEach(ann => {
+                ann.mesh.visible = showAnnotations;
+            });
+            
+            if (showAnnotations && annotations.length === 0) {
+                createAnnotations();
+            }
+        }
+
+        // ==================== VR 功能 ====================
+
+        // 初始化VR
+        function initVR() {
+            const vrBtn = document.getElementById('vrBtn');
+            
+            // 检查是否支持WebXR
+            if ('xr' in navigator) {
+                navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+                    if (supported) {
+                        vrBtn.disabled = false;
+                        vrBtn.textContent = '🥽 进入VR';
+                    } else {
+                        vrBtn.textContent = '🥽 不支持VR';
+                        vrBtn.title = '您的设备不支持WebXR VR功能';
+                    }
+                }).catch(() => {
+                    vrBtn.textContent = '🥽 不支持VR';
+                });
+            } else {
+                vrBtn.textContent = '🥽 不支持VR';
+                vrBtn.title = '您的浏览器不支持WebXR';
+            }
+        }
+
+        // 切换VR模式
+        async function toggleVR() {
+            const vrBtn = document.getElementById('vrBtn');
+            const vrInfo = document.getElementById('vrInfo');
+            
+            if (!isVRMode) {
+                // 进入VR模式
+                try {
+                    vrSession = await navigator.xr.requestSession('immersive-vr', {
+                        requiredFeatures: ['local-floor', 'bounded-floor']
+                    });
+                    
+                    isVRMode = true;
+                    vrBtn.textContent = '🥽 退出VR';
+                    vrBtn.classList.add('active');
+                    vrInfo.classList.add('show');
+                    
+                    // 设置WebXR会话
+                    await renderer.xr.setSession(vrSession);
+                    
+                    // 设置VR参考空间
+                    vrReferenceSpace = await vrSession.requestReferenceSpace('local-floor');
+                    
+                    // 监听VR会话结束
+                    vrSession.addEventListener('end', onVREnd);
+                    
+                    // 开始VR渲染循环
+                    startVRRender();
+                    
+                } catch (error) {
+                    console.error('进入VR失败:', error);
+                }
+            } else {
+                // 退出VR模式
+                if (vrSession) {
+                    vrSession.end();
+                }
+            }
+        }
+
+        // VR会话结束处理
+        function onVREnd() {
+            const vrBtn = document.getElementById('vrBtn');
+            const vrInfo = document.getElementById('vrInfo');
+            
+            isVRMode = false;
+            vrSession = null;
+            vrReferenceSpace = null;
+            
+            vrBtn.textContent = '🥽 进入VR';
+            vrBtn.classList.remove('active');
+            vrInfo.classList.remove('show');
+            
+            // 恢复普通渲染
+            if (renderer && renderer.xr) {
+                renderer.xr.setSession(null);
+            }
+        }
+
+        // 开始VR渲染循环
+        function startVRRender() {
+            if (!vrSession) return;
+            
+            const vrFrame = (time, frame) => {
+                if (!isVRMode) return;
+                
+                const pose = frame.getViewerPose(vrReferenceSpace);
+                if (pose) {
+                    const views = pose.views;
+                    for (let view of views) {
+                        const viewport = renderer.xr.getViewport(view);
+                        renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+                        
+                        camera.matrix.fromArray(view.transform.matrix);
+                        camera.projectionMatrix.fromArray(view.projectionMatrix);
+                        camera.updateMatrixWorld(true);
+                    }
+                    
+                    renderer.render(scene, camera);
+                }
+                
+                vrSession.requestAnimationFrame(vrFrame);
+            };
+            
+            vrSession.requestAnimationFrame(vrFrame);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营造中华 - 数据可视化专业版</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B4513;
+            --secondary: #D4A574;
+            --accent: #8B4513;
+            --bg: #0a0e14;
+            --bg-light: #141a23;
+            --card-bg: rgba(20, 26, 35, 0.95);
+            --border: rgba(212, 165, 116, 0.3);
+            --text: #F7F3ED;
+            --text-muted: #a0a8b3;
+            
+            /* DataV风格渐变 */
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            
+            /* 古建筑配色 */
+            --han-red: #B22222;
+            --wei-jin: #D4A574;
+            --tang-red: #8B4513;
+            --song-green: #2E8B57;
+            --liao-jin: #D4A574;
+            --yuan-brown: #8B4513;
+            --ming-brown: #A0522D;
+            --qing-blue: #4169E1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 动态背景 */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(139, 69, 19, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(196, 30, 58, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(212, 165, 116, 0.08) 0%, transparent 70%);
+        }
+
+        .particle-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+        }
+
+        /* 头部导航 */
+        header {
+            background: rgba(10, 14, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+            background: rgba(212, 165, 116, 0.1);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+            background: rgba(196, 30, 58, 0.15);
+        }
+
+        /* 主容器 */
+        .main-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* DataV风格边框装饰 */
+        .dv-border-box {
+            position: relative;
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dv-border-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--secondary), var(--accent), var(--secondary), transparent);
+        }
+
+        .dv-border-box::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--secondary), var(--accent), var(--secondary), transparent);
+        }
+
+        .dv-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--secondary);
+        }
+
+        .dv-corner-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+        .dv-corner-tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+        .dv-corner-bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+        .dv-corner-br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+        /* 统计卡片区域 */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(196, 30, 58, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-1);
+        }
+
+        .stat-card:nth-child(2)::before { background: var(--gradient-2); }
+        .stat-card:nth-child(3)::before { background: var(--gradient-3); }
+        .stat-card:nth-child(4)::before { background: var(--gradient-4); }
+        .stat-card:nth-child(5)::before { background: var(--gradient-5); }
+        .stat-card:nth-child(6)::before { background: var(--gradient-1); }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card:nth-child(1) .stat-icon { background: rgba(102, 126, 234, 0.2); }
+        .stat-card:nth-child(2) .stat-icon { background: rgba(240, 147, 251, 0.2); }
+        .stat-card:nth-child(3) .stat-icon { background: rgba(79, 172, 254, 0.2); }
+        .stat-card:nth-child(4) .stat-icon { background: rgba(67, 233, 123, 0.2); }
+        .stat-card:nth-child(5) .stat-icon { background: rgba(250, 112, 154, 0.2); }
+        .stat-card:nth-child(6) .stat-icon { background: rgba(102, 126, 234, 0.2); }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .trend-up { color: #43e97b; }
+        .trend-down { color: #f5576c; }
+
+        /* 图表网格布局 */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto auto;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .chart-card.large {
+            grid-column: span 2;
+        }
+
+        .chart-card.tall {
+            grid-row: span 2;
+        }
+
+        .chart-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chart-title-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-title-text::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .chart-tools {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-tool-btn {
+            background: rgba(212, 165, 116, 0.1);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .chart-tool-btn:hover {
+            background: rgba(212, 165, 116, 0.2);
+            color: var(--text);
+        }
+
+        .chart-tool-btn.active {
+            background: var(--accent);
+            color: var(--text);
+            border-color: var(--accent);
+        }
+
+        .chart-container {
+            height: 280px;
+        }
+
+        .chart-card.large .chart-container {
+            height: 280px;
+        }
+
+        .chart-card.tall .chart-container {
+            height: 600px;
+        }
+
+        /* 3D地球容器 */
+        #globe-chart {
+            height: 600px;
+        }
+
+        /* 时间轴容器 */
+        #timeline-chart {
+            height: 600px;
+        }
+
+        /* 底部面板 */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* 数据表格 */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table th {
+            background: rgba(212, 165, 116, 0.1);
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .data-table tr:hover {
+            background: rgba(212, 165, 116, 0.05);
+        }
+
+        .table-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-han { background: rgba(178, 34, 34, 0.2); color: var(--han-red); }
+        .badge-tang { background: rgba(196, 30, 58, 0.2); color: var(--tang-red); }
+        .badge-song { background: rgba(46, 139, 87, 0.2); color: var(--song-green); }
+        .badge-ming { background: rgba(160, 82, 45, 0.2); color: var(--ming-brown); }
+        .badge-qing { background: rgba(65, 105, 225, 0.2); color: var(--qing-blue); }
+
+        /* 控制面板 */
+        .control-panel {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 50;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        /* 加载动画 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1400px) {
+            .stats-section {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-card.large {
+                grid-column: span 2;
+            }
+            .bottom-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .chart-card.large {
+                grid-column: span 1;
+            }
+            .control-panel {
+                display: none;
+            }
+        }
+
+        /* 特效：扫描线 */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: scan 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* 数据流光效果 */
+        .glow-text {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent);
+            }
+            to {
+                text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载动画 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">正在加载数据...</p>
+        </div>
+    </div>
+
+    <!-- 动态背景 -->
+    <div class="bg-container">
+        <canvas class="particle-bg" id="particleBg"></canvas>
+    </div>
+
+    <!-- 头部 -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🏛️</div>
+                <span class="logo-text">营造中华 · 数据可视化专业版</span>
+            </div>
+            <nav class="nav-links">
+                <a href="space.html" class="nav-link">空间漫游</a>
+                <a href="know.html" class="nav-link">民族之窗</a>
+                <a href="time.html" class="nav-link">时间之境</a>
+                <a href="3d_architecture.html" class="nav-link">3D展示</a>
+                <a href="indivisual.html" class="nav-link">喜好映射</a>
+                <a href="chat.html" class="nav-link">AI助手</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 统计卡片 -->
+        <div class="stats-section">
+            <div class="stat-card animate-in">
+                <div class="stat-icon">🏛️</div>
+                <div class="stat-label">古建筑总数</div>
+                <div class="stat-value" id="stat-buildings">0</div>
+                <div class="stat-trend trend-up">↑ +45 本周新增</div>
+            </div>
+            <div class="stat-card animate-in">
+                <div class="stat-icon">📜</div>
+                <div class="stat-label">朝代覆盖</div>
+                <div class="stat-value" id="stat-dynasties">0</div>
+                <div class="stat-trend trend-up">完整覆盖</div>
+            </div>
+            <div class="stat-card animate-in">
+                <div class="stat-icon">🗺️</div>
+                <div class="stat-label">地域分布</div>
+                <div class="stat-value" id="stat-regions">0</div>
+                <div class="stat-trend trend-up">↑ +8 新增地域</div>
+            </div>
+            <div class="stat-card animate-in">
+                <div class="stat-icon">🏗️</div>
+                <div class="stat-label">建筑类型</div>
+                <div class="stat-value" id="stat-types">0</div>
+                <div class="stat-trend trend-up">↑ +10 新增类型</div>
+            </div>
+            <div class="stat-card animate-in">
+                <div class="stat-icon">⚗️</div>
+                <div class="stat-label">建筑元素</div>
+                <div class="stat-value" id="stat-elements">0</div>
+                <div class="stat-trend trend-up">↑ +20 新增元素</div>
+            </div>
+            <div class="stat-card animate-in">
+                <div class="stat-icon">📚</div>
+                <div class="stat-label">文献资料</div>
+                <div class="stat-value" id="stat-literature">0</div>
+                <div class="stat-trend trend-up">↑ +14 新增文献</div>
+            </div>
+        </div>
+
+        <!-- 图表网格 -->
+        <div class="charts-grid">
+            <!-- 朝代分布饼图 -->
+            <div class="chart-card animate-in">
+                <div class="chart-title">
+                    <span class="chart-title-text">朝代分布</span>
+                    <div class="chart-tools">
+                        <button class="chart-tool-btn active" data-type="pie">饼图</button>
+                        <button class="chart-tool-btn" data-type="rose">玫瑰图</button>
+                    </div>
+                </div>
+                <div class="chart-container" id="dynasty-chart"></div>
+            </div>
+
+            <!-- 建筑类型柱状图 -->
+            <div class="chart-card large animate-in">
+                <div class="chart-title">
+                    <span class="chart-title-text">建筑类型分布</span>
+                    <div class="chart-tools">
+                        <button class="chart-tool-btn active" data-type="bar">柱状图</button>
+                        <button class="chart-tool-btn" data-type="hbar">条形图</button>
+                        <button class="chart-tool-btn" data-type="polar">极坐标</button>
+                    </div>
+                </div>
+                <div class="chart-container" id="type-chart"></div>
+            </div>
+
+            <!-- 地域分布热力图 -->
+            <div class="chart-card animate-in">
+                <div class="chart-title">
+                    <span class="chart-title-text">地域分布</span>
+                </div>
+                <div class="chart-container" id="region-chart"></div>
+            </div>
+
+            <!-- 时间轴 -->
+            <div class="chart-card tall animate-in">
+                <div class="chart-title">
+                    <span class="chart-title-text">历史时间轴</span>
+                </div>
+                <div class="chart-container" id="timeline-chart"></div>
+                <div class="scan-line"></div>
+            </div>
+
+            <!-- 建筑元素雷达图 -->
+            <div class="chart-card animate-in">
+                <div class="chart-title">
+                    <span class="chart-title-text">建筑元素分布</span>
+                    <div class="chart-tools">
+                        <button class="chart-tool-btn active" data-type="radar">雷达图</button>
+                        <button class="chart-tool-btn" data-type="pie">饼图</button>
+                    </div>
+                </div>
+                <div class="chart-container" id="element-chart"></div>
+            </div>
+
+            <!-- 屋顶类型统计 -->
+            <div class="chart-card animate-in">
+                <div class="chart-title">
+                    <span class="chart-title-text">屋顶类型等级</span>
+                </div>
+                <div class="chart-container" id="roof-chart"></div>
+            </div>
+        </div>
+
+        <!-- 底部面板 -->
+        <div class="bottom-section">
+            <!-- 热门建筑排行 -->
+            <div class="chart-card animate-in">
+                <div class="chart-title">
+                    <span class="chart-title-text">热门建筑排行</span>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>建筑名称</th>
+                            <th>朝代</th>
+                            <th>地域</th>
+                            <th>类型</th>
+                        </tr>
+                    </thead>
+                    <tbody id="building-table">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 数据洞察 -->
+            <div class="chart-card animate-in">
+                <div class="chart-title">
+                    <span class="chart-title-text">数据洞察</span>
+                </div>
+                <div id="insights-container" style="padding: 1rem;">
+                    <div style="background: rgba(212, 165, 116, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid var(--accent);">
+                        <h4 style="color: var(--secondary); margin-bottom: 0.5rem;">📊 核心发现</h4>
+                        <p style="color: var(--text-muted); line-height: 1.6;">数据库共收录 <strong style="color: var(--accent);">65</strong> 座古建筑，涵盖 <strong style="color: var(--accent);">9</strong> 个朝代，分布于 <strong style="color: var(--accent);">15</strong> 个地域。</p>
+                    </div>
+                    <div style="background: rgba(67, 233, 123, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid #43e97b;">
+                        <h4 style="color: #43e97b; margin-bottom: 0.5rem;">🏆 最繁荣朝代</h4>
+                        <p style="color: var(--text-muted); line-height: 1.6;">唐代建筑数量最多，共 <strong style="color: #43e97b;">15</strong> 座，占比 <strong style="color: #43e97b;">23%</strong>。</p>
+                    </div>
+                    <div style="background: rgba(79, 172, 254, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #4facfe;">
+                        <h4 style="color: #4facfe; margin-bottom: 0.5rem;">🗺️ 地域分布特点</h4>
+                        <p style="color: var(--text-muted); line-height: 1.6;">华北地区古建筑最密集，共 <strong style="color: #4facfe;">22</strong> 座，其中山西省占比最高。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <button class="control-btn" onclick="toggleFullscreen()" title="全屏">⛶</button>
+        <button class="control-btn" onclick="exportData()" title="导出数据">📥</button>
+        <button class="control-btn" onclick="refreshData()" title="刷新">🔄</button>
+        <button class="control-btn" onclick="switchTheme()" title="切换主题">🌙</button>
+    </div>
+
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts-gl@2.0.9/dist/echarts-gl.min.js"></script>
+    
+    <script>
+        // ===== 全局变量 =====
+        var allBuildings = [];
+        var allDynasties = [];
+        var allRegions = [];
+        var allTypes = [];
+        var allElements = [];
+        var allLiterature = [];
+
+        // ===== 朝代配色 =====
+        var DYNASTY_COLORS = {
+            '先秦': '#B22222',
+            '秦汉': '#D2691E',
+            '魏晋': '#D4A574',
+            '隋唐': '#8B4513',
+            '五代': '#8B4513',
+            '宋': '#2E8B57',
+            '辽金': '#D4A574',
+            '元': '#8B4513',
+            '明': '#A0522D',
+            '清': '#4169E1'
+        };
+
+        // ===== 数据获取 =====
+        async function fetchAllData() {
+            try {
+                var baseURL = '/architecture/';
+                
+                // 并行获取所有数据
+                var responses = await Promise.all([
+                    fetch(baseURL + 'buildings/').then(r => r.json()),
+                    fetch(baseURL + 'dynasties/').then(r => r.json()),
+                    fetch(baseURL + 'regions/').then(r => r.json()),
+                    fetch(baseURL + 'structure-types/').then(r => r.json()),
+                    fetch(baseURL + 'elements/').then(r => r.json()),
+                    fetch(baseURL + 'literatures/').then(r => r.json())
+                ]);
+
+                // 处理返回数据格式（可能是数组或{results: [...]}）
+                allBuildings = Array.isArray(responses[0]) ? responses[0] : (responses[0].results || []);
+                allDynasties = Array.isArray(responses[1]) ? responses[1] : (responses[1].results || []);
+                allRegions = Array.isArray(responses[2]) ? responses[2] : (responses[2].results || []);
+                allTypes = Array.isArray(responses[3]) ? responses[3] : (responses[3].results || []);
+                allElements = Array.isArray(responses[4]) ? responses[4] : (responses[4].results || []);
+                allLiterature = Array.isArray(responses[5]) ? responses[5] : (responses[5].results || []);
+
+                console.log('数据加载成功:', {
+                    buildings: allBuildings.length,
+                    dynasties: allDynasties.length,
+                    regions: allRegions.length,
+                    types: allTypes.length,
+                    elements: allElements.length,
+                    literature: allLiterature.length
+                });
+
+                // 更新统计
+                animateNumber('stat-buildings', allBuildings.length);
+                animateNumber('stat-dynasties', allDynasties.length);
+                animateNumber('stat-regions', allRegions.length);
+                animateNumber('stat-types', allTypes.length);
+                animateNumber('stat-elements', allElements.length);
+                animateNumber('stat-literature', allLiterature.length);
+
+                // 渲染图表
+                renderAllCharts();
+                renderTable();
+
+                // 隐藏加载
+                setTimeout(() => {
+                    document.getElementById('loadingOverlay').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                    }, 500);
+                }, 500);
+
+            } catch (error) {
+                console.error('数据加载失败:', error);
+                document.querySelector('.loading-text').textContent = '数据加载失败，请刷新重试';
+            }
+        }
+
+        // ===== 数字动画 =====
+        function animateNumber(elementId, target) {
+            var element = document.getElementById(elementId);
+            var current = 0;
+            var step = Math.ceil(target / 30);
+            var timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = current;
+            }, 30);
+        }
+
+        // ===== 图表渲染 =====
+        function renderAllCharts() {
+            renderDynastyChart();
+            renderTypeChart();
+            renderRegionChart();
+            renderTimelineChart();
+            renderElementChart();
+            renderRoofChart();
+        }
+
+        // 朝代分布图
+        function renderDynastyChart(type = 'pie') {
+            var chart = echarts.init(document.getElementById('dynasty-chart'));
+            
+            var data = {};
+            allBuildings.forEach(b => {
+                var dynasty = b.dynasty || '未知';
+                data[dynasty] = (data[dynasty] || 0) + 1;
+            });
+
+            var chartData = Object.keys(data).map(k => ({
+                name: k,
+                value: data[k],
+                itemStyle: { color: DYNASTY_COLORS[k] || '#999' }
+            }));
+
+            var option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c}座 ({d}%)'
+                },
+                series: [{
+                    type: type === 'rose' ? 'pie' : 'pie',
+                    radius: type === 'rose' ? ['20%', '70%'] : ['40%', '70%'],
+                    center: ['50%', '50%'],
+                    roseType: type === 'rose' ? 'area' : false,
+                    itemStyle: {
+                        borderRadius: 8,
+                        borderColor: '#0a0e14',
+                        borderWidth: 2
+                    },
+                    label: {
+                        color: '#F7F3ED',
+                        fontSize: 11
+                    },
+                    labelLine: {
+                        lineStyle: { color: '#a0a8b3' }
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 20,
+                            shadowColor: 'rgba(196, 30, 58, 0.5)'
+                        }
+                    },
+                    data: chartData
+                }]
+            };
+
+            chart.setOption(option);
+            window.addEventListener('resize', () => chart.resize());
+
+            // 绑定切换按钮
+            document.querySelectorAll('#dynasty-chart').forEach(container => {
+                var parent = container.closest('.chart-card');
+                parent.querySelectorAll('.chart-tool-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        parent.querySelectorAll('.chart-tool-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        renderDynastyChart(this.dataset.type);
+                    });
+                });
+            });
+        }
+
+        // 建筑类型柱状图
+        function renderTypeChart(type = 'bar') {
+            var chart = echarts.init(document.getElementById('type-chart'));
+            
+            var data = {};
+            allBuildings.forEach(b => {
+                var t = b.structure_type || '未知';
+                data[t] = (data[t] || 0) + 1;
+            });
+
+            var sorted = Object.entries(data).sort((a, b) => b[1] - a[1]);
+            var xAxis = sorted.map(s => s[0]);
+            var values = sorted.map(s => s[1]);
+
+            var option;
+            
+            if (type === 'polar') {
+                option = {
+                    tooltip: { trigger: 'axis' },
+                    polar: { radius: ['10%', '75%'] },
+                    angleAxis: {
+                        max: Math.max(...values) * 1.2,
+                        startAngle: 90,
+                        splitLine: { lineStyle: { color: 'rgba(212, 165, 116, 0.2)' } }
+                    },
+                    radiusAxis: {
+                        type: 'category',
+                        data: xAxis,
+                        axisLabel: { color: '#F7F3ED', fontSize: 10 },
+                        axisLine: { lineStyle: { color: 'rgba(212, 165, 116, 0.3)' } }
+                    },
+                    series: [{
+                        type: 'bar',
+                        coordinateSystem: 'polar',
+                        data: values,
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                                { offset: 0, color: '#8B4513' },
+                                { offset: 1, color: '#D4A574' }
+                            ]),
+                            borderRadius: 4
+                        }
+                    }]
+                };
+            } else {
+                option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: { type: 'shadow' }
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        top: '10%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: type === 'bar' ? 'category' : 'value',
+                        data: type === 'bar' ? xAxis : null,
+                        axisLabel: { 
+                            color: '#F7F3ED',
+                            fontSize: 10,
+                            rotate: type === 'bar' ? 30 : 0
+                        },
+                        axisLine: { lineStyle: { color: 'rgba(212, 165, 116, 0.3)' } }
+                    },
+                    yAxis: {
+                        type: type === 'bar' ? 'value' : 'category',
+                        data: type === 'hbar' ? xAxis : null,
+                        axisLabel: { color: '#F7F3ED' },
+                        axisLine: { lineStyle: { color: 'rgba(212, 165, 116, 0.3)' } },
+                        splitLine: { lineStyle: { color: 'rgba(212, 165, 116, 0.1)' } }
+                    },
+                    series: [{
+                        type: 'bar',
+                        data: values,
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: '#8B4513' },
+                                { offset: 1, color: '#D4A574' }
+                            ]),
+                            borderRadius: type === 'bar' ? [4, 4, 0, 0] : [0, 4, 4, 0]
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 20,
+                                shadowColor: 'rgba(196, 30, 58, 0.5)'
+                            }
+                        }
+                    }]
+                };
+            }
+
+            chart.setOption(option);
+            window.addEventListener('resize', () => chart.resize());
+        }
+
+        // 地域分布图
+        function renderRegionChart() {
+            var chart = echarts.init(document.getElementById('region-chart'));
+            
+            var data = {};
+            allBuildings.forEach(b => {
+                var r = b.region || '未知';
+                data[r] = (data[r] || 0) + 1;
+            });
+
+            var sorted = Object.entries(data).sort((a, b) => b[1] - a[1]);
+            var chartData = sorted.map(s => ({
+                name: s[0],
+                value: s[1]
+            }));
+
+            var option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c}座'
+                },
+                visualMap: {
+                    min: 0,
+                    max: Math.max(...sorted.map(s => s[1])),
+                    calculable: true,
+                    orient: 'horizontal',
+                    left: 'center',
+                    bottom: '0%',
+                    inRange: {
+                        color: ['#D4A574', '#8B4513']
+                    },
+                    textStyle: { color: '#F7F3ED' }
+                },
+                series: [{
+                    type: 'treemap',
+                    data: chartData,
+                    width: '90%',
+                    height: '80%',
+                    roam: false,
+                    nodeClick: false,
+                    breadcrumb: { show: false },
+                    label: {
+                        show: true,
+                        formatter: '{b}\n{c}座',
+                        fontSize: 12,
+                        color: '#F7F3ED'
+                    },
+                    itemStyle: {
+                        borderColor: '#0a0e14',
+                        borderWidth: 2,
+                        gapWidth: 2
+                    },
+                    levels: [{
+                        itemStyle: {
+                            borderWidth: 0,
+                            borderColor: '#0a0e14'
+                        }
+                    }]
+                }]
+            };
+
+            chart.setOption(option);
+            window.addEventListener('resize', () => chart.resize());
+        }
+
+        // 时间轴图表
+        function renderTimelineChart() {
+            var chart = echarts.init(document.getElementById('timeline-chart'));
+            
+            var dynastyOrder = ['先秦', '秦汉', '魏晋', '隋唐', '五代', '宋', '辽金', '元', '明', '清'];
+            var data = {};
+            allBuildings.forEach(b => {
+                var d = b.dynasty || '未知';
+                data[d] = (data[d] || 0) + 1;
+            });
+
+            var timelineData = dynastyOrder.map(d => ({
+                name: d,
+                value: data[d] || 0,
+                itemStyle: { color: DYNASTY_COLORS[d] || '#999' }
+            }));
+
+            var option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { type: 'shadow' }
+                },
+                grid: {
+                    left: '15%',
+                    right: '10%',
+                    bottom: '10%',
+                    top: '10%'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: dynastyOrder,
+                    axisLabel: { 
+                        color: '#F7F3ED',
+                        fontSize: 11,
+                        rotate: 30
+                    },
+                    axisLine: { lineStyle: { color: 'rgba(212, 165, 116, 0.3)' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: { color: '#F7F3ED' },
+                    axisLine: { lineStyle: { color: 'rgba(212, 165, 116, 0.3)' } },
+                    splitLine: { lineStyle: { color: 'rgba(212, 165, 116, 0.1)' } }
+                },
+                series: [{
+                    type: 'line',
+                    data: timelineData,
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 12,
+                    lineStyle: {
+                        width: 3,
+                        color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                            { offset: 0, color: '#D4A574' },
+                            { offset: 1, color: '#8B4513' }
+                        ])
+                    },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(196, 30, 58, 0.4)' },
+                            { offset: 1, color: 'rgba(196, 30, 58, 0.05)' }
+                        ])
+                    },
+                    emphasis: {
+                        focus: 'series',
+                        itemStyle: {
+                            shadowBlur: 20,
+                            shadowColor: 'rgba(196, 30, 58, 0.5)'
+                        }
+                    }
+                }]
+            };
+
+            chart.setOption(option);
+            window.addEventListener('resize', () => chart.resize());
+        }
+
+        // 建筑元素雷达图
+        function renderElementChart(type = 'radar') {
+            var chart = echarts.init(document.getElementById('element-chart'));
+            
+            // 统计元素分类
+            var categories = {
+                '屋顶形式': 7,
+                '结构体系': 5,
+                '功能类型': 8,
+                '建筑构件': 9,
+                '地域风格': 7,
+                '代表建筑': 12
+            };
+
+            var indicator = Object.keys(categories).map(k => ({
+                name: k,
+                max: 15
+            }));
+
+            var values = Object.values(categories);
+
+            var option;
+
+            if (type === 'radar') {
+                option = {
+                    tooltip: {},
+                    radar: {
+                        indicator: indicator,
+                        shape: 'polygon',
+                        splitNumber: 4,
+                        axisName: {
+                            color: '#F7F3ED',
+                            fontSize: 11
+                        },
+                        splitLine: {
+                            lineStyle: { color: 'rgba(212, 165, 116, 0.3)' }
+                        },
+                        splitArea: {
+                            areaStyle: {
+                                color: ['rgba(196, 30, 58, 0.1)', 'rgba(196, 30, 58, 0.05)']
+                            }
+                        },
+                        axisLine: {
+                            lineStyle: { color: 'rgba(212, 165, 116, 0.3)' }
+                        }
+                    },
+                    series: [{
+                        type: 'radar',
+                        data: [{
+                            value: values,
+                            name: '建筑元素',
+                            symbol: 'circle',
+                            symbolSize: 8,
+                            lineStyle: {
+                                width: 2,
+                                color: '#8B4513'
+                            },
+                            areaStyle: {
+                                color: 'rgba(196, 30, 58, 0.3)'
+                            },
+                            itemStyle: {
+                                color: '#8B4513'
+                            }
+                        }]
+                    }]
+                };
+            } else {
+                option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b}: {c}个'
+                    },
+                    series: [{
+                        type: 'pie',
+                        radius: ['30%', '70%'],
+                        itemStyle: {
+                            borderRadius: 6,
+                            borderColor: '#0a0e14',
+                            borderWidth: 2
+                        },
+                        label: {
+                            color: '#F7F3ED',
+                            fontSize: 10
+                        },
+                        data: Object.entries(categories).map(([k, v], i) => ({
+                            name: k,
+                            value: v,
+                            itemStyle: {
+                                color: ['#8B4513', '#2E8B57', '#D4A574', '#8B4513', '#4169E1', '#D4A574'][i]
+                            }
+                        }))
+                    }]
+                };
+            }
+
+            chart.setOption(option);
+            window.addEventListener('resize', () => chart.resize());
+        }
+
+        // 屋顶类型等级图
+        function renderRoofChart() {
+            var chart = echarts.init(document.getElementById('roof-chart'));
+            
+            var roofTypes = [
+                { name: '重檐庑殿', level: 1, desc: '最高等级' },
+                { name: '庑殿顶', level: 2, desc: '次高等级' },
+                { name: '歇山顶', level: 3, desc: '第三等级' },
+                { name: '悬山顶', level: 4, desc: '第四等级' },
+                { name: '硬山顶', level: 5, desc: '第五等级' },
+                { name: '攒尖顶', level: 3, desc: '园林常用' }
+            ];
+
+            var option = {
+                tooltip: {
+                    formatter: function(params) {
+                        return params.name + '<br/>等级: ' + roofTypes[params.dataIndex].desc;
+                    }
+                },
+                grid: {
+                    left: '20%',
+                    right: '10%',
+                    bottom: '15%',
+                    top: '5%'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: roofTypes.map(r => r.name),
+                    axisLabel: { 
+                        color: '#F7F3ED',
+                        fontSize: 10,
+                        rotate: 30
+                    },
+                    axisLine: { lineStyle: { color: 'rgba(212, 165, 116, 0.3)' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    max: 6,
+                    inverse: true,
+                    axisLabel: { 
+                        color: '#F7F3ED',
+                        formatter: function(value) {
+                            return ['最高', '次高', '第三', '第四', '第五', ''][value - 1] || '';
+                        }
+                    },
+                    axisLine: { lineStyle: { color: 'rgba(212, 165, 116, 0.3)' } },
+                    splitLine: { lineStyle: { color: 'rgba(212, 165, 116, 0.1)' } }
+                },
+                series: [{
+                    type: 'bar',
+                    data: roofTypes.map(r => r.level),
+                    itemStyle: {
+                        color: function(params) {
+                            var colors = ['#8B4513', '#D4A574', '#2E8B57', '#8B4513', '#A0522D', '#4169E1'];
+                            return colors[params.dataIndex];
+                        },
+                        borderRadius: 4
+                    },
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: function(params) {
+                            return roofTypes[params.dataIndex].desc;
+                        },
+                        color: '#F7F3ED',
+                        fontSize: 9
+                    }
+                }]
+            };
+
+            chart.setOption(option);
+            window.addEventListener('resize', () => chart.resize());
+        }
+
+        // 渲染表格
+        function renderTable() {
+            var tbody = document.getElementById('building-table');
+            var topBuildings = allBuildings.slice(0, 10);
+
+            tbody.innerHTML = topBuildings.map((b, i) => {
+                var dynastyClass = '';
+                if (b.dynasty === '唐' || b.dynasty === '隋唐') dynastyClass = 'badge-tang';
+                else if (b.dynasty === '汉' || b.dynasty === '秦汉') dynastyClass = 'badge-han';
+                else if (b.dynasty === '宋') dynastyClass = 'badge-song';
+                else if (b.dynasty === '明') dynastyClass = 'badge-ming';
+                else if (b.dynasty === '清') dynastyClass = 'badge-qing';
+
+                return '<tr>' +
+                    '<td><strong>' + (i + 1) + '</strong></td>' +
+                    '<td>' + (b.bname || '未知') + '</td>' +
+                    '<td><span class="table-badge ' + dynastyClass + '">' + (b.dynasty || '未知') + '</span></td>' +
+                    '<td>' + (b.region || '未知') + '</td>' +
+                    '<td>' + (b.structure_type || '未知') + '</td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        // ===== 粒子背景 =====
+        function initParticles() {
+            var canvas = document.getElementById('particleBg');
+            var ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            var particles = [];
+            var particleCount = 80;
+
+            for (var i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 1,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    color: 'rgba(196, 30, 58, ' + (Math.random() * 0.5 + 0.2) + ')'
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                });
+
+                // 连线
+                particles.forEach((p1, i) => {
+                    particles.slice(i + 1).forEach(p2 => {
+                        var dx = p1.x - p2.x;
+                        var dy = p1.y - p2.y;
+                        var dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = 'rgba(212, 165, 116, ' + (1 - dist / 100) * 0.2 + ')';
+                            ctx.stroke();
+                        }
+                    });
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
+
+        // ===== 工具函数 =====
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function exportData() {
+            var data = {
+                buildings: allBuildings,
+                dynasties: allDynasties,
+                regions: allRegions,
+                types: allTypes,
+                elements: allElements,
+                literature: allLiterature,
+                exportTime: new Date().toISOString()
+            };
+
+            var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = '古建筑数据_' + new Date().toLocaleDateString() + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function refreshData() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('loadingOverlay').style.opacity = '1';
+            fetchAllData();
+        }
+
+        function switchTheme() {
+            // 切换明暗主题（此处可扩展为完整主题切换）
+            alert('主题切换功能开发中...');
+        }
+
+        // ===== 初始化 =====
+        document.addEventListener('DOMContentLoaded', function() {
+            initParticles();
+            fetchAllData();
+
+            // 图表类型切换
+            document.querySelectorAll('.chart-tools').forEach(tools => {
+                tools.querySelectorAll('.chart-tool-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        var parent = this.closest('.chart-card');
+                        parent.querySelectorAll('.chart-tool-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

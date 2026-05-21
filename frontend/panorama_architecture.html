@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360°古建筑全景 - 营造中华</title>
+    <meta name="description" content="沉浸式360°全景体验中国古建筑，感受千年营造智慧">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B4513;
+            --primary-dark: #6B3410;
+            --primary-light: #A0522D;
+            --secondary: #D4A574;
+            --accent: #8B4513;
+            --gold: #D4A574;
+            --bg: #F7F3ED;
+            --bg-warm: #F5F5DC;
+            --text: #3E2723;
+            --text-muted: #8D6E63;
+            --card-bg: rgba(255,253,245,0.92);
+            --border: rgba(212,165,116,0.25);
+            --shadow-sm: 0 2px 8px rgba(62,39,35,0.1);
+            --shadow-md: 0 8px 28px rgba(62,39,35,0.14);
+            --shadow-lg: 0 16px 48px rgba(62,39,35,0.2);
+            --radius: 16px;
+            --ease: cubic-bezier(.4,0,.2,1);
+        }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth}
+        body{background:linear-gradient(160deg,#F7F3ED 0%,#F5F5DC 40%,#E4D5B5 100%);font-family:'Noto Serif SC','SimSun',serif;color:var(--text);min-height:100vh;overflow-x:hidden}
+
+        /* === 导航栏 === */
+        .nav-bar{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(107,52,16,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:0 48px;z-index:1000;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 16px rgba(0,0,0,.25);border-bottom:1px solid rgba(212,165,116,.2)}
+        .nav-logo{color:#F7F3ED;font-size:1.35em;font-weight:700;text-decoration:none;letter-spacing:.05em;display:flex;align-items:center;gap:8px}
+        .nav-links{display:flex;gap:4px}
+        .nav-link{color:rgba(245,245,220,.82);text-decoration:none;padding:7px 14px;border-radius:6px;transition:all .25s var(--ease);font-size:.93em}
+        .nav-link:hover,.nav-link.active{background:rgba(212,165,116,.28);color:#F7F3ED}
+
+        /* === 页面标题 === */
+        .page-header{text-align:center;padding:90px 20px 24px;opacity:0;animation:fadeSlideUp .8s .2s var(--ease) forwards}
+        .page-title{font-size:2.6em;font-weight:700;background:linear-gradient(135deg,var(--primary-dark),var(--primary-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+        .page-subtitle{font-size:1.1em;color:var(--text-muted);letter-spacing:.08em}
+
+        /* === 建筑选择器 === */
+        .building-selector{max-width:1300px;margin:0 auto 24px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;opacity:0;animation:fadeSlideUp .8s .4s var(--ease) forwards}
+        .building-card{background:var(--card-bg);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .35s var(--ease);border:2px solid transparent;backdrop-filter:blur(8px);box-shadow:var(--shadow-sm);position:relative}
+        .building-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+        .building-card.active{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 8px 32px rgba(201,168,76,.25)}
+        .building-card.active::after{content:'';position:absolute;inset:-2px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(201,168,76,.15),transparent);pointer-events:none;z-index:1}
+        .card-img-wrap{position:relative;height:160px;overflow:hidden}
+        .card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+        .building-card:hover .card-img-wrap img{transform:scale(1.08)}
+        .card-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(44,24,16,.6) 0%,transparent 60%)}
+        .card-badge{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.45);color:#F7F3ED;padding:3px 10px;border-radius:12px;font-size:.75em;backdrop-filter:blur(6px)}
+        .card-body{padding:14px 16px}
+        .card-body h3{font-size:1.15em;color:var(--primary-dark);margin-bottom:4px}
+        .card-body p{font-size:.83em;color:var(--text-muted);line-height:1.5}
+        .card-meta{display:flex;gap:12px;margin-top:8px;font-size:.78em;color:var(--text-muted)}
+
+        /* === 全景查看器 === */
+        .panorama-section{max-width:1300px;margin:0 auto 24px;padding:0 20px;opacity:0;animation:fadeSlideUp .8s .5s var(--ease) forwards}
+        .viewer-container{position:relative;border-radius:var(--radius);overflow:hidden;background:#1a0e06;box-shadow:var(--shadow-lg);border:1px solid var(--border)}
+        .viewer-viewport{width:100%;height:520px;position:relative;overflow:hidden;cursor:grab;user-select:none;-webkit-user-select:none}
+        .viewer-viewport:active{cursor:grabbing}
+        .viewer-viewport.is-dragging{cursor:grabbing}
+        .viewer-image{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);min-width:100%;min-height:100%;object-fit:cover;transition:opacity .6s var(--ease);will-change:transform;pointer-events:none}
+        .viewer-image.loading{opacity:0}
+
+        /* 查看器控件 */
+        .viewer-controls{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:20;background:rgba(0,0,0,.45);padding:6px 12px;border-radius:24px;backdrop-filter:blur(10px)}
+        .viewer-btn{width:36px;height:36px;border:none;border-radius:50%;background:rgba(255,255,255,.12);color:#F7F3ED;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s var(--ease);font-size:1.1em}
+        .viewer-btn:hover{background:rgba(255,255,255,.25);transform:scale(1.1)}
+        .viewer-btn.active{background:var(--gold);color:#1a0e06}
+
+        /* 全屏按钮 */
+        .fullscreen-btn{position:absolute;top:16px;right:16px;z-index:20}
+
+        /* 建筑信息覆盖 */
+        .viewer-info{position:absolute;bottom:16px;left:16px;z-index:20;color:#F7F3ED;max-width:320px}
+        .viewer-info-name{font-size:1.4em;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,.5);margin-bottom:2px}
+        .viewer-info-detail{font-size:.85em;opacity:.85;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+
+        /* 缩略图导航 */
+        .thumb-strip{position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:20;background:rgba(0,0,0,.4);padding:5px 8px;border-radius:12px;backdrop-filter:blur(8px)}
+        .thumb-item{width:48px;height:32px;border-radius:6px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .25s var(--ease);opacity:.7}
+        .thumb-item:hover{opacity:1;transform:scale(1.08)}
+        .thumb-item.active{border-color:var(--gold);opacity:1}
+        .thumb-item img{width:100%;height:100%;object-fit:cover}
+
+        /* 热点标注 */
+        .hotspot{position:absolute;z-index:15;cursor:pointer;transform:translate(-50%,-50%)}
+        .hotspot-marker{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.9),rgba(201,168,76,.5));border:2px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;font-size:.7em;color:#fff;animation:hotspotPulse 2s infinite;transition:transform .2s var(--ease);box-shadow:0 0 12px rgba(201,168,76,.4)}
+        .hotspot:hover .hotspot-marker{transform:scale(1.3);box-shadow:0 0 20px rgba(201,168,76,.6)}
+        .hotspot-tooltip{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(6px);background:rgba(30,15,5,.92);color:#F7F3ED;padding:10px 14px;border-radius:10px;font-size:.82em;line-height:1.6;width:220px;opacity:0;visibility:hidden;transition:all .3s var(--ease);backdrop-filter:blur(10px);border:1px solid rgba(201,168,76,.3);pointer-events:none;text-align:center}
+        .hotspot-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(30,15,5,.92)}
+        .hotspot:hover .hotspot-tooltip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+
+        /* 说明指示 */
+        .drag-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:25;color:#F7F3ED;text-align:center;pointer-events:none;opacity:0;animation:hintFade 3s .8s forwards}
+        .drag-hint-icon{font-size:2.2em;margin-bottom:8px;animation:hintSway 1.5s ease-in-out infinite}
+        .drag-hint-text{font-size:.9em;text-shadow:0 2px 8px rgba(0,0,0,.6);background:rgba(0,0,0,.35);padding:6px 16px;border-radius:20px;backdrop-filter:blur(6px)}
+
+        /* === 热点详情面板 === */
+        .details-panel{max-width:1300px;margin:0 auto 24px;padding:0 20px;opacity:0;animation:fadeSlideUp .8s .6s var(--ease) forwards}
+        .details-card{background:var(--card-bg);border-radius:var(--radius);padding:24px;backdrop-filter:blur(8px);border:1px solid var(--border);box-shadow:var(--shadow-md)}
+        .details-title{font-size:1.25em;color:var(--primary-dark);margin-bottom:16px;display:flex;align-items:center;gap:8px;font-weight:700}
+        .details-title::before{content:'';width:4px;height:22px;background:linear-gradient(to bottom,var(--primary),var(--gold));border-radius:2px}
+        .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+        .feature-item{background:rgba(139,69,19,.04);border-radius:12px;padding:16px;border-left:3px solid var(--gold);transition:all .3s var(--ease);cursor:default}
+        .feature-item:hover{background:rgba(139,69,19,.08);transform:translateX(4px)}
+        .feature-icon{font-size:1.3em;margin-bottom:6px}
+        .feature-title{font-weight:600;color:var(--primary-dark);font-size:.92em;margin-bottom:3px}
+        .feature-desc{font-size:.82em;color:var(--text-muted);line-height:1.5}
+
+        /* === AI导览员 === */
+        .ai-guide{position:fixed;bottom:28px;right:28px;z-index:900}
+        .ai-btn{width:56px;height:56px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),#8B0000);color:#fff;font-size:1.4em;cursor:pointer;box-shadow:0 4px 18px rgba(196,30,58,.35);transition:all .3s var(--ease);position:relative}
+        .ai-btn:hover{transform:scale(1.1) rotate(5deg);box-shadow:0 6px 24px rgba(196,30,58,.5)}
+        .ai-btn.active{animation:aiPulse 2s infinite}
+        .ai-btn-badge{position:absolute;top:-2px;right:-2px;width:14px;height:14px;background:#4CAF50;border:2px solid #fff;border-radius:50%}
+        .ai-panel{position:absolute;bottom:68px;right:0;width:340px;background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);backdrop-filter:blur(12px);display:none;overflow:hidden;transform-origin:bottom right}
+        .ai-panel.show{display:block;animation:panelSlideUp .35s var(--ease)}
+        .ai-panel-header{background:linear-gradient(135deg,var(--accent),#8B0000);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px}
+        .ai-avatar{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:1.15em}
+        .ai-name{font-weight:600;font-size:.95em}
+        .ai-status{font-size:.75em;opacity:.85;display:flex;align-items:center;gap:4px}
+        .ai-status::before{content:'';width:6px;height:6px;background:#4CAF50;border-radius:50%;display:inline-block}
+        .ai-messages{max-height:320px;overflow-y:auto;padding:16px}
+        .ai-msg{background:rgba(139,69,19,.05);border-radius:12px;padding:11px 14px;margin-bottom:10px;font-size:.87em;line-height:1.65;border-left:3px solid var(--gold);animation:msgFadeIn .3s var(--ease)}
+        .ai-msg strong{color:var(--primary-dark)}
+        .ai-msg.user{border-left-color:var(--accent);background:rgba(196,30,58,.05)}
+        .ai-typing{display:flex;gap:4px;padding:8px 14px;align-items:center}
+        .ai-typing span{width:6px;height:6px;background:var(--text-muted);border-radius:50%;animation:typingBounce .6s infinite alternate}
+        .ai-typing span:nth-child(2){animation-delay:.15s}
+        .ai-typing span:nth-child(3){animation-delay:.3s}
+        .ai-input-area{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--border)}
+        .ai-input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:9px 14px;font-family:inherit;font-size:.88em;outline:none;transition:border-color .2s}
+        .ai-input:focus{border-color:var(--gold)}
+        .ai-send{background:var(--accent);color:#fff;border:none;padding:9px 18px;border-radius:10px;cursor:pointer;font-weight:600;font-size:.88em;transition:all .2s var(--ease)}
+        .ai-send:hover{background:#A0172A;transform:scale(1.03)}
+        .ai-send:disabled{background:#ccc;cursor:not-allowed;transform:none}
+
+        /* === 动画关键帧 === */
+        @keyframes fadeSlideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes hotspotPulse{0%,100%{box-shadow:0 0 8px rgba(201,168,76,.4)}50%{box-shadow:0 0 20px rgba(201,168,76,.7)}}
+        @keyframes hintFade{0%{opacity:0}15%{opacity:1}85%{opacity:1}100%{opacity:0}}
+        @keyframes hintSway{0%,100%{transform:translateX(-8px)}50%{transform:translateX(8px)}}
+        @keyframes aiPulse{0%,100%{box-shadow:0 4px 18px rgba(196,30,58,.35)}50%{box-shadow:0 4px 28px rgba(196,30,58,.65)}}
+        @keyframes panelSlideUp{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        @keyframes msgFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes typingBounce{to{transform:translateY(-6px);opacity:.4}}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        /* === 响应式 === */
+        @media(max-width:768px){
+            .nav-bar{padding:0 16px}
+            .nav-link{padding:5px 8px;font-size:.83em}
+            .building-selector{grid-template-columns:1fr}
+            .viewer-viewport{height:320px}
+            .ai-panel{width:calc(100vw - 32px);right:-12px}
+            .page-title{font-size:2em}
+            .features-grid{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">🏛️ 营造中华</a>
+        <div class="nav-links">
+            <a href="space.html" class="nav-link">空间漫游</a>
+            <a href="know.html" class="nav-link">民族之窗</a>
+            <a href="time.html" class="nav-link">时间之境</a>
+            <a href="3d_architecture.html" class="nav-link">3D展示</a>
+            <a href="indivisual.html" class="nav-link">喜好映射</a>
+            <a href="chat.html" class="nav-link">AI助手</a>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <header class="page-header">
+        <h1 class="page-title">🎨 360°古建筑全景体验</h1>
+        <p class="page-subtitle">拖拽探索 · 沉浸感受千年营造智慧</p>
+    </header>
+
+    <!-- 建筑选择器 -->
+    <section class="building-selector" id="buildingSelector"></section>
+
+    <!-- 全景查看器 -->
+    <section class="panorama-section">
+        <div class="viewer-container" id="viewerContainer">
+            <div class="viewer-viewport" id="viewerViewport">
+                <img class="viewer-image loading" id="viewerImage" src="" alt="全景图片" draggable="false">
+                <!-- 热点容器 -->
+                <div id="hotspotsLayer"></div>
+                <!-- 拖拽提示 -->
+                <div class="drag-hint" id="dragHint">
+                    <div class="drag-hint-icon">👆</div>
+                    <div class="drag-hint-text">拖拽图片探索建筑细节</div>
+                </div>
+            </div>
+            <!-- 缩略图 -->
+            <div class="thumb-strip" id="thumbStrip"></div>
+            <!-- 控件 -->
+            <div class="viewer-controls">
+                <button class="viewer-btn" id="btnZoomIn" title="放大">🔍</button>
+                <button class="viewer-btn" id="btnZoomOut" title="缩小">🔎</button>
+                <button class="viewer-btn" id="btnAutoRotate" title="自动旋转">🔄</button>
+                <button class="viewer-btn" id="btnReset" title="重置视角">⟲</button>
+            </div>
+            <!-- 全屏 -->
+            <button class="viewer-btn fullscreen-btn" id="btnFullscreen" title="全屏">⛶</button>
+            <!-- 建筑信息 -->
+            <div class="viewer-info" id="viewerInfo">
+                <div class="viewer-info-name" id="infoName"></div>
+                <div class="viewer-info-detail" id="infoDetail"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 建筑特色详情 -->
+    <section class="details-panel">
+        <div class="details-card">
+            <h3 class="details-title" id="detailsTitle">📍 建筑特色</h3>
+            <div class="features-grid" id="featuresGrid"></div>
+        </div>
+    </section>
+
+    <!-- AI导览员 -->
+    <div class="ai-guide">
+        <button class="ai-btn" id="aiBtn" title="AI导览员">🤖<span class="ai-btn-badge"></span></button>
+        <div class="ai-panel" id="aiPanel">
+            <div class="ai-panel-header">
+                <div class="ai-avatar">🏛️</div>
+                <div><div class="ai-name">营造大师AI</div><div class="ai-status">在线 · 古建筑专家</div></div>
+            </div>
+            <div class="ai-messages" id="aiMessages">
+                <div class="ai-msg"><strong>您好！</strong>我是古建筑AI导览员，可以为您解答关于古建筑的历史、结构、艺术等方面的问题。</div>
+                <div class="ai-msg"><strong>试试问我：</strong><br>• 佛光寺的斗拱有什么特点？<br>• 庑殿顶和歇山顶有什么区别？<br>• 为什么应县木塔能抗震？</div>
+            </div>
+            <div class="ai-input-area">
+                <input type="text" class="ai-input" id="aiInput" placeholder="请输入您的问题..." maxlength="200">
+                <button class="ai-send" id="aiSend">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+    // ==================== 建筑数据 ====================
+    const BUILDINGS = {
+        taihe: {
+            id:'taihe', name:'太和殿', dynasty:'清代', location:'北京故宫',
+            description:'中国现存最大的木结构大殿',
+            images: [
+                '../img/太和殿-明清-北京故宫/taihe_01.jpg',
+                '../img/太和殿-明清-北京故宫/taihe_02.jpg',
+                '../img/太和殿-明清-北京故宫/taihe_03.jpg',
+                '../img/太和殿-明清-北京故宫/taihe_04.jpg',
+                '../img/太和殿-明清-北京故宫/taihe_05.jpg'
+            ],
+            features: [
+                {icon:'👑',title:'等级最高',desc:'重檐庑殿顶，金龙和玺彩画'},
+                {icon:'🐉',title:'龙纹装饰',desc:'殿内外龙纹装饰达13844条'},
+                {icon:'🏛️',title:'开间规模',desc:'面阔十一间，进深五间'},
+                {icon:'📐',title:'建筑尺寸',desc:'高26.92米，面积2377㎡'}
+            ],
+            hotspots: [
+                {x:25,y:30,title:'重檐庑殿顶',text:'中国古建筑屋顶最高等级，只有皇家重要建筑才能使用。'},
+                {x:60,y:50,title:'金龙和玺彩画',text:'最高等级彩画，以龙为主题，贴金工艺彰显皇家威严。'},
+                {x:45,y:75,title:'汉白玉月台',text:'三层汉白玉台基，雕刻精美，是太和殿基座的重要部分。'}
+            ]
+        },
+        foguang: {
+            id:'foguang', name:'佛光寺东大殿', dynasty:'唐代', location:'山西五台山',
+            description:'中国现存最早的木构建筑之一',
+            images: [
+                '../img/佛光寺东大殿-唐代-山西五台山/foguang_01.jpg',
+                '../img/佛光寺东大殿-唐代-山西五台山/foguang_02.jpg',
+                '../img/佛光寺东大殿-唐代-山西五台山/foguang_03.jpg',
+                '../img/佛光寺东大殿-唐代-山西五台山/foguang_04.jpg',
+                '../img/佛光寺东大殿-唐代-山西五台山/foguang_05.jpg'
+            ],
+            features: [
+                {icon:'🏛️',title:'斗拱结构',desc:'柱头斗拱七铺作，双杪双下昂'},
+                {icon:'🏗️',title:'屋顶形式',desc:'单檐庑殿顶，坡度平缓'},
+                {icon:'📐',title:'平面布局',desc:'面阔七间，进深四间'},
+                {icon:'🎨',title:'彩绘装饰',desc:'保存有唐代壁画和彩画'}
+            ],
+            hotspots: [
+                {x:35,y:35,title:'七铺作斗拱',text:'梁思成称赞为"中国第一国宝"，唐代斗拱典型代表。'},
+                {x:65,y:45,title:'唐代彩画',text:'千年前彩绘至今留存，色彩典雅，线条流畅。'},
+                {x:50,y:70,title:'唐代木构',text:'公元857年建造，历经千年风雨保存完好。'}
+            ]
+        },
+        yingxian: {
+            id:'yingxian', name:'应县木塔', dynasty:'辽代', location:'山西应县',
+            description:'世界现存最高最古老的木塔',
+            images: [
+                '../img/应县木塔-辽代-山西应县/yingxian_01.jpg',
+                '../img/应县木塔-辽代-山西应县/yingxian_01.jpg'
+            ],
+            features: [
+                {icon:'📏',title:'高度惊人',desc:'总高67.31米，相当于20层楼高'},
+                {icon:'🔨',title:'纯木结构',desc:'全塔无一颗铁钉，全靠榫卯连接'},
+                {icon:'🌍',title:'抗震奇迹',desc:'历经多次地震仍屹立不倒'},
+                {icon:'🏗️',title:'斗拱精华',desc:'共使用54种不同形制斗拱'}
+            ],
+            hotspots: [
+                {x:50,y:20,title:'塔刹部分',text:'塔顶铁刹高10米，造型精美。'},
+                {x:50,y:50,title:'五明四暗',text:'外观五层，实为九层，暗层起结构加固作用。'},
+                {x:50,y:80,title:'基座台基',text:'双层台基，石砌而成，稳固支撑整座木塔。'}
+            ]
+        },
+        yueyang: {
+            id:'yueyang', name:'岳阳楼', dynasty:'明代', location:'湖南岳阳',
+            description:'江南三大名楼之一',
+            images: [
+                '../img/岳阳楼-明代-华中/岳阳楼_01.jpg'
+            ],
+            features: [
+                {icon:'🏞️',title:'地理位置',desc:'濒临洞庭湖，风景秀丽'},
+                {icon:'📜',title:'文化底蕴',desc:'范仲淹《岳阳楼记》使其闻名'},
+                {icon:'🏗️',title:'盔顶结构',desc:'三层三檐盔顶，独特造型'},
+                {icon:'🎨',title:'木雕艺术',desc:'精美的木雕装饰工艺'}
+            ],
+            hotspots: [
+                {x:50,y:25,title:'盔顶结构',text:'三层三檐盔顶，在中国古建筑中极为罕见。'},
+                {x:75,y:50,title:'洞庭湖景',text:'登楼远眺，洞庭湖美景尽收眼底。'},
+                {x:25,y:60,title:'文化传承',text:'范仲淹"先天下之忧而忧"千古名句诞生于此。'}
+            ]
+        }
+    };
+
+    // ==================== 全景查看器 ====================
+    let currentBuilding = null;
+    let currentImageIndex = 0;
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let imgX = 0, imgY = 0;
+    let lastImgX = 0, lastImgY = 0;
+    let zoomLevel = 1.4;
+    let autoRotateId = null;
+    let autoRotateActive = false;
+    let velocityX = 0, velocityY = 0;
+    let inertiaId = null;
+
+    const viewport = document.getElementById('viewerViewport');
+    const viewerImg = document.getElementById('viewerImage');
+    const hotspotsLayer = document.getElementById('hotspotsLayer');
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+        renderBuildingSelector();
+        loadBuilding('taihe');
+        initViewer();
+        initAI();
+    });
+
+    // 渲染建筑选择卡片
+    function renderBuildingSelector() {
+        const sel = document.getElementById('buildingSelector');
+        sel.innerHTML = Object.values(BUILDINGS).map(b => `
+            <div class="building-card" data-id="${b.id}" onclick="loadBuilding('${b.id}')">
+                <div class="card-img-wrap">
+                    <img src="${b.images[0]}" alt="${b.name}" onerror="this.src='img/宫殿建筑-故宫太和殿/image_01.jpg'">
+                    <div class="card-img-overlay"></div>
+                    <span class="card-badge">🎯 360°</span>
+                </div>
+                <div class="card-body">
+                    <h3>${b.name}</h3>
+                    <p>${b.description}</p>
+                    <div class="card-meta">
+                        <span>🏛️ ${b.dynasty}</span>
+                        <span>📍 ${b.location}</span>
+                        <span>📷 ${b.images.length}张</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // 加载建筑
+    function loadBuilding(id) {
+        const b = BUILDINGS[id];
+        if (!b) return;
+        currentBuilding = b;
+        currentImageIndex = 0;
+
+        // 更新卡片选中
+        document.querySelectorAll('.building-card').forEach(c => {
+            c.classList.toggle('active', c.dataset.id === id);
+        });
+
+        // 加载图片
+        loadImage(0);
+
+        // 更新缩略图
+        renderThumbs();
+
+        // 更新信息
+        document.getElementById('infoName').textContent = b.name;
+        document.getElementById('infoDetail').textContent = `${b.dynasty} · ${b.location} · ${b.description}`;
+
+        // 更新特色
+        document.getElementById('detailsTitle').innerHTML = `📍 ${b.name} · 建筑特色`;
+        document.getElementById('featuresGrid').innerHTML = b.features.map((f, i) => `
+            <div class="feature-item" style="animation:fadeSlideUp .4s ${i*0.1}s var(--ease) both">
+                <div class="feature-icon">${f.icon}</div>
+                <div class="feature-title">${f.title}</div>
+                <div class="feature-desc">${f.desc}</div>
+            </div>
+        `).join('');
+
+        // 重置视图
+        resetView();
+        stopAutoRotate();
+
+        // 显示拖拽提示
+        const hint = document.getElementById('dragHint');
+        hint.style.animation = 'none';
+        hint.offsetHeight;
+        hint.style.animation = 'hintFade 3s .3s forwards';
+    }
+
+    // 加载图片
+    function loadImage(index) {
+        if (!currentBuilding) return;
+        const src = currentBuilding.images[index] || currentBuilding.images[0];
+        currentImageIndex = index;
+        viewerImg.classList.add('loading');
+        const tmpImg = new Image();
+        tmpImg.onload = () => {
+            viewerImg.src = src;
+            viewerImg.classList.remove('loading');
+            applyZoomAndPosition();
+            renderHotspots();
+        };
+        tmpImg.onerror = () => {
+            viewerImg.src = 'img/宫殿建筑-故宫太和殿/image_01.jpg';
+            viewerImg.classList.remove('loading');
+        };
+        tmpImg.src = src;
+
+        // 更新缩略图选中
+        document.querySelectorAll('.thumb-item').forEach((t, i) => {
+            t.classList.toggle('active', i === index);
+        });
+    }
+
+    // 渲染缩略图
+    function renderThumbs() {
+        if (!currentBuilding) return;
+        const strip = document.getElementById('thumbStrip');
+        strip.innerHTML = currentBuilding.images.map((src, i) => `
+            <div class="thumb-item ${i===0?'active':''}" onclick="loadImage(${i})">
+                <img src="${src}" alt="缩略图${i+1}" onerror="this.style.background='#333'">
+            </div>
+        `).join('');
+    }
+
+    // 渲染热点
+    function renderHotspots() {
+        if (!currentBuilding) return;
+        hotspotsLayer.innerHTML = currentBuilding.hotspots.map((h, i) => `
+            <div class="hotspot" style="left:${h.x}%;top:${h.y}%;animation:fadeSlideUp .4s ${i*0.15+0.3}s var(--ease) both;opacity:0">
+                <div class="hotspot-marker">${i+1}</div>
+                <div class="hotspot-tooltip">
+                    <strong>${h.title}</strong><br>${h.text}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // === 拖拽交互 ===
+    function initViewer() {
+        viewport.addEventListener('mousedown', onDragStart);
+        viewport.addEventListener('mousemove', onDragMove);
+        viewport.addEventListener('mouseup', onDragEnd);
+        viewport.addEventListener('mouseleave', onDragEnd);
+        viewport.addEventListener('touchstart', e => { e.preventDefault(); onDragStart(e.touches[0]); }, {passive:false});
+        viewport.addEventListener('touchmove', e => { e.preventDefault(); onDragMove(e.touches[0]); }, {passive:false});
+        viewport.addEventListener('touchend', onDragEnd);
+        viewport.addEventListener('wheel', onWheel, {passive:false});
+
+        // 控件
+        document.getElementById('btnZoomIn').addEventListener('click', () => { zoomLevel = Math.min(3, zoomLevel + 0.3); applyZoomAndPosition(); });
+        document.getElementById('btnZoomOut').addEventListener('click', () => { zoomLevel = Math.max(1, zoomLevel - 0.3); applyZoomAndPosition(); });
+        document.getElementById('btnAutoRotate').addEventListener('click', toggleAutoRotate);
+        document.getElementById('btnReset').addEventListener('click', resetView);
+        document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
+    }
+
+    function onDragStart(e) {
+        isDragging = true;
+        startX = e.clientX; startY = e.clientY;
+        lastImgX = imgX; lastImgY = imgY;
+        velocityX = 0; velocityY = 0;
+        if (inertiaId) cancelAnimationFrame(inertiaId);
+        viewport.classList.add('is-dragging');
+        stopAutoRotate();
+    }
+
+    function onDragMove(e) {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        velocityX = dx - (imgX - lastImgX);
+        velocityY = dy - (imgY - lastImgY);
+        imgX = lastImgX + dx;
+        imgY = lastImgY + dy;
+        applyZoomAndPosition();
+    }
+
+    function onDragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        viewport.classList.remove('is-dragging');
+        // 惯性滚动
+        const friction = 0.92;
+        function inertia() {
+            if (Math.abs(velocityX) < 0.5 && Math.abs(velocityY) < 0.5) return;
+            velocityX *= friction; velocityY *= friction;
+            imgX += velocityX; imgY += velocityY;
+            applyZoomAndPosition();
+            inertiaId = requestAnimationFrame(inertia);
+        }
+        inertia();
+    }
+
+    function onWheel(e) {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.15 : 0.15;
+        zoomLevel = Math.max(1, Math.min(3, zoomLevel + delta));
+        applyZoomAndPosition();
+    }
+
+    function applyZoomAndPosition() {
+        // 限制边界
+        const vw = viewport.clientWidth;
+        const vh = viewport.clientHeight;
+        const iw = viewerImg.naturalWidth * zoomLevel;
+        const ih = viewerImg.naturalHeight * zoomLevel;
+        const maxX = Math.max(0, (iw - vw) / 2);
+        const maxY = Math.max(0, (ih - vh) / 2);
+        imgX = Math.max(-maxX, Math.min(maxX, imgX));
+        imgY = Math.max(-maxY, Math.min(maxY, imgY));
+
+        viewerImg.style.transform = `translate(calc(-50% + ${imgX}px), calc(-50% + ${imgY}px)) scale(${zoomLevel})`;
+    }
+
+    function resetView() {
+        imgX = 0; imgY = 0; zoomLevel = 1.4;
+        velocityX = 0; velocityY = 0;
+        applyZoomAndPosition();
+    }
+
+    // 自动旋转
+    function toggleAutoRotate() {
+        const btn = document.getElementById('btnAutoRotate');
+        if (autoRotateActive) { stopAutoRotate(); btn.classList.remove('active'); }
+        else { startAutoRotate(); btn.classList.add('active'); }
+    }
+    function startAutoRotate() {
+        autoRotateActive = true;
+        function step() {
+            imgX -= 0.5;
+            applyZoomAndPosition();
+            autoRotateId = requestAnimationFrame(step);
+        }
+        step();
+    }
+    function stopAutoRotate() {
+        autoRotateActive = false;
+        if (autoRotateId) { cancelAnimationFrame(autoRotateId); autoRotateId = null; }
+        document.getElementById('btnAutoRotate').classList.remove('active');
+    }
+
+    // 全屏
+    function toggleFullscreen() {
+        const c = document.getElementById('viewerContainer');
+        if (!document.fullscreenElement) { c.requestFullscreen?.() || c.webkitRequestFullscreen?.(); }
+        else { document.exitFullscreen?.() || document.webkitExitFullscreen?.(); }
+    }
+
+    // ==================== AI导览员 ====================
+    function initAI() {
+        const btn = document.getElementById('aiBtn');
+        const panel = document.getElementById('aiPanel');
+        const input = document.getElementById('aiInput');
+        const send = document.getElementById('aiSend');
+
+        btn.addEventListener('click', e => { e.stopPropagation(); panel.classList.toggle('show'); btn.classList.toggle('active'); });
+        document.addEventListener('click', e => { if (!btn.contains(e.target) && !panel.contains(e.target)) { panel.classList.remove('show'); btn.classList.remove('active'); }});
+        send.addEventListener('click', sendAIMsg);
+        input.addEventListener('keypress', e => { if (e.key === 'Enter') sendAIMsg(); });
+    }
+
+    async function sendAIMsg() {
+        const input = document.getElementById('aiInput');
+        const send = document.getElementById('aiSend');
+        const msgs = document.getElementById('aiMessages');
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        // 用户消息
+        msgs.innerHTML += `<div class="ai-msg user"><strong>您：</strong>${msg}</div>`;
+        input.value = '';
+        send.disabled = true;
+        // 打字指示
+        msgs.innerHTML += `<div class="ai-typing" id="typingIndicator"><span></span><span></span><span></span></div>`;
+        msgs.scrollTop = msgs.scrollHeight;
+
+        await new Promise(r => setTimeout(r, 600));
+
+        // 移除打字指示
+        document.getElementById('typingIndicator')?.remove();
+
+        // 尝试调用API，否则使用本地回复
+        let reply = '';
+        try {
+            const apiBase = (typeof BASE_URL !== 'undefined' && BASE_URL) ? BASE_URL : 'http://127.0.0.1:8000';
+            const res = await fetch(`${apiBase}/architecture/chat/`, {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({message:msg, building:currentBuilding?.name, context:'古建筑知识问答'})
+            });
+            if (res.ok) { const d = await res.json(); reply = d.reply || d.response || ''; }
+        } catch(e) { console.warn('API不可用，使用本地回复'); }
+
+        if (!reply) reply = localAIReply(msg);
+        msgs.innerHTML += `<div class="ai-msg"><strong>营造大师AI：</strong>${reply}</div>`;
+        send.disabled = false;
+        msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function localAIReply(msg) {
+        const m = msg.toLowerCase();
+        const b = currentBuilding;
+        if (m.includes('斗拱') || m.includes('斗栱'))
+            return '斗拱是中国古建筑特有的构件，由斗、拱、昂等部件组成。唐代斗拱雄大有力，宋代精巧华丽，明清趋于装饰化。' + (b ? `您正在查看的${b.name}是${b.dynasty}建筑的典型代表。` : '');
+        if (m.includes('屋顶') || m.includes('庑殿') || m.includes('歇山'))
+            return '中国古建筑屋顶主要有庑殿顶、歇山顶、悬山顶、硬山顶等。庑殿顶等级最高，用于皇家重要建筑；歇山顶次之，应用广泛。';
+        if (m.includes('推荐') || m.includes('介绍'))
+            return '推荐您依次体验：佛光寺东大殿（唐代国宝）→ 应县木塔（世界最高木塔）→ 太和殿（皇家建筑巅峰），感受不同朝代的营造智慧。';
+        if (b && (m.includes('特点') || m.includes('特色')))
+            return `${b.name}是${b.dynasty}建筑代表，位于${b.location}。` + b.features.map(f=>`${f.title}：${f.desc}`).join('；') + '。';
+        if (b && (m.includes('历史') || m.includes('年代')))
+            return `${b.name}建于${b.dynasty}时期，${b.description}。这座建筑承载了深厚的历史文化价值。`;
+        return '感谢您的提问！' + (b ? `关于${b.name}，您可以问我建筑特色、历史背景、结构特点等。` : '请选择一座建筑后，我可以为您详细介绍。');
+    }
+    </script>
+</body>
+</html>

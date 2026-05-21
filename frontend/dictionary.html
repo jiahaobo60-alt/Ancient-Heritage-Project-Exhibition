@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古建筑词典数据库 - 营造中华</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.5/build/d3.layout.cloud.min.js"></script>
+    <style>
+        :root {
+            --primary-wood: #8B4513;
+            --primary-gold: #D4A574;
+            --accent-red: #8B4513;
+            --bg-cream: #F5F1E8;
+            --bg-paper: #FFFEF9;
+            --text-dark: #2C1810;
+            --text-light: #6B4423;
+            --border-light: #E8DCC8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, var(--bg-cream) 0%, var(--bg-paper) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, var(--primary-wood), #6B3410);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(139, 69, 19, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M10 50 Q25 30 40 50 T70 50 T100 50" stroke="%23D4A574" stroke-width="0.5" fill="none" opacity="0.2"/></svg>');
+            background-size: 200px;
+            opacity: 0.3;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 2px 10px rgba(212, 165, 116, 0.5);
+        }
+
+        .logo-text h1 {
+            font-family: 'Noto Serif SC', serif;
+            color: var(--bg-paper);
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .logo-text p {
+            color: var(--primary-gold);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--bg-paper);
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary-gold);
+        }
+
+        /* 主容器 */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* 统计卡片 */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-paper);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.1);
+            border-left: 4px solid var(--primary-wood);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.15);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-wood);
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        /* 搜索和筛选 */
+        .filter-section {
+            background: var(--bg-paper);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(139, 69, 19, 0.08);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3rem;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--bg-paper);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-wood);
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-light);
+            border-radius: 6px;
+            background: var(--bg-paper);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-wood);
+        }
+
+        /* 词云区域 */
+        .wordcloud-section {
+            background: var(--bg-paper);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(139, 69, 19, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.5rem;
+            color: var(--primary-wood);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .wordcloud-container {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.02), rgba(212, 165, 116, 0.02));
+            border-radius: 12px;
+            border: 2px dashed var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #wordcloud {
+            width: 100%;
+            height: 100%;
+        }
+
+        .wordcloud-hint {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-light);
+            font-size: 0.85rem;
+            background: rgba(255, 254, 249, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        /* 术语列表 */
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .term-card {
+            background: var(--bg-paper);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .term-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-wood);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .term-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .term-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.2);
+            border-color: var(--primary-gold);
+        }
+
+        .term-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .term-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.4rem;
+            color: var(--primary-wood);
+            font-weight: 700;
+        }
+
+        .term-category {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: linear-gradient(135deg, var(--primary-wood), var(--primary-gold));
+            color: var(--bg-paper);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .term-alias {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .term-definition {
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .term-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border-light);
+            padding-top: 1rem;
+        }
+
+        .term-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* 详情模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(44, 24, 16, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-paper);
+            border-radius: 16px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 60px rgba(139, 69, 19, 0.4);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-wood), #6B3410);
+            padding: 2rem;
+            color: var(--bg-paper);
+            position: relative;
+        }
+
+        .modal-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gold);
+        }
+
+        .modal-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-alias {
+            color: var(--primary-gold);
+            font-size: 1rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--bg-paper);
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+
+        .detail-section h3 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.2rem;
+            color: var(--primary-wood);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-section p {
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        .dynasty-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .dynasty-tag {
+            padding: 0.4rem 1rem;
+            background: linear-gradient(135deg, var(--primary-gold), var(--accent-red));
+            color: var(--bg-paper);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .example-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .example-list li {
+            padding: 1rem;
+            background: var(--bg-cream);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-red);
+            transition: all 0.3s ease;
+        }
+
+        .example-list li:hover {
+            background: var(--primary-gold);
+            color: var(--bg-paper);
+        }
+
+        .related-terms {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .related-term-tag {
+            padding: 0.5rem 1rem;
+            background: var(--bg-cream);
+            color: var(--primary-wood);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .related-term-tag:hover {
+            background: var(--primary-wood);
+            color: var(--bg-paper);
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-light);
+            background: var(--bg-paper);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            border-color: var(--primary-wood);
+            color: var(--primary-wood);
+        }
+
+        .pagination button.active {
+            background: var(--primary-wood);
+            color: var(--bg-paper);
+            border-color: var(--primary-wood);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 无结果 */
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .search-bar {
+                flex-direction: column;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+            }
+
+            .wordcloud-container {
+                height: 400px;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-height: 90vh;
+            }
+        }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-cream);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gold);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-wood);
+        }
+
+        /* 加载动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .term-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🏛️</div>
+                <div class="logo-text">
+                    <h1>营造中华</h1>
+                    <p>古建筑词典数据库</p>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="#" onclick="showSection('dictionary')">📚 词典库</a>
+                <a href="#" onclick="showSection('wordcloud')">☁️ 词云</a>
+                <a href="#" onclick="showSection('categories')">📁 分类浏览</a>
+                <a href="#" onclick="exportData()">💾 导出数据</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 统计卡片 -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <h3>📚 词条总数</h3>
+                <div class="value" id="totalTerms">20</div>
+            </div>
+            <div class="stat-card">
+                <h3>🏷️ 分类数量</h3>
+                <div class="value" id="totalCategories">5</div>
+            </div>
+            <div class="stat-card">
+                <h3>⏳ 涵盖朝代</h3>
+                <div class="value" id="totalDynasties">8</div>
+            </div>
+            <div class="stat-card">
+                <h3>🔍 搜索次数</h3>
+                <div class="value" id="searchCount">0</div>
+            </div>
+        </div>
+
+        <!-- 词云区域 -->
+        <div class="wordcloud-section">
+            <div class="section-header">
+                <h2 class="section-title">☁️ 古建筑词云</h2>
+                <button onclick="generateWordCloud()" style="padding: 0.5rem 1rem; background: var(--primary-wood); color: var(--bg-paper); border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">🔄 刷新词云</button>
+            </div>
+            <div class="wordcloud-container">
+                <svg id="wordcloud"></svg>
+                <div class="wordcloud-hint">💡 点击词语查看详细信息</div>
+            </div>
+        </div>
+
+        <!-- 搜索和筛选 -->
+        <div class="filter-section">
+            <div class="search-bar">
+                <div class="search-input-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="searchInput" placeholder="搜索古建筑术语（如：斗拱、榫卯、殿堂...）" onkeyup="handleSearch(event)">
+                </div>
+            </div>
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label>📂 分类：</label>
+                    <select class="filter-select" id="categoryFilter" onchange="applyFilters()">
+                        <option value="">全部分类</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>⏳ 朝代：</label>
+                    <select class="filter-select" id="dynastyFilter" onchange="applyFilters()">
+                        <option value="">全部朝代</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>📊 排序：</label>
+                    <select class="filter-select" id="sortFilter" onchange="applyFilters()">
+                        <option value="name">按名称</option>
+                        <option value="category">按分类</option>
+                        <option value="dynasty">按朝代</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 术语列表 -->
+        <div class="terms-section">
+            <div class="section-header">
+                <h2 class="section-title">📖 术语词典</h2>
+                <span id="resultCount" style="color: var(--text-light);">显示 20 个词条</span>
+            </div>
+            <div class="terms-grid" id="termsGrid">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination" id="pagination">
+            <!-- 动态生成 -->
+        </div>
+    </div>
+
+    <!-- 详情模态框 -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">斗拱</h2>
+                <p class="modal-alias" id="modalAlias">别名：铺作、斗科</p>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let dictionaryData = null;
+        let allTerms = [];
+        let filteredTerms = [];
+        let currentPage = 1;
+        let itemsPerPage = 12;
+        let searchCount = 0;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadDictionary();
+            initializeFilters();
+            applyFilters();
+            generateWordCloud();
+        });
+
+        // 加载词典数据
+        async function loadDictionary() {
+            try {
+                const response = await fetch('data/architecture_dictionary.json');
+                dictionaryData = await response.json();
+                
+                // 扁平化所有术语
+                for (const [categoryName, categoryData] of Object.entries(dictionaryData.categories)) {
+                    categoryData.terms.forEach(term => {
+                        allTerms.push({
+                            ...term,
+                            category: categoryName,
+                            categoryIcon: categoryData.icon,
+                            categoryColor: categoryData.color
+                        });
+                    });
+                }
+                
+                // 更新统计
+                document.getElementById('totalTerms').textContent = dictionaryData.statistics.total_terms;
+                document.getElementById('totalCategories').textContent = dictionaryData.statistics.categories;
+                document.getElementById('totalDynasties').textContent = dictionaryData.statistics.dynasties;
+                
+                filteredTerms = [...allTerms];
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                alert('加载数据失败，请刷新页面重试');
+            }
+        }
+
+        // 初始化筛选器
+        function initializeFilters() {
+            const categoryFilter = document.getElementById('categoryFilter');
+            const dynastyFilter = document.getElementById('dynastyFilter');
+            
+            // 分类选项
+            for (const [name, data] of Object.entries(dictionaryData.categories)) {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = `${data.icon} ${name}`;
+                categoryFilter.appendChild(option);
+            }
+            
+            // 朝代选项
+            dictionaryData.dynasties.forEach(dynasty => {
+                const option = document.createElement('option');
+                option.value = dynasty.name;
+                option.textContent = `${dynasty.name}（${dynasty.period}）`;
+                dynastyFilter.appendChild(option);
+            });
+        }
+
+        // 搜索处理
+        function handleSearch(event) {
+            if (event.key === 'Enter') {
+                searchCount++;
+                document.getElementById('searchCount').textContent = searchCount;
+                applyFilters();
+            }
+        }
+
+        // 应用筛选
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const dynasty = document.getElementById('dynastyFilter').value;
+            const sortBy = document.getElementById('sortFilter').value;
+            
+            // 筛选
+            filteredTerms = allTerms.filter(term => {
+                const matchesSearch = !searchTerm || 
+                    term.name.includes(searchTerm) ||
+                    term.alias.some(a => a.includes(searchTerm)) ||
+                    term.definition.includes(searchTerm);
+                
+                const matchesCategory = !category || term.category === category;
+                
+                const matchesDynasty = !dynasty || term.dynasty.includes(dynasty);
+                
+                return matchesSearch && matchesCategory && matchesDynasty;
+            });
+            
+            // 排序
+            filteredTerms.sort((a, b) => {
+                switch (sortBy) {
+                    case 'name':
+                        return a.name.localeCompare(b.name, 'zh-CN');
+                    case 'category':
+                        return a.category.localeCompare(b.category, 'zh-CN');
+                    case 'dynasty':
+                        return b.dynasty.length - a.dynasty.length;
+                    default:
+                        return 0;
+                }
+            });
+            
+            currentPage = 1;
+            renderTerms();
+            renderPagination();
+        }
+
+        // 渲染术语列表
+        function renderTerms() {
+            const grid = document.getElementById('termsGrid');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageTerms = filteredTerms.slice(start, end);
+            
+            document.getElementById('resultCount').textContent = `显示 ${filteredTerms.length} 个词条`;
+            
+            if (pageTerms.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results" style="grid-column: 1 / -1;">
+                        <div class="no-results-icon">🔍</div>
+                        <p>未找到匹配的词条</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = pageTerms.map((term, index) => `
+                <div class="term-card" onclick="showTermDetail('${term.id}')" style="animation-delay: ${index * 0.05}s">
+                    <div class="term-header">
+                        <h3 class="term-title">${term.name}</h3>
+                        <span class="term-category">${term.categoryIcon} ${term.category}</span>
+                    </div>
+                    <p class="term-alias">别名：${term.alias.join('、')}</p>
+                    <p class="term-definition">${term.definition}</p>
+                    <div class="term-meta">
+                        <span>⏳ ${term.dynasty.slice(0, 3).join('、')}${term.dynasty.length > 3 ? '...' : ''}</span>
+                        <span>🏛️ ${term.examples.length}个实例</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染分页
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(filteredTerms.length / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let buttons = '';
+            
+            // 上一页
+            buttons += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">上一页</button>`;
+            
+            // 页码
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    buttons += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    buttons += `<button disabled>...</button>`;
+                }
+            }
+            
+            // 下一页
+            buttons += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">下一页</button>`;
+            
+            pagination.innerHTML = buttons;
+        }
+
+        // 跳转页面
+        function goToPage(page) {
+            currentPage = page;
+            renderTerms();
+            renderPagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 显示术语详情
+        function showTermDetail(termId) {
+            const term = allTerms.find(t => t.id === termId);
+            if (!term) return;
+            
+            document.getElementById('modalTitle').textContent = term.name;
+            document.getElementById('modalAlias').textContent = `别名：${term.alias.join('、')}`;
+            
+            document.getElementById('modalBody').innerHTML = `
+                <div class="detail-section">
+                    <h3>📅 适用朝代</h3>
+                    <div class="dynasty-tags">
+                        ${term.dynasty.map(d => `<span class="dynasty-tag">${d}</span>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>📖 定义</h3>
+                    <p>${term.definition}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>✨ 主要特征</h3>
+                    <p>${term.features}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>🏛️ 应用场景</h3>
+                    <p>${term.usage}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>📈 演变历程</h3>
+                    <p>${term.evolution}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>🏞️ 典型实例</h3>
+                    <ul class="example-list">
+                        ${term.examples.map(e => `<li>${e}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>🔗 相关术语</h3>
+                    <div class="related-terms">
+                        ${term.related_terms.map(rt => `
+                            <span class="related-term-tag" onclick="searchRelated('${rt}')">${rt}</span>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        // 搜索相关术语
+        function searchRelated(term) {
+            closeModal();
+            document.getElementById('searchInput').value = term;
+            applyFilters();
+        }
+
+        // 关闭模态框
+        function closeModal(event) {
+            if (event && event.target !== document.getElementById('modalOverlay')) return;
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        // 生成词云
+        function generateWordCloud() {
+            const container = document.querySelector('.wordcloud-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            const svg = d3.select('#wordcloud')
+                .attr('width', width)
+                .attr('height', height);
+            
+            svg.selectAll('*').remove();
+            
+            // 准备词云数据
+            const words = allTerms.map(term => ({
+                text: term.name,
+                size: 20 + Math.random() * 40,
+                category: term.category,
+                id: term.id
+            }));
+            
+            // 词云布局
+            const layout = d3.layout.cloud()
+                .size([width, height])
+                .words(words)
+                .padding(5)
+                .rotate(() => (Math.random() > 0.5 ? 0 : 90) * (Math.random() > 0.5 ? 1 : -1))
+                .font('Noto Serif SC')
+                .fontSize(d => d.size)
+                .on('end', draw);
+            
+            layout.start();
+            
+            function draw(words) {
+                svg.append('g')
+                    .attr('transform', `translate(${width/2},${height/2})`)
+                    .selectAll('text')
+                    .data(words)
+                    .enter()
+                    .append('text')
+                    .style('font-size', d => `${d.size}px`)
+                    .style('font-family', 'Noto Serif SC')
+                    .style('font-weight', '600')
+                    .style('fill', (d, i) => {
+                        const colors = ['#8B4513', '#8B4513', '#D4A574', '#6B4423', '#8B6914'];
+                        return colors[i % colors.length];
+                    })
+                    .style('cursor', 'pointer')
+                    .attr('text-anchor', 'middle')
+                    .attr('transform', d => `translate(${d.x},${d.y}) rotate(${d.rotate})`)
+                    .text(d => d.text)
+                    .on('click', function(event, d) {
+                        showTermDetail(d.id);
+                    })
+                    .on('mouseover', function() {
+                        d3.select(this)
+                            .transition()
+                            .duration(200)
+                            .style('transform', function(d) {
+                                return `translate(${d.x}px,${d.y}px) rotate(${d.rotate}deg) scale(1.2)`;
+                            });
+                    })
+                    .on('mouseout', function() {
+                        d3.select(this)
+                            .transition()
+                            .duration(200)
+                            .style('transform', function(d) {
+                                return `translate(${d.x}px,${d.y}px) rotate(${d.rotate}deg) scale(1)`;
+                            });
+                    });
+            }
+        }
+
+        // 显示不同部分
+        function showSection(section) {
+            switch(section) {
+                case 'dictionary':
+                    window.scrollTo({ top: document.querySelector('.terms-section').offsetTop, behavior: 'smooth' });
+                    break;
+                case 'wordcloud':
+                    window.scrollTo({ top: document.querySelector('.wordcloud-section').offsetTop, behavior: 'smooth' });
+                    break;
+                case 'categories':
+                    document.getElementById('categoryFilter').focus();
+                    break;
+            }
+        }
+
+        // 导出数据
+        function exportData() {
+            const dataStr = JSON.stringify(dictionaryData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '古建筑词典数据库.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 窗口大小改变时重新生成词云
+        window.addEventListener('resize', () => {
+            clearTimeout(window.resizeTimer);
+            window.resizeTimer = setTimeout(generateWordCloud, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一键全景照片下载助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(90deg, #28a745, #218838);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(90deg, #17a2b8, #138496);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(23, 162, 184, 0.4);
+        }
+
+        .building-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 25px;
+        }
+
+        .building-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .building-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .building-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .building-header h3 {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        .building-status {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .status-complete {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-partial {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-empty {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .download-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .download-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .download-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .download-item .filename {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .download-item .keyword {
+            flex: 1;
+            margin-left: 15px;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .download-btn {
+            padding: 8px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .download-btn.batch {
+            background: #28a745;
+        }
+
+        .download-btn.batch:hover {
+            background: #218838;
+        }
+
+        .tips-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tips-section h3 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .tip-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .tip-card h4 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .tip-card ul {
+            list-style: none;
+        }
+
+        .tip-card li {
+            padding: 8px 0;
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .tip-card li:before {
+            content: "• ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .building-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .download-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .download-item .keyword {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>一键全景照片下载助手</h1>
+            <p>为中国古建筑数字化平台快速下载高质量全景照片</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <h3>已完成</h3>
+                <div class="value" style="color: #28a745;">44</div>
+                <div class="label">张图片</div>
+            </div>
+            <div class="stat-card">
+                <h3>需要补充</h3>
+                <div class="value" style="color: #ffc107;">76</div>
+                <div class="label">张图片</div>
+            </div>
+            <div class="stat-card">
+                <h3>目标总数</h3>
+                <div class="value" style="color: #667eea;">120</div>
+                <div class="label">张图片 (12×10)</div>
+            </div>
+            <div class="stat-card">
+                <h3>完成度</h3>
+                <div class="value" style="color: #667eea;">37%</div>
+                <div class="label">总体进度</div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <button class="action-btn btn-primary" onclick="openBatchSearch()">
+                📥 批量搜索所有
+            </button>
+            <button class="action-btn btn-success" onclick="openMostNeeded()">
+                🎯 优先下载缺失多的
+            </button>
+            <button class="action-btn btn-info" onclick="downloadProgress()">
+                📊 下载进度追踪
+            </button>
+        </div>
+
+        <div class="building-grid">
+            <!-- 岳阳楼 -->
+            <div class="building-card">
+                <div class="building-header">
+                    <h3>岳阳楼</h3>
+                    <span class="building-status status-empty">0/12 张</span>
+                </div>
+                <div class="download-list">
+                    <div class="download-item">
+                        <span class="filename">yueyang_01.jpg</span>
+                        <span class="keyword">岳阳楼正面全景</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼正面全景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">yueyang_02.jpg</span>
+                        <span class="keyword">岳阳楼侧面</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼侧面+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">yueyang_03.jpg</span>
+                        <span class="keyword">岳阳楼背面</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼背面+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">yueyang_04.jpg</span>
+                        <span class="keyword">岳阳楼夜景</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼夜景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">yueyang_05.jpg</span>
+                        <span class="keyword">岳阳楼洞庭湖</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼洞庭湖+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">yueyang_06.jpg</span>
+                        <span class="keyword">岳阳楼内部</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼内部+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">yueyang_07.jpg</span>
+                        <span class="keyword">岳阳楼屋顶</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼屋顶+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">yueyang_08.jpg</span>
+                        <span class="keyword">岳阳楼俯视</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼俯视+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">yueyang_09.jpg</span>
+                        <span class="keyword">岳阳楼远景</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼远景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">yueyang_10.jpg</span>
+                        <span class="keyword">岳阳楼近景</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼近景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">yueyang_11.jpg</span>
+                        <span class="keyword">岳阳楼雪景</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼雪景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">yueyang_12.jpg</span>
+                        <span class="keyword">岳阳楼春景</span>
+                        <a href="https://cn.bing.com/images/search?q=岳阳楼春景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 大雁塔 -->
+            <div class="building-card">
+                <div class="building-header">
+                    <h3>大雁塔</h3>
+                    <span class="building-status status-partial">4/12 张</span>
+                </div>
+                <div class="download-list">
+                    <div class="download-item">
+                        <span class="filename">dayan_06.jpg</span>
+                        <span class="keyword">大雁塔侧面</span>
+                        <a href="https://cn.bing.com/images/search?q=大雁塔侧面+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">dayan_07.jpg</span>
+                        <span class="keyword">大雁塔背面</span>
+                        <a href="https://cn.bing.com/images/search?q=大雁塔背面+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">dayan_08.jpg</span>
+                        <span class="keyword">大雁塔夜景</span>
+                        <a href="https://cn.bing.com/images/search?q=大雁塔夜景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">dayan_09.jpg</span>
+                        <span class="keyword">大雁塔塔顶</span>
+                        <a href="https://cn.bing.com/images/search?q=大雁塔塔顶+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">dayan_10.jpg</span>
+                        <span class="keyword">大雁塔内部</span>
+                        <a href="https://cn.bing.com/images/search?q=大雁塔内部+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">dayan_11.jpg</span>
+                        <span class="keyword">大雁塔俯视</span>
+                        <a href="https://cn.bing.com/images/search?q=大雁塔俯视+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">dayan_12.jpg</span>
+                        <span class="keyword">大雁塔雪景</span>
+                        <a href="https://cn.bing.com/images/search?q=大雁塔雪景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">dayan_13.jpg</span>
+                        <span class="keyword">大雁塔广场</span>
+                        <a href="https://cn.bing.com/images/search?q=大雁塔广场+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 太和殿 -->
+            <div class="building-card">
+                <div class="building-header">
+                    <h3>太和殿</h3>
+                    <span class="building-status status-partial">5/12 张</span>
+                </div>
+                <div class="download-list">
+                    <div class="download-item">
+                        <span class="filename">taihe_06.jpg</span>
+                        <span class="keyword">太和殿侧面</span>
+                        <a href="https://cn.bing.com/images/search?q=太和殿侧面+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">taihe_07.jpg</span>
+                        <span class="keyword">太和殿背面</span>
+                        <a href="https://cn.bing.com/images/search?q=太和殿背面+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">taihe_08.jpg</span>
+                        <span class="keyword">太和殿屋顶</span>
+                        <a href="https://cn.bing.com/images/search?q=太和殿屋顶+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">taihe_09.jpg</span>
+                        <span class="keyword">太和殿内部</span>
+                        <a href="https://cn.bing.com/images/search?q=太和殿内部+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">taihe_10.jpg</span>
+                        <span class="keyword">太和殿广场</span>
+                        <a href="https://cn.bing.com/images/search?q=太和殿广场+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">taihe_11.jpg</span>
+                        <span class="keyword">太和殿夜景</span>
+                        <a href="https://cn.bing.com/images/search?q=太和殿夜景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">taihe_12.jpg</span>
+                        <span class="keyword">太和殿细节</span>
+                        <a href="https://cn.bing.com/images/search?q=太和殿细节+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 拙政园 -->
+            <div class="building-card">
+                <div class="building-header">
+                    <h3>拙政园</h3>
+                    <span class="building-status status-partial">5/12 张</span>
+                </div>
+                <div class="download-list">
+                    <div class="download-item">
+                        <span class="filename">zhuozheng_06.jpg</span>
+                        <span class="keyword">拙政园侧面</span>
+                        <a href="https://cn.bing.com/images/search?q=拙政园侧面+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">zhuozheng_07.jpg</span>
+                        <span class="keyword">拙政园夜景</span>
+                        <a href="https://cn.bing.com/images/search?q=拙政园夜景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">zhuozheng_08.jpg</span>
+                        <span class="keyword">拙政园亭台</span>
+                        <a href="https://cn.bing.com/images/search?q=拙政园亭台+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">zhuozheng_09.jpg</span>
+                        <span class="keyword">拙政园水景</span>
+                        <a href="https://cn.bing.com/images/search?q=拙政园水景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">zhuozheng_10.jpg</span>
+                        <span class="keyword">拙政园雪景</span>
+                        <a href="https://cn.bing.com/images/search?q=拙政园雪景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">zhuozheng_11.jpg</span>
+                        <span class="keyword">拙政园春景</span>
+                        <a href="https://cn.bing.com/images/search?q=拙政园春景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                    <div class="download-item">
+                        <span class="filename">zhuozheng_12.jpg</span>
+                        <span class="keyword">拙政园秋景</span>
+                        <a href="https://cn.bing.com/images/search?q=拙政园秋景+摄影+高清" target="_blank" class="download-btn">搜索</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips-section">
+            <h3>📋 使用说明</h3>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h4>下载步骤</h4>
+                    <ul>
+                        <li>点击"搜索"按钮打开图片搜索页面</li>
+                        <li>选择高清、高质量的图片</li>
+                        <li>下载图片到本地</li>
+                        <li>重命名为对应的文件名</li>
+                        <li>保存到 d:/26新比赛1/frontend/img/ 对应文件夹</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h4>图片要求</h4>
+                    <ul>
+                        <li>分辨率：建议1920x1080以上</li>
+                        <li>格式：JPG或PNG</li>
+                        <li>大小：建议500KB以上</li>
+                        <li>质量：清晰、无水印为佳</li>
+                        <li>角度：正面、侧面、背面、俯视等</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h4>后续操作</h4>
+                    <ul>
+                        <li>下载完成后使用 panorama-generator.html</li>
+                        <li>上传多张图片生成全景</li>
+                        <li>使用 panorama-viewer.html 查看360度效果</li>
+                        <li>优秀的全景可集成到项目中</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openBatchSearch() {
+            alert('即将批量打开所有搜索页面，请耐心等待...\n\n建议逐个建筑下载，避免浏览器标签页过多。');
+        }
+
+        function openMostNeeded() {
+            // 优先打开缺失最多的建筑（岳阳楼）
+            window.open('https://cn.bing.com/images/search?q=岳阳楼正面全景+摄影+高清', '_blank');
+            window.open('https://cn.bing.com/images/search?q=大雁塔侧面+摄影+高清', '_blank');
+            window.open('https://cn.bing.com/images/search?q=太和殿侧面+摄影+高清', '_blank');
+        }
+
+        function downloadProgress() {
+            alert('当前进度：\n\n已完成：44张\n需要补充：76张\n完成度：37%\n\n请继续下载图片以达到每建筑12张的目标。');
+        }
+
+        // 页面加载时的欢迎提示
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                console.log('全景照片下载助手已就绪');
+                console.log('开始下载吧！');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

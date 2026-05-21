@@ -1,0 +1,72 @@
+[
+  {
+    "id": "arch-dynasty-timeline",
+    "title": "历代建筑时间轴",
+    "image": "img/viz/timeline_preview.jpg",
+    "link": "/viz/dynasty-timeline",
+    "description": "中国古建筑发展时间轴：从秦汉到明清，展示各代建筑风格演变"
+  },
+  {
+    "id": "arch-map-scatter",
+    "title": "建筑地理分布图",
+    "image": "img/viz/map_preview.jpg",
+    "link": "/viz/geography-map",
+    "description": "GIS地图可视化：102座重要古建筑地理分布，按朝代和类型着色"
+  },
+  {
+    "id": "arch-roof-pie",
+    "title": "屋顶类型分布",
+    "image": "img/viz/roof_preview.jpg",
+    "link": "/viz/roof-distribution",
+    "description": "饼图/环形图：庑殿顶、歇山顶、悬山顶等各类屋顶形式占比分析"
+  },
+  {
+    "id": "arch-dougong-tree",
+    "title": "斗拱演变图谱",
+    "image": "img/viz/dougong_preview.jpg",
+    "link": "/viz/dougong-evolution",
+    "description": "斗拱结构类型树状图：从简单到复杂，展示各朝代斗拱形制演变"
+  },
+  {
+    "id": "arch-region-bar",
+    "title": "地区建筑数量排行",
+    "image": "img/viz/region_preview.jpg",
+    "link": "/viz/region-ranking",
+    "description": "条形图：各省古建筑数量排行，山西、北京、河北位居前列"
+  },
+  {
+    "id": "arch-dynasty-bar",
+    "title": "各朝代建筑数量",
+    "image": "img/viz/dynasty_preview.jpg",
+    "link": "/viz/dynasty-count",
+    "description": "条形图：明清建筑数量最多，因年代较近保存较多；唐代遗存稀少珍贵"
+  },
+  {
+    "id": "arch-literature-timeline",
+    "title": "建筑文献时间轴",
+    "image": "img/viz/literature_preview.jpg",
+    "link": "/viz/literature-timeline",
+    "description": "《营造法式》《园冶》《工部工程做法则例》等49部重要建筑文献出版年代分布"
+  },
+  {
+    "id": "arch-element-radar",
+    "title": "建筑元素分类雷达图",
+    "image": "img/viz/radar_preview.jpg",
+    "link": "/viz/element-radar",
+    "description": "雷达图：结构、屋顶、构件、材料、装饰五大类建筑元素数量对比"
+  },
+  {
+    "id": "arch-correlation-scatter",
+    "title": "建筑规模与保存状态关系",
+    "image": "img/viz/correlation_preview.jpg",
+    "link": "/viz/correlation",
+    "description": "散点图：建筑规模（面阔进深）与保存完整度、评级之间的关联性分析"
+  },
+  {
+    "id": "arch-sunburst",
+    "title": "建筑类型层次图",
+    "image": "img/viz/sunburst_preview.jpg",
+    "link": "/viz/type-hierarchy",
+    "description": "旭日图：朝代→结构类型→屋顶形式三层嵌套结构，层层深入探索建筑分类"
+  }
+]

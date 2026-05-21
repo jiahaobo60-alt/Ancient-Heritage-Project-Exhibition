@@ -1,0 +1,1380 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喜好映射 — 飞檐翚影</title>
+    <link rel="stylesheet" href="css/architecture_common.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== 设计系统变量 ===== */
+        :root {
+            --primary:       #444C5E;
+            --primary-light: #5A6478;
+            --primary-dark:  #2A3246;
+            --secondary:     #A29192;
+            --accent:        #8A9BC5;
+            --accent-light:  #A8B8D8;
+            --accent-gold:   #8A9BC5;
+            --bg:            #F0F2F5;
+            --bg-card:       #FFFFFF;
+            --bg-muted:      #E8EBF0;
+            --text-main:     #2A3246;
+            --text-sub:      #4A5568;
+            --text-muted:    #9E9E9E;
+            --text-light:    rgba(240,242,245,0.85);
+            --border:        rgba(68,76,94,0.14);
+            --shadow-sm:     0 2px 8px rgba(42,50,70,0.08);
+            --shadow-md:     0 6px 20px rgba(42,50,70,0.12);
+            --shadow-lg:     0 16px 48px rgba(42,50,70,0.18);
+            --radius-sm:     6px;
+            --radius-md:     12px;
+            --radius-lg:     20px;
+            --transition:    0.32s cubic-bezier(0.4,0,0.2,1);
+            /* 朝代色（保持区分性但统一在蓝灰系内） */
+            --han-red:       #C0392B;
+            --weijin-gold:   #D4AC0D;
+            --tang-red:      #A93226;
+            --song-green:    #1E8449;
+            --liao-gold:     #B7950B;
+            --yuan-brown:    #7D6608;
+            --ming-brown:    #884EA0;
+            --qing-blue:     #2471A3;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== 导航栏 ===== */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: #444C5E;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 0 48px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.22);
+            transition: background var(--transition);
+        }
+        .nav-logo {
+            color: #F7F3ED;
+            font-size: 1.4em;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.08em;
+        }
+        .nav-logo-icon {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: #F7F3ED;
+        }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-link {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: all var(--transition);
+            font-size: 0.95em;
+            letter-spacing: 0.03em;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: #A29192;
+            color: #F7F3ED;
+        }
+       
+        .nav-user { display: flex; align-items: center; gap: 12px; }
+        .nav-user a {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color var(--transition);
+        }
+        .nav-user a:hover { color: #F7F3ED; }
+
+         /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(68,76,94,0.15);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(68,76,94,0.3);
+        }
+
+        /* ===== 页面头部 ===== */
+        .page-header {
+            padding-top: 96px;
+            padding-bottom: 28px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(68,76,94,0.08) 0%, rgba(138,155,197,0.06) 50%, transparent 100%);
+            position: relative;
+        }
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 120px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        }
+        .page-header h1 {
+            font-size: 2.2rem;
+            color: var(--text-main);
+            letter-spacing: 0.12em;
+            margin-bottom: 10px;
+        }
+        .page-header h1 span {
+            background: linear-gradient(135deg, var(--accent), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .page-header p {
+            color: var(--text-sub);
+            font-size: 0.95em;
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== 主布局：三栏 ===== */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 25% 50% 25%;
+            gap: 16px;
+            padding: 16px 24px 24px;
+            min-height: calc(100vh - 220px);
+        }
+
+        /* ===== 面板通用 ===== */
+        .panel {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow var(--transition);
+        }
+        .panel:hover { box-shadow: var(--shadow-md); }
+
+        .panel-header {
+            padding: 14px 18px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(68,76,94,0.08);
+            flex-shrink: 0;
+        }
+        .panel-header-icon {
+            width: 28px; height: 28px;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: #F7F3ED;
+        }
+        .panel-header h3 {
+            font-size: 0.92rem;
+            color: var(--text-main);
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+        .panel-body {
+            flex: 1;
+            padding: 12px;
+            min-height: 0;
+            overflow-y: auto;
+        }
+
+        /* 图标背景色 */
+        .icon-pref   { background: linear-gradient(135deg, #2E8B57, #3CB371); }
+        .icon-sun    { background: linear-gradient(135deg, #444C5E, #8A9BC5); }
+        .icon-tree   { background: linear-gradient(135deg, #8A9BC5, #5A6478); }
+        .icon-ai     { background: linear-gradient(135deg, #4169E1, #6495ED); }
+
+        /* ===== 左侧面板 - 偏好设置 ===== */
+        .pref-section {
+            margin-bottom: 16px;
+        }
+        .pref-section-title {
+            font-size: 0.82rem;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pref-section-title::before {
+            content: '';
+            width: 3px; height: 12px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .tag-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-sub);
+            font-size: 0.78rem;
+            font-family: 'Noto Serif SC', serif;
+            cursor: pointer;
+            transition: all var(--transition);
+            user-select: none;
+        }
+        .tag-btn:hover {
+            border-color: var(--secondary);
+            background: rgba(212,165,116,0.12);
+        }
+        .tag-btn.active {
+            color: #F7F3ED;
+            border-color: transparent;
+            font-weight: 500;
+        }
+        /* 朝代标签激活色 */
+        .tag-btn[data-dynasty="汉"].active  { background: var(--han-red); }
+        .tag-btn[data-dynasty="魏晋"].active { background: var(--weijin-gold); }
+        .tag-btn[data-dynasty="唐"].active  { background: var(--tang-red); }
+        .tag-btn[data-dynasty="宋"].active  { background: var(--song-green); }
+        .tag-btn[data-dynasty="辽"].active  { background: var(--liao-gold); }
+        .tag-btn[data-dynasty="金"].active  { background: var(--liao-gold); }
+        .tag-btn[data-dynasty="元"].active  { background: var(--yuan-brown); }
+        .tag-btn[data-dynasty="明"].active  { background: var(--ming-brown); }
+        .tag-btn[data-dynasty="清"].active  { background: var(--qing-blue); }
+        /* 地域标签激活色 */
+        .tag-btn[data-category="region"].active {
+            background: var(--primary-light);
+        }
+        /* 类型标签激活色 */
+        .tag-btn[data-category="type"].active {
+            background: var(--primary);
+        }
+
+        .update-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, #A29192, #8A9BC5);
+            color: #F7F3ED;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            transition: all var(--transition);
+            margin-top: 8px;
+        }
+        .update-btn:hover {
+            box-shadow: 0 4px 16px rgba(162,145,146,0.45);
+            transform: translateY(-1px);
+        }
+        .update-btn:active {
+            transform: translateY(0);
+        }
+        .update-btn.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* 用户等级 */
+        .user-level {
+            text-align: center;
+            padding: 16px 12px 8px;
+        }
+        .user-level .level-stars {
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            margin-bottom: 4px;
+            letter-spacing: 2px;
+        }
+        .user-level .level-title {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 600;
+            letter-spacing: 0.06em;
+        }
+        .level-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 12px 0;
+        }
+
+        /* ===== 中间主区域 - 推荐卡片 ===== */
+        .rec-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 4px;
+        }
+        .rec-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            cursor: default;
+            transition: all var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        .rec-card:hover {
+            border-color: var(--secondary);
+            box-shadow: var(--shadow-md);
+        }
+        .rec-card-img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            background: var(--bg-muted);
+            display: block;
+        }
+        .rec-card-body {
+            padding: 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .rec-card-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: 0.03em;
+            margin-bottom: 6px;
+        }
+        .rec-card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        .meta-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            color: #F7F3ED;
+            letter-spacing: 0.02em;
+        }
+        .meta-tag.dynasty  { background: var(--tang-red); }
+        .meta-tag.region   { background: var(--primary-light); }
+        .meta-tag.type     { background: var(--song-green); }
+        /* 朝代色覆盖 */
+        .meta-tag.dynasty[data-d="汉"]  { background: var(--han-red); }
+        .meta-tag.dynasty[data-d="魏晋"] { background: var(--weijin-gold); }
+        .meta-tag.dynasty[data-d="唐"]  { background: var(--tang-red); }
+        .meta-tag.dynasty[data-d="宋"]  { background: var(--song-green); }
+        .meta-tag.dynasty[data-d="辽"]  { background: var(--liao-gold); }
+        .meta-tag.dynasty[data-d="金"]  { background: var(--liao-gold); }
+        .meta-tag.dynasty[data-d="元"]  { background: var(--yuan-brown); }
+        .meta-tag.dynasty[data-d="明"]  { background: var(--ming-brown); }
+        .meta-tag.dynasty[data-d="清"]  { background: var(--qing-blue); }
+
+        .rec-card-desc {
+            font-size: 0.78rem;
+            color: var(--text-sub);
+            line-height: 1.65;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+        .empty-state p {
+            font-size: 0.9rem;
+            letter-spacing: 0.04em;
+        }
+
+        /* 加载状态 */
+        .loading-spinner {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .spinner {
+            display: inline-block;
+            width: 36px; height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== 右侧面板 ===== */
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .chart-container {
+            width: 100%;
+            height: 100%;
+            min-height: 200px;
+        }
+
+        /* AI助手入口 */
+        .ai-entry {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: linear-gradient(135deg, #4169e114, #c9a84c14);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            text-decoration: none;
+            color: var(--text-main);
+        }
+        .ai-entry:hover {
+            background: linear-gradient(135deg, #4169e126, #c9a84c26);
+            box-shadow: var(--shadow-sm);
+        }
+        .ai-entry-icon {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4169E1, #6495ED);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            color: #F7F3ED;
+            flex-shrink: 0;
+        }
+        .ai-entry-text h4 {
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            margin-bottom: 2px;
+        }
+        .ai-entry-text p {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+        }
+        .ai-entry-arrow {
+            margin-left: auto;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            transition: transform var(--transition);
+        }
+        .ai-entry:hover .ai-entry-arrow {
+            transform: translateX(3px);
+            color: var(--primary);
+        }
+
+        /* ===== 底部 ===== */
+        footer {
+            background: var(--primary-dark);
+            color: rgba(245,245,220,0.6);
+            text-align: center;
+            padding: 20px 24px;
+            font-size: 0.8rem;
+            letter-spacing: 0.04em;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+            .panel-left {
+                grid-column: 1 / -1;
+            }
+            .panel-left .panel-body {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            .panel-left .pref-section {
+                flex: 1;
+                min-width: 200px;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-bar { padding: 0 16px; }
+            .nav-links { display: none; }
+            .dashboard {
+                grid-template-columns: 1fr;
+                padding: 12px;
+                gap: 12px;
+            }
+            .panel-left { grid-column: 1; }
+            .page-header { padding-top: 80px; padding-bottom: 16px; }
+            .page-header h1 { font-size: 1.5rem; }
+            .rec-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== 滚动条 ===== */
+        .panel-body::-webkit-scrollbar { width: 4px; }
+        .panel-body::-webkit-scrollbar-track { background: transparent; }
+        .panel-body::-webkit-scrollbar-thumb { background: rgba(68,76,94,0.2); border-radius: 2px; }
+        .panel-body::-webkit-scrollbar-thumb:hover { background: rgba(68,76,94,0.4); }
+
+        /* ===== 动画 ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .rec-card {
+            animation: fadeInUp 0.4s ease-out both;
+        }
+        .rec-card:nth-child(2) { animation-delay: 0.05s; }
+        .rec-card:nth-child(3) { animation-delay: 0.1s; }
+        .rec-card:nth-child(4) { animation-delay: 0.15s; }
+        .rec-card:nth-child(5) { animation-delay: 0.2s; }
+        .rec-card:nth-child(6) { animation-delay: 0.25s; }
+        .rec-card:nth-child(7) { animation-delay: 0.3s; }
+        .rec-card:nth-child(8) { animation-delay: 0.35s; }
+        .rec-card:nth-child(9) { animation-delay: 0.4s; }
+        .rec-card:nth-child(10) { animation-delay: 0.45s; }
+    </style>
+</head>
+
+<body>
+
+<!-- ===== 导航栏 ===== -->
+<nav class="nav-bar">
+    <a href="index.html" class="nav-logo">
+        <img 
+        src="./img/logo.png" 
+        style="width:30px; height:30px; vertical-align:middle;"
+        >
+        飞檐翚影
+    </a>
+    <div class="nav-links">
+        <a href="space.html" class="nav-link">空间漫游</a>
+        <a href="know.html" class="nav-link">民族之窗</a>
+        <a href="time.html" class="nav-link">时间之境</a>
+        <a href="3d_architecture.html" class="nav-link">3D展示</a>
+        <a href="museum_3d.html" class="nav-link">3D展厅</a>
+        <a href="indivisual.html" class="nav-link active">喜好映射</a>
+        <a href="chat.html" class="nav-link">AI助手</a>
+    </div>
+    <div class="nav-user">
+        <a href="index.html">返回首页</a>
+    </div>
+</nav>
+
+<!-- ===== 页面头部 ===== -->
+<div class="page-header">
+    <h1><span>喜好映射</span></h1>
+    <p>基于你的兴趣，智能推荐最对味的古建筑</p>
+</div>
+
+<!-- ===== 主体三栏 ===== -->
+<div class="dashboard">
+    <!-- 左侧面板 - 偏好设置 -->
+    <div class="panel panel-left">
+        <div class="panel-header">
+            <div class="panel-header-icon icon-pref">⚙</div>
+            <h3>偏好设置</h3>
+        </div>
+        <div class="panel-body">
+            <!-- 用户等级 -->
+            <div class="user-level">
+                <div class="level-stars" id="levelStars">★☆☆☆☆</div>
+                <div class="level-title" id="levelTitle">初行者</div>
+                <div class="level-divider"></div>
+            </div>
+
+            <!-- 朝代偏好 -->
+            <div class="pref-section">
+                <div class="pref-section-title">朝代偏好</div>
+                <div class="tag-group" id="dynastyTags">
+                    <span class="tag-btn" data-dynasty="汉" data-category="dynasty">汉</span>
+                    <span class="tag-btn" data-dynasty="魏晋" data-category="dynasty">魏晋</span>
+                    <span class="tag-btn" data-dynasty="唐" data-category="dynasty">唐</span>
+                    <span class="tag-btn" data-dynasty="宋" data-category="dynasty">宋</span>
+                    <span class="tag-btn" data-dynasty="辽" data-category="dynasty">辽</span>
+                    <span class="tag-btn" data-dynasty="金" data-category="dynasty">金</span>
+                    <span class="tag-btn" data-dynasty="元" data-category="dynasty">元</span>
+                    <span class="tag-btn" data-dynasty="明" data-category="dynasty">明</span>
+                    <span class="tag-btn" data-dynasty="清" data-category="dynasty">清</span>
+                </div>
+            </div>
+
+            <!-- 地域偏好 -->
+            <div class="pref-section">
+                <div class="pref-section-title">地域偏好</div>
+                <div class="tag-group" id="regionTags">
+                    <!-- 由API动态填充 -->
+                </div>
+            </div>
+
+            <!-- 建筑类型偏好 -->
+            <div class="pref-section">
+                <div class="pref-section-title">建筑类型偏好</div>
+                <div class="tag-group" id="typeTags">
+                    <!-- 由API动态填充 -->
+                </div>
+            </div>
+
+            <!-- 更新推荐 -->
+            <button class="update-btn" id="updateBtn" onclick="fetchRecommendations()">
+                🎯 更新推荐
+            </button>
+        </div>
+    </div>
+
+    <!-- 中间主区域 - 推荐卡片 -->
+    <div class="panel panel-center">
+        <div class="panel-header">
+            <div class="panel-header-icon icon-sun">🏠</div>
+            <h3>为你推荐</h3>
+        </div>
+        <div class="panel-body">
+            <div class="rec-grid" id="recGrid">
+                <!-- 由JS动态填充 -->
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧面板 - 可视化 & AI -->
+    <div class="right-col">
+        <!-- 旭日图 -->
+        <div class="panel" style="flex: 1; min-height: 240px;">
+            <div class="panel-header">
+                <div class="panel-header-icon icon-sun">☀</div>
+                <h3>朝代·地域·类型 层级</h3>
+            </div>
+            <div class="panel-body" style="padding: 4px;">
+                <div class="chart-container" id="sunburstChart"></div>
+            </div>
+        </div>
+
+        <!-- 矩形树图 -->
+        <div class="panel" style="flex: 1; min-height: 240px;">
+            <div class="panel-header">
+                <div class="panel-header-icon icon-tree">▦</div>
+                <h3>建筑类型分布</h3>
+            </div>
+            <div class="panel-body" style="padding: 4px;">
+                <div class="chart-container" id="treemapChart"></div>
+            </div>
+        </div>
+
+        <!-- AI古建筑助手入口 -->
+        <a href="chat.html" class="ai-entry">
+            <div class="ai-entry-icon">🤖</div>
+            <div class="ai-entry-text">
+                <h4>AI古建筑助手</h4>
+                <p>智能问答，探索古建奥秘</p>
+            </div>
+            <span class="ai-entry-arrow">→</span>
+        </a>
+    </div>
+</div>
+
+<!-- ===== 底部 ===== -->
+<footer>
+    <p>飞檐翚影 · 中国古建筑文化展示平台 | 传承千年营造智慧，守护中华建筑文明</p>
+</footer>
+
+<!-- ===== 脚本 ===== -->
+<script src="https://fastly.jsdelivr.net/npm/jquery"></script>
+<script src="js/echarts-5.4.2.min.js"></script>
+<script src="js/config.js"></script>
+
+<script>
+// ===== 全局数据 =====
+var allBuildings = [];       // 全量建筑数据
+var dynastyList = [];        // 朝代列表
+var regionList = [];         // 地域列表
+var typeList = [];           // 建筑类型列表
+var selectedDynasties = [];  // 已选朝代
+var selectedRegions = [];    // 已选地域
+var selectedTypes = [];      // 已选建筑类型
+
+// 朝代色映射（蓝灰系）
+var DYNASTY_COLORS = {
+    '汉': '#C0392B', '魏晋': '#D4AC0D', '唐': '#A93226',
+    '宋': '#1E8449', '辽': '#B7950B', '金': '#B7950B',
+    '元': '#7D6608', '明': '#884EA0', '清': '#2471A3'
+};
+
+// 地域色映射（独立色系，避免与朝代重复）
+var REGION_COLORS = {
+    '华北': '#2471A3', '山西': '#2E86AB', '北京': '#1B6CA8', '河北': '#5DADE2',
+    '华东': '#1E8449', '江苏': '#27AE60', '浙江': '#2ECC71', '安徽': '#58D68D',
+    '华中': '#D4AC0D', '河南': '#F1C40F', '湖北': '#F39C12', '湖南': '#E67E22',
+    '华南': '#C0392B', '福建': '#E74C3C', '广东': '#EC7063', '广西': '#F1948A',
+    '西南': '#7D6608', '四川': '#D4AC0D', '重庆': '#B7950B', '云南': '#F39C12', '贵州': '#E67E22',
+    '西北': '#884EA0', '陕西': '#9B59B6', '甘肃': '#AF7AC5', '宁夏': '#C39BD3',
+    '东北': '#6D7F99', '辽宁': '#85929E', '吉林': '#95A5A6', '黑龙江': '#B2BABB',
+    '江南': '#1A5276', '中原': '#B7950B', '岭南': '#C0392B',
+    '闽南': '#E74C3C', '川渝': '#F39C12', '山东': '#27AE60',
+    '内蒙古': '#7FB3D5', '青海': '#82E0AA', '新疆': '#BB8FCE', '西藏': '#C0392B',
+    '上海': '#2ECC71', '天津': '#5DADE2', '台湾': '#E74C3C', '江西': '#58D68D'
+};
+
+// 建筑类型色映射
+var TYPE_COLORS = {
+    '宫殿': '#C0392B', '坛庙': '#E67E22', '宗教': '#D4AC0D',
+    '楼阁': '#1E8449', '园林': '#2471A3', '民居': '#884EA0',
+    '防御': '#6D7F99', '陵墓': '#7D6608', '石窟': '#A93226',
+    '殿宇': '#C0392B', '佛塔': '#2471A3', '桥梁': '#1E8449'
+};
+
+// ===== 内置fallback建筑数据 =====
+var FALLBACK_BUILDINGS = [
+    { bid:1, bname:'故宫太和殿', dynasty_name:'明', region_name:'北京', structure_type_name:'宫殿', introduction:'故宫太和殿是中国现存最大的木结构宫殿建筑，建于明永乐年间，是皇帝举行大典的场所，代表了明清宫殿建筑艺术的最高成就。', image_url:'img/太和殿-明清-北京故宫/taihe_01.jpg' },
+    { bid:2, bname:'天坛祈年殿', dynasty_name:'明', region_name:'北京', structure_type_name:'坛庙', introduction:'天坛祈年殿是明清两朝皇帝祭天祈谷的场所，三层蓝色琉璃瓦圆形攒尖顶建筑，是中国古代建筑的杰作。', image_url:'img/天坛祈年殿-明代-北京/qinian_01.jpg' },
+    { bid:3, bname:'应县木塔', dynasty_name:'辽', region_name:'山西', structure_type_name:'宗教', introduction:'应县木塔是世界现存最高最古的木构塔式建筑，建于辽代，全塔高67.31米，历经千年风雨至今屹立。', image_url:'img/应县木塔-辽代-山西应县/yingxian_01.jpg' },
+    { bid:4, bname:'拙政园', dynasty_name:'明', region_name:'江苏', structure_type_name:'园林', introduction:'拙政园是中国四大名园之一，建于明代，以水景为主题，亭台楼阁错落有致，山水意境深远。', image_url:'img/拙政园-明代-江苏苏州/zhuozheng_01.jpg' },
+    { bid:5, bname:'佛光寺东大殿', dynasty_name:'唐', region_name:'山西', structure_type_name:'宗教', introduction:'佛光寺东大殿是中国现存最古老的大型木结构建筑之一，建于唐大中十一年，代表唐代建筑最高水平。', image_url:'img/佛光寺东大殿-唐代-山西五台山/foguang_01.jpg' },
+    { bid:6, bname:'岳阳楼', dynasty_name:'明', region_name:'湖南', structure_type_name:'楼阁', introduction:'岳阳楼是中国三大名楼之一，位于湖南岳阳，北宋范仲淹《岳阳楼记》使其名扬天下。', image_url:'img/塔式建筑-岳阳楼应县木塔/tower_01.jpg' },
+    { bid:7, bname:'客家土楼', dynasty_name:'明', region_name:'福建', structure_type_name:'民居', introduction:'福建客家土楼是以生土为主要建筑材料的大型集中住宅，造型独特，被誉为"东方城堡"。', image_url:'img/民居.jpg' },
+    { bid:8, bname:'云冈石窟', dynasty_name:'魏晋', region_name:'山西', structure_type_name:'宗教', introduction:'云冈石窟位于山西大同，开凿于北魏，是中国最大石窟群之一，展现了佛教艺术东传初期的精华。', image_url:'img/石窟.jpg' },
+    { bid:9, bname:'永乐宫', dynasty_name:'元', region_name:'山西', structure_type_name:'宗教', introduction:'永乐宫是元代道教建筑群，壁画面积超过1000平方米，是中国现存规模最大、保存最完整的元代壁画。', image_url:'img/彩画.jpg' },
+    { bid:10, bname:'长城', dynasty_name:'明', region_name:'河北', structure_type_name:'防御', introduction:'万里长城是中国古代最伟大的军事防御工程，明代长城尤为壮观，蜿蜒于崇山峻岭之间，是中华文明的象征。', image_url:'img/chengqiang.jpg' }
+];
+
+// ===== 从localStorage读取用户偏好 =====
+function loadLocalPrefs() {
+    try {
+        var typeslike = localStorage.getItem('typeslike');
+        if (typeslike) {
+            selectedTypes = typeslike.split(',').filter(function(t) { return t; });
+        }
+        var provincelikesString = localStorage.getItem('provincelikes');
+        if (provincelikesString) {
+            try {
+                var parsed = JSON.parse(provincelikesString);
+                selectedRegions = Array.isArray(parsed) ? parsed : parsed.split(',');
+            } catch(e) {
+                selectedRegions = provincelikesString.split(',').filter(function(r) { return r; });
+            }
+        }
+        var countersStr = localStorage.getItem('counters');
+        if (countersStr) {
+            var arr = countersStr.split(',');
+            // counters: [宫殿, 宗教, 园林, 民居, 防御, 纪念] 对应索引
+            var typeNames = ['宫殿', '宗教', '园林', '民居', '防御', '纪念'];
+            arr.forEach(function(v, i) {
+                if (v == '1' && typeNames[i] && selectedTypes.indexOf(typeNames[i]) === -1) {
+                    selectedTypes.push(typeNames[i]);
+                }
+            });
+        }
+    } catch(e) {
+        console.warn('读取本地偏好失败:', e);
+    }
+}
+
+// ===== 更新用户等级 =====
+function updateUserLevel() {
+    var totalPrefs = selectedDynasties.length + selectedRegions.length + selectedTypes.length;
+    var starsEl = document.getElementById('levelStars');
+    var titleEl = document.getElementById('levelTitle');
+    if (totalPrefs >= 8) {
+        starsEl.textContent = '★★★★★';
+        titleEl.textContent = '匠心鉴赏家';
+    } else if (totalPrefs >= 5) {
+        starsEl.textContent = '★★★★☆';
+        titleEl.textContent = '古建行家';
+    } else if (totalPrefs >= 3) {
+        starsEl.textContent = '★★★☆☆';
+        titleEl.textContent = '探索者';
+    } else if (totalPrefs >= 1) {
+        starsEl.textContent = '★★☆☆☆';
+        titleEl.textContent = '寻路人';
+    } else {
+        starsEl.textContent = '★☆☆☆☆';
+        titleEl.textContent = '初行者';
+    }
+}
+
+// ===== 标签交互（事件委托，支持动态渲染） =====
+// 使用事件委托绑定到 document，只需执行一次，所有 .tag-btn（包括动态渲染的）都能响应
+var _tagInteractionInitialized = false;
+function initTagInteraction() {
+    if (_tagInteractionInitialized) return; // 防止重复绑定
+    document.addEventListener('click', function(e) {
+        var btn = e.target.closest('.tag-btn');
+        if (!btn) return;
+        // 确保点击的是标签本身，而不是标签内的子元素（如图标）
+        btn.classList.toggle('active');
+        syncSelections();
+        updateUserLevel();
+    });
+    _tagInteractionInitialized = true;
+}
+
+function syncSelections() {
+    selectedDynasties = [];
+    selectedRegions = [];
+    selectedTypes = [];
+    document.querySelectorAll('.tag-btn.active').forEach(function(btn) {
+        var cat = btn.getAttribute('data-category');
+        if (cat === 'dynasty') {
+            selectedDynasties.push(btn.getAttribute('data-dynasty') || btn.textContent.trim());
+        } else if (cat === 'region') {
+            selectedRegions.push(btn.getAttribute('data-region') || btn.textContent.trim());
+        } else if (cat === 'type') {
+            selectedTypes.push(btn.getAttribute('data-type') || btn.textContent.trim());
+        }
+    });
+}
+
+// 根据选中状态激活标签
+function activateTags() {
+    document.querySelectorAll('.tag-btn[data-category="dynasty"]').forEach(function(btn) {
+        var dynasty = btn.getAttribute('data-dynasty');
+        if (selectedDynasties.indexOf(dynasty) !== -1) btn.classList.add('active');
+    });
+    document.querySelectorAll('.tag-btn[data-category="region"]').forEach(function(btn) {
+        var region = btn.getAttribute('data-region') || btn.textContent.trim();
+        if (selectedRegions.indexOf(region) !== -1) btn.classList.add('active');
+    });
+    document.querySelectorAll('.tag-btn[data-category="type"]').forEach(function(btn) {
+        var type = btn.getAttribute('data-type') || btn.textContent.trim();
+        if (selectedTypes.indexOf(type) !== -1) btn.classList.add('active');
+    });
+    syncSelections();
+    updateUserLevel();
+}
+
+// ===== 获取基础数据 =====
+function fetchMetaData() {
+    // 获取地域列表
+    $.ajax({
+        url: BASE_URL + '/architecture/regions/',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            regionList = data.results || data;
+            renderRegionTags();
+            activateTags();
+        },
+        error: function() {
+            regionList = [
+                {rid:1,rname:'北京'}, {rid:2,rname:'山西'}, {rid:3,rname:'陕西'},
+                {rid:4,rname:'河北'}, {rid:5,rname:'河南'}, {rid:6,rname:'江苏'},
+                {rid:7,rname:'浙江'}, {rid:8,rname:'福建'}, {rid:9,rname:'四川'},
+                {rid:10,rname:'云南'}, {rid:11,rname:'西藏'}, {rid:12,rname:'甘肃'}
+            ];
+            renderRegionTags();
+            activateTags();
+        }
+    });
+
+    // 获取朝代列表
+    $.ajax({
+        url: BASE_URL + '/architecture/dynasties/',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            dynastyList = data.results || data;
+            activateTags();
+        },
+        error: function() {
+            dynastyList = [
+                {did:1,dname:'汉'}, {did:2,dname:'魏晋'}, {did:3,dname:'唐'},
+                {did:4,dname:'宋'}, {did:5,dname:'辽'}, {did:6,dname:'金'},
+                {did:7,dname:'元'}, {did:8,dname:'明'}, {did:9,dname:'清'}
+            ];
+            activateTags();
+        }
+    });
+
+    // 获取全量建筑数据
+    $.ajax({
+        url: BASE_URL + '/architecture/buildings/',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            allBuildings = data.results || data;
+            buildTypeList();
+            renderCharts();
+            fetchRecommendations();
+        },
+        error: function() {
+            // API失败 → 使用内置fallback数据
+            allBuildings = FALLBACK_BUILDINGS;
+            buildTypeList();
+            renderCharts();
+            fetchRecommendations();
+        }
+    });
+}
+
+// 从建筑数据中提取类型列表
+function buildTypeList() {
+    var typeSet = {};
+    allBuildings.forEach(function(b) {
+        var t = b.structure_type_name || b.structure_type;
+        if (t) typeSet[t] = true;
+    });
+    typeList = Object.keys(typeSet).map(function(name, i) {
+        return {tid: i+1, tname: name};
+    });
+    if (typeList.length === 0) {
+        typeList = [
+            {tid:1,tname:'宫殿'}, {tid:2,tname:'宗教'}, {tid:3,tname:'园林'},
+            {tid:4,tname:'民居'}, {tid:5,tname:'防御'}, {tid:6,tname:'纪念'},
+            {tid:7,tname:'坛庙'}, {tid:8,tname:'楼阁'}
+        ];
+    }
+    renderTypeTags();
+    activateTags();
+}
+
+// ===== 渲染标签 =====
+function renderRegionTags() {
+    var container = document.getElementById('regionTags');
+    container.innerHTML = '';
+    regionList.forEach(function(r) {
+        var tag = document.createElement('span');
+        tag.className = 'tag-btn';
+        tag.setAttribute('data-category', 'region');
+        tag.setAttribute('data-region', r.rname);
+        tag.textContent = r.rname;
+        container.appendChild(tag);
+    });
+    // 事件委托已绑定，无需重复调用 initTagInteraction
+}
+
+function renderTypeTags() {
+    var container = document.getElementById('typeTags');
+    container.innerHTML = '';
+    typeList.forEach(function(t) {
+        var tag = document.createElement('span');
+        tag.className = 'tag-btn';
+        tag.setAttribute('data-category', 'type');
+        tag.setAttribute('data-type', t.tname);
+        tag.textContent = t.tname;
+        container.appendChild(tag);
+    });
+    // 事件委托已绑定，无需重复调用 initTagInteraction
+}
+
+// ===== 获取推荐 =====
+function fetchRecommendations() {
+    var btn = document.getElementById('updateBtn');
+    btn.classList.add('loading');
+    btn.textContent = '推荐中…';
+
+    syncSelections();
+
+    var requestData = {
+        'dynasty_prefs[]': selectedDynasties,
+        'region_prefs[]': selectedRegions,
+        'type_prefs[]': selectedTypes
+    };
+
+    $.ajax({
+        url: BASE_URL + '/architecture/recommendations/',
+        type: 'POST',
+        data: requestData,
+        dataType: 'json',
+        success: function(data) {
+            var results = data.results || [];
+            if (results.length > 0) {
+                renderCards(results);
+            } else {
+                // 无匹配时用全量数据
+                fallbackRender();
+            }
+            btn.classList.remove('loading');
+            btn.textContent = '🎯 更新推荐';
+        },
+        error: function() {
+            fallbackRender();
+            btn.classList.remove('loading');
+            btn.textContent = '🎯 更新推荐';
+        }
+    });
+}
+
+function fallbackRender() {
+    if (allBuildings.length > 0) {
+        // 本地筛选
+        var filtered = allBuildings;
+        if (selectedDynasties.length > 0) {
+            filtered = filtered.filter(function(b) {
+                return selectedDynasties.indexOf(b.dynasty_name) !== -1;
+            });
+        }
+        if (selectedRegions.length > 0) {
+            filtered = filtered.filter(function(b) {
+                return selectedRegions.indexOf(b.region_name) !== -1;
+            });
+        }
+        if (selectedTypes.length > 0) {
+            filtered = filtered.filter(function(b) {
+                return selectedTypes.indexOf(b.structure_type_name) !== -1;
+            });
+        }
+        if (filtered.length === 0) filtered = allBuildings;
+        // 最多显示10条
+        filtered = filtered.slice(0, 10);
+        var mapped = filtered.map(function(b) {
+            return {
+                bid: b.bid,
+                bname: b.bname,
+                dynasty: b.dynasty_name || b.dynasty,
+                region: b.region_name || b.region,
+                structure_type: b.structure_type_name || b.structure_type,
+                introduction: (b.introduction || '').substring(0, 150),
+                image_url: b.image_url
+            };
+        });
+        renderCards(mapped);
+    } else {
+        renderEmptyState();
+    }
+}
+
+// ===== 渲染推荐卡片 =====
+function renderCards(items) {
+    var grid = document.getElementById('recGrid');
+    if (!items || items.length === 0) {
+        renderEmptyState();
+        return;
+    }
+    grid.innerHTML = '';
+    items.forEach(function(item) {
+        var dynastyAttr = item.dynasty ? ' data-d="' + item.dynasty + '"' : '';
+        var imgSrc = item.image_url || 'img/太和殿-明清-北京故宫/taihe_01.jpg';
+        var card = document.createElement('div');
+        card.className = 'rec-card';
+        card.setAttribute('data-bid', item.bid);
+
+        card.innerHTML =
+            '<img class="rec-card-img" src="' + imgSrc + '" alt="' + (item.bname || '') + '" onerror="this.src=\'img/太和殿-明清-北京故宫/taihe_01.jpg\'" />' +
+            '<div class="rec-card-body">' +
+                '<div class="rec-card-name">' + (item.bname || '未命名建筑') + '</div>' +
+                '<div class="rec-card-meta">' +
+                    (item.dynasty ? '<span class="meta-tag dynasty"' + dynastyAttr + '>' + item.dynasty + '</span>' : '') +
+                    (item.region ? '<span class="meta-tag region">' + item.region + '</span>' : '') +
+                    (item.structure_type ? '<span class="meta-tag type">' + item.structure_type + '</span>' : '') +
+                '</div>' +
+                '<div class="rec-card-desc">' + (item.introduction || '暂无简介') + '</div>' +
+            '</div>';
+        grid.appendChild(card);
+    });
+}
+
+function renderEmptyState() {
+    var grid = document.getElementById('recGrid');
+    grid.innerHTML =
+        '<div class="empty-state">' +
+            '<div class="empty-icon">🏛</div>' +
+            '<p>暂无推荐结果，请调整偏好设置后重试</p>' +
+        '</div>';
+}
+
+// ===== ECharts 旭日图 =====
+var sunburstChartInstance = null;
+function renderSunburst() {
+    var dom = document.getElementById('sunburstChart');
+    if (!dom || !window.echarts) return;
+    sunburstChartInstance = echarts.init(dom);
+
+    // 构建层级数据：朝代 → 地域 → 类型
+    var hierarchy = {};
+    allBuildings.forEach(function(b) {
+        var dynasty = b.dynasty_name || b.dynasty || '未知';
+        var region = b.region_name || b.region || '未知';
+        var type = b.structure_type_name || b.structure_type || '未知';
+        if (!hierarchy[dynasty]) hierarchy[dynasty] = {};
+        if (!hierarchy[dynasty][region]) hierarchy[dynasty][region] = {};
+        if (!hierarchy[dynasty][region][type]) hierarchy[dynasty][region][type] = 0;
+        hierarchy[dynasty][region][type]++;
+    });
+
+    var sunburstData = [];
+    Object.keys(hierarchy).forEach(function(dynasty) {
+        var children = [];
+        Object.keys(hierarchy[dynasty]).forEach(function(region) {
+            var subChildren = [];
+            Object.keys(hierarchy[dynasty][region]).forEach(function(type) {
+                subChildren.push({
+                    name: type,
+                    value: hierarchy[dynasty][region][type],
+                    itemStyle: { color: TYPE_COLORS[type] || '#8A9BC5' }
+                });
+            });
+            children.push({
+                name: region,
+                children: subChildren,
+                itemStyle: { color: REGION_COLORS[region] || '#A29192' }
+            });
+        });
+        sunburstData.push({
+            name: dynasty,
+            children: children,
+            itemStyle: { color: DYNASTY_COLORS[dynasty] || '#444C5E' }
+        });
+    });
+
+    // 如果没有建筑数据，使用默认数据
+    if (sunburstData.length === 0) {
+        sunburstData = [
+            { name: '唐', itemStyle: {color: '#A93226'}, children: [
+                { name: '山西', children: [
+                    {name:'宗教', value:3, itemStyle:{color:'#D4AC0D'}},
+                    {name:'楼阁', value:1, itemStyle:{color:'#1E8449'}}
+                ]},
+                { name: '陕西', children: [
+                    {name:'宫殿', value:2, itemStyle:{color:'#C0392B'}}
+                ]}
+            ]},
+            { name: '宋', itemStyle: {color: '#1E8449'}, children: [
+                { name: '浙江', children: [
+                    {name:'宗教', value:2, itemStyle:{color:'#D4AC0D'}}
+                ]},
+                { name: '河北', children: [
+                    {name:'防御', value:1, itemStyle:{color:'#6D7F99'}}
+                ]}
+            ]},
+            { name: '明', itemStyle: {color: '#884EA0'}, children: [
+                { name: '北京', children: [
+                    {name:'宫殿', value:3, itemStyle:{color:'#C0392B'}},
+                    {name:'坛庙', value:2, itemStyle:{color:'#E67E22'}}
+                ]},
+                { name: '江苏', children: [
+                    {name:'园林', value:2, itemStyle:{color:'#2471A3'}}
+                ]}
+            ]},
+            { name: '清', itemStyle: {color: '#2471A3'}, children: [
+                { name: '北京', children: [
+                    {name:'园林', value:3, itemStyle:{color:'#2471A3'}},
+                    {name:'宫殿', value:2, itemStyle:{color:'#C0392B'}}
+                ]},
+                { name: '河北', children: [
+                    {name:'园林', value:2, itemStyle:{color:'#2471A3'}}
+                ]}
+            ]}
+        ];
+    }
+
+    var option = {
+        tooltip: {
+            trigger: 'item',
+            backgroundColor: 'rgba(42,50,70,0.92)',
+            borderColor: 'rgba(138,155,197,0.4)',
+            textStyle: {
+                color: '#F0F2F5',
+                fontFamily: "'Noto Serif SC', 'SimSun', serif",
+                fontSize: 12
+            },
+            formatter: function(params) {
+                var path = params.treePathInfo.map(function(p) { return p.name; }).filter(function(n) { return n; });
+                return path.join(' → ') + (params.value ? ' (' + params.value + ')' : '');
+            }
+        },
+        series: [{
+            type: 'sunburst',
+            radius: ['15%', '90%'],
+            data: sunburstData,
+            sort: null,
+            emphasis: {
+                focus: 'ancestor'
+            },
+            levels: [
+                {},
+                {
+                    r0: '15%', r: '40%',
+                    label: {
+                        rotate: 'tangential',
+                        fontSize: 11,
+                        fontFamily: "'Noto Serif SC', serif",
+                        color: '#F0F2F5'
+                    },
+                    itemStyle: { borderWidth: 2, borderColor: 'rgba(240,242,245,0.6)' }
+                },
+                {
+                    r0: '40%', r: '65%',
+                    label: {
+                        rotate: 'tangential',
+                        fontSize: 10,
+                        fontFamily: "'Noto Serif SC', serif",
+                        color: '#F0F2F5'
+                    },
+                    itemStyle: { borderWidth: 1, borderColor: 'rgba(240,242,245,0.4)' }
+                },
+                {
+                    r0: '65%', r: '90%',
+                    label: {
+                        position: 'outside',
+                        fontSize: 9,
+                        fontFamily: "'Noto Serif SC', serif",
+                        color: '#4A5568',
+                        padding: 2
+                    },
+                    itemStyle: { borderWidth: 1, borderColor: 'rgba(240,242,245,0.3)' }
+                }
+            ]
+        }]
+    };
+    sunburstChartInstance.setOption(option);
+}
+
+// ===== ECharts 矩形树图 =====
+var treemapChartInstance = null;
+function renderTreemap() {
+    var dom = document.getElementById('treemapChart');
+    if (!dom || !window.echarts) return;
+    treemapChartInstance = echarts.init(dom);
+
+    // 构建类型分布数据
+    var typeCount = {};
+    allBuildings.forEach(function(b) {
+        var type = b.structure_type_name || b.structure_type || '未知';
+        if (!typeCount[type]) typeCount[type] = 0;
+        typeCount[type]++;
+    });
+
+    var treemapData = [];
+    Object.keys(typeCount).forEach(function(type) {
+        treemapData.push({
+            name: type,
+            value: typeCount[type],
+            itemStyle: { color: TYPE_COLORS[type] || '#8A9BC5' }
+        });
+    });
+
+    // 如果没有建筑数据，使用默认数据
+    if (treemapData.length === 0) {
+        treemapData = [
+            { name: '宫殿', value: 8,  itemStyle: {color: TYPE_COLORS['宫殿'] || '#C0392B'} },
+            { name: '宗教', value: 12, itemStyle: {color: TYPE_COLORS['宗教'] || '#D4AC0D'} },
+            { name: '园林', value: 7,  itemStyle: {color: TYPE_COLORS['园林'] || '#2471A3'} },
+            { name: '民居', value: 5,  itemStyle: {color: TYPE_COLORS['民居'] || '#884EA0'} },
+            { name: '防御', value: 4,  itemStyle: {color: TYPE_COLORS['防御'] || '#6D7F99'} },
+            { name: '坛庙', value: 6,  itemStyle: {color: TYPE_COLORS['坛庙'] || '#E67E22'} },
+            { name: '楼阁', value: 3,  itemStyle: {color: TYPE_COLORS['楼阁'] || '#1E8449'} },
+            { name: '纪念', value: 2,  itemStyle: {color: '#B7950B'} }
+        ];
+    }
+
+    var option = {
+        tooltip: {
+            backgroundColor: 'rgba(42,50,70,0.92)',
+            borderColor: 'rgba(138,155,197,0.4)',
+            textStyle: {
+                color: '#F0F2F5',
+                fontFamily: "'Noto Serif SC', 'SimSun', serif",
+                fontSize: 12
+            },
+            formatter: function(params) {
+                return params.name + ': ' + params.value + ' 座';
+            }
+        },
+        series: [{
+            type: 'treemap',
+            roam: false,
+            nodeClick: false,
+            data: treemapData,
+            label: {
+                show: true,
+                fontSize: 13,
+                fontFamily: "'Noto Serif SC', serif",
+                color: '#F0F2F5',
+                formatter: function(params) {
+                    return params.name + '\n' + params.value + '座';
+                }
+            },
+            breadcrumb: { show: false },
+            itemStyle: {
+                borderColor: 'rgba(240,242,245,0.5)',
+                borderWidth: 2,
+                gapWidth: 2
+            },
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(138,155,197,0.5)',
+                    borderColor: '#8A9BC5',
+                    borderWidth: 3
+                }
+            }
+        }]
+    };
+    treemapChartInstance.setOption(option);
+}
+
+// ===== 渲染图表 =====
+function renderCharts() {
+    renderSunburst();
+    renderTreemap();
+}
+
+// ===== 颜色工具 =====
+function adjustAlpha(hex, alpha) {
+    var r = parseInt(hex.slice(1,3), 16);
+    var g = parseInt(hex.slice(3,5), 16);
+    var b = parseInt(hex.slice(5,7), 16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+}
+
+// ===== 窗口自适应 =====
+window.addEventListener('resize', function() {
+    if (sunburstChartInstance) sunburstChartInstance.resize();
+    if (treemapChartInstance) treemapChartInstance.resize();
+});
+
+// ===== 初始化 =====
+(function() {
+    function init() {
+        loadLocalPrefs();
+        initTagInteraction();
+        fetchMetaData();
+    }
+
+    if (window.jQuery) {
+        $(document).ready(init);
+    } else {
+        // jQuery 未加载，等待 DOM 完成后再初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    }
+})();
+</script>
+
+</body>
+</html>

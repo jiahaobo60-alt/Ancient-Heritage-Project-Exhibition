@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
+    <title>山川异域，风月同天</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/introduction.css"/>
+
+</head>
+
+<body class="bg01">
+<nav id="nav-1">
+    <div class="div-big">
+        <div class="div-left">
+            <text class="nav-topic">个性化文旅推荐与可视化平台</text>
+        </div>
+        <div class="div-center">
+            <a class="link-1" href="space.html">空间漫游</a>
+            <a class="link-1" href="know.html">民族之窗</a>
+            <a class="link-1" href="time.html">时间之境</a>
+            <a class="link-1" href="3d_architecture.html">3D展示</a>
+            <a class="link-1" href="indivisual.html">喜好映射</a>
+            <a class="link-1" href="chat.html">AI助手</a>
+        </div>
+        <div class="div-right">
+            <!-- <div class="right">
+                <input id="search-input" class="nav-search" type="text" placeholder="请输入要搜索的关键词" />
+                <button type="submit" onclick="search()" id="search-button">搜索</button>
+            </div> -->
+        </div>
+    </div>
+</nav>
+
+
+<div>
+    <a class="back" href="time.html">《《返回</a>
+</div>
+
+<html style="font-size: 14px;">
+<head>
+
+    <link rel="stylesheet" type="text/css" href="./introduction_files/global.css">
+    <script src="./js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <script src="./js/startLoading.js"></script>
+
+
+    <script type="text/javascript">
+        var kw = decodeURIComponent(getUrlParams("kw"));
+        var datalist = [];
+
+
+        window.onload = function () {
+            var mask = document.createElement('div');
+            mask.style.width = window.innerWidth + 'px';
+            mask.style.height = window.innerHeight + 'px';
+            mask.style.background = '#000000';
+            mask.style.opacity = '.85';
+            mask.style.position = 'fixed';
+            mask.style.top = '0';
+            mask.style.left = '0';
+            mask.style.zIndex = "8888";
+            document.body.appendChild(mask);
+            startLoading();
+            $.ajax({
+                // url: "http://localhost:8000/api/details?kw=" + kw,
+                url: BASE_URL + '/api/details?kw=' + kw,
+                type: "get",
+                dataType: "json",
+                success: function (data) {
+                    /*这个方法里是ajax发送请求成功之后执行的代码*/
+                    datalist = data.results;
+                    showData(data.results, 0);//仅做数据展示
+                    showRelevant(data.results);
+                    document.body.removeChild(mask);
+                    stopLoading();
+                },
+                error: function (msg) {
+                    alert("ajax连接异常：" + msg);
+                }
+
+            });
+
+        };
+
+        //展示数据
+        function getUrlParams(key) {
+            var url = window.location.search.substr(1);
+            if (url == '') {
+                return false;
+            }
+            var paramsArr = url.split('&');
+            for (var i = 0; i < paramsArr.length; i++) {
+                var combina = paramsArr[i].split("=");
+                if (combina[0] == key) {
+                    return combina[1];
+                }
+            }
+            return false;
+        };
+
+        function showData(data, i) {
+            document.getElementById("project_id").innerHTML = data[i].project_id;
+            document.getElementById("number").innerHTML = data[i].number;
+            document.getElementById("public_time").innerHTML = data[i].public_time;
+            document.getElementById("category").innerHTML = data[i].category;
+            document.getElementById("type").innerHTML = data[i].type;
+            document.getElementById("district").innerHTML = data[i].district;
+            document.getElementById("protection_department").innerHTML = data[i].protection_department;
+            document.getElementById("introduction").innerHTML = data[i].introduction;
+            document.getElementById("name").innerHTML = data[i].name;
+        }
+
+        function showRelevantIntroduction(data) {
+            document.body.scrollTop = document.documentElement.scrollTop = 0;
+            showData(datalist, data.value);
+        }
+
+        function showRelevant(data) {
+            var relevant_project = document.getElementById("relevant_project")
+            var a = "<table><tbody>"  //变量a储存<ul>开始标签
+            a += "<tr>\n" +
+                "                        <th width=\"150\">编号</th>\n" +
+                "                        <th width=\"215\">项目名称</th>\n" +
+                "                        <th width=\"180\">类型</th>\n" +
+                "                        <th>申报地区或单位</th>\n" +
+                "                    </tr>"
+            a += "<tr>"
+            for (var i = 0; i < data.length; i++) {  //遍历list数组
+                a += "<tr>"
+                a += "<td>" + "<div class=\"name\">编号</div>" + data[i].project_id + "</td>"
+                a += "<td>" + "<div class=\"name\">项目名称</div>" + "<button href=\"#\" title=\"点击查看详细介绍\" onclick='showRelevantIntroduction(this)'" + " value=" + i + ">" + data[i].name + "</button></td>"
+                a += "<td>" + "<div class=\"name\">类别</div>" + data[i].category + "</td>"
+                a += "<td>" + "<div class=\"name\">申报地区或单位</div>" + data[i].district + "</td>"
+                a += "</tr>"
+            }
+            a += "</tr>"
+            a += "</tbody></table>"
+            relevant_project.innerHTML = a  //向relevant_project中写入内容
+
+        }
+
+
+    </script>
+
+
+</head>
+    <script>
+
+        function gettypeslike() {
+            var nonZerotypes = [];
+            for (var t in types) {
+                if (types[t] !== 0) {
+                    nonZerotypes.push({ t: t, value: types[t] });
+                }
+            }
+
+            // 按值的大小从大到小排序
+            nonZerotypes.sort((a, b) => b.value - a.value);
+
+            // 获取省份列表
+            var sortedtypes = nonZerotypes.map(item => item.province);
+
+            // 打印排序后的省份列表
+            console.log(sortedtypes);
+            localStorage.setItem('typeslike', JSON.stringify(sortedtypes));
+        }
+    </script>
+
+<body>
+
+
+<style>
+    body {
+        color: #fcf8e3;
+    }
+
+    .article-mod2 .table .p {
+        padding: 15px 20px;
+        font-size: 24px;
+    }
+
+    .article-mod2 .table {
+        margin-bottom: 20px;
+    }
+
+    .inherit_xx1 .text .p {
+        padding-bottom: 0px;
+        font-size: 20px;
+    }
+
+    .x-tables table td {
+        color: #FFFFFF;
+        font-size: 18px;
+    }
+
+    th {
+        text-align: center;
+    }
+
+
+    .article-mod2 {
+    }
+
+    .article-mod2 .t_head {
+        padding: 36px 0 32px;
+    }
+
+    .article-mod2 .table {
+        margin-bottom: 40px;
+        border-top: 1px dashed #b5b5b5;
+        font-family: "微软雅黑";
+        overflow: hidden;
+    }
+
+    .article-mod2 .table table {
+        width: 100%;
+    }
+
+    .article-mod2 .table tr {
+        border-bottom: 1px dashed #b5b5b5;
+    }
+
+    .article-mod2 .table td {
+        width: 50%;
+    }
+
+    .article-mod2 .table .p {
+        padding: 19px 30px;
+        font-size: 24px;
+    }
+
+    .h30 {
+        font-size: 40px;
+        text-align: center;
+    }
+
+
+    .inherit_xx1 .t_head {
+        position: relative;
+        padding-bottom: 60px;
+    }
+
+    .inherit_xx1 .btn_wp {
+        position: absolute;
+        bottom: 22px;
+        right: 0;
+        font-family: "微软雅黑";
+    }
+
+    .inherit_xx1 .btn_wp .btn1 {
+        display: inline-block;
+        line-height: 30px;
+        height: 30px;
+        font-size: 18px;
+        color: #972a2a;
+        padding: 0 25px;
+    }
+
+    .inherit_xx1 .btn_wp .btn1 img {
+        position: relative;
+        top: -2px;
+        margin-right: 6px;
+    }
+
+    .inherit_xx1 .btn_wp .video_btn {
+        border-left: 1px solid #b5b5b5;
+    }
+
+    .inherit_xx1 .cont {
+        font-family: "微软雅黑";
+    }
+
+    .inherit_xx1 .cont .line:first-child {
+        border-top: 1px dashed #b5b5b5;
+    }
+
+    .inherit_xx1 .cont .line {
+        overflow: hidden;
+        border-bottom: 1px dashed #b5b5b5;
+    }
+
+    .inherit_xx1 .cont .line .p {
+        float: left;
+        padding: 20px 2%;
+        width: 46%;
+        font-size: 24px;
+    }
+
+    .inherit_xx1 .text {
+        font-family: "微软雅黑";
+        padding: 0px 28px 30px;
+        position: relative;
+    }
+
+    .inherit_xx1 .text .p {
+        font-size: 20px;
+        line-height: 1.6;
+        padding-bottom: 20px;
+        text-align: justify;
+        text-indent: 2em;
+    }
+
+    .inherit_xx2 .tit {
+        padding-bottom: 24px;
+    }
+
+    .inherit_xx2 .tit .h24 .ico {
+        width: 30px;
+        height: auto;
+        display: inline-block;
+        margin-right: 10px;
+        position: relative;
+        top: -2px;
+    }
+
+    .inherit_xx2 .tit .h24 .ico img {
+        width: 100%;
+        height: auto;
+    }
+
+    .x-tables table {
+        width: 100%;
+        font-family: "微软雅黑";
+    }
+
+    .x-tables table tr:first-child {
+    }
+
+    .x-tables table th {
+        font-size: 20px;
+        color: #fff;
+        font-weight: normal;
+        line-height: 68px;
+    }
+
+    .x-tables table td {
+        font-size: 18px;
+        color: #fcf8e3;
+        padding: 23px 0;
+        text-align: center;
+        border-bottom: 1px dashed #b5b5b5;
+    }
+
+    .x-tables table td .name {
+        display: none;
+    }
+
+    .x-tables table tr:hover td {
+        color: #972a2a;
+    }
+
+    .x-tables table td {
+        font-size: 14px;
+        color: #fcf8e3;
+        padding: 23px 0;
+        text-align: center;
+        border-bottom: 1px dashed #b5b5b5;
+    }
+
+    .back {
+        display: inline-block;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        color: #FFFFFF;
+        -webkit-appearance: none;
+        text-align: center;
+        box-sizing: border-box;
+        outline: none;
+        margin: 0;
+        transition: .1s;
+        font-weight: 500;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        padding: 12px 20px;
+        font-size: 20px;
+        border-radius: 4px;
+        margin-top: 10px;
+        margin-left: 10px;
+    }
+    #details_button{
+        color:goldenrod;
+        font-size: 20px;
+    }
+</style>
+
+<div class="x-container" style="min-height: 420px;">
+    <div class="inherit_xx1 article-mod2">
+        <div class="x-wrap">
+            <div class="t_head">
+                <div class="h30" id="name">{{name}}</div>
+                <div class="btn_wp">
+                            <!-- 在这里添加爱心图标 -->
+                            <span class="heart-icon">&#10084;</span>
+                </div>
+            </div>
+
+            <div class="table">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div class="p"><span>项目序号：</span> <span id="project_id">{{project_id}}</span></div>
+                        </td>
+                        <td>
+                            <div class="p"><span>项目编号：</span> <span id="number">{{number}}}</span></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="p"><span>公布时间：</span> <span id="public_time">{{public_time}}}</span></div>
+                        </td>
+                        <td>
+                            <div class="p"><span>类别：</span> <span id="category">{{category}}}</span></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="p"><span>类型：</span> <span id="type">{{type}}}</span></div>
+                        </td>
+                        <td>
+                            <div class="p"><span>申报地区或单位：</span> <span id="district">{{district}}}</span></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="p"><span>保护单位：</span> <span id="protection_department">{{protection_department}}}</span>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text">
+                <span class="p" id="introduction">{{introduction}}</span><br><button id='details_button' onclick="showDetailedDescription()">点击查看详细介绍>></button>
+                <div class="t_line">
+                    <div class="bd"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="inherit_xx2">
+        <div class="x-wrap">
+            <div class="tit">
+                <div class="h24">
+                    <div class="ico"><img src="./introduction_files/icon12.png" title="" alt=""></div>
+                    相关项目
+                </div>
+            </div>
+
+            <div class="x-tables" id="relevant_project">
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    
+
+
+
+            // 获取爱心图标元素
+            var heartIcon = document.querySelector('.heart-icon');
+
+            // 初始状态的样式
+            heartIcon.style.color = 'white'; // 白色边框
+            heartIcon.style.padding = '10px';
+            heartIcon.style.borderRadius = '50%';
+            heartIcon.style.fontSize = '24px';
+
+            var isLiked = false; // 初始状态为未点击
+
+            // 添加点击事件
+            heartIcon.addEventListener('click', function () {
+    if (isLiked) {
+        heartIcon.style.color = 'white';
+    } else {
+        heartIcon.style.color = 'red';
+        heartIcon.style.border = 'none';
+
+        var thistype = category.textContent;
+        console.log("data: ", thistype);
+
+        let types = JSON.parse(localStorage.getItem("typeslike")) || {};
+        types[thistype] = (types[thistype] || 0) + 1;
+        localStorage.setItem("typeslike", JSON.stringify(types));
+
+        console.log(types);
+        gettypeslike();
+    }
+
+    isLiked = !isLiked;
+});
+
+                    
+            function showDetailedDescription(){
+        const name = document.getElementById("name").innerHTML
+        if(name === "打铁花") window.location.href = "iron_fire_intro/iron_fire_intro.html"
+        else if(name === "雪顿节") window.location.href = "ShoDunFestival_intro/shoton_intro.html"
+        else{window.open("https://baike.baidu.com/search/word?fromModule=lemma_search-box&lemmaId=&word=" + name)}
+    
+    }
+</script>
+
+
+<body style="height:2000px;">
+<button id="gototop" style="position:fixed;right:0;bottom:0">回到顶部</button>
+<script>
+    gototop.onclick = function () {
+        console.log("click")
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
+    }
+</script>
+</body>
+
+<button> </button>
+
+</body>
+
+
+</html>

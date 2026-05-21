@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营造知识 - 营造中华</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/time.css"/>
+    <link rel="stylesheet" href="css/architecture_common.css"/>
+    <style>
+        :root {
+            --primary:      #8B4513;
+            --primary-light:#A0522D;
+            --secondary:    #D4A574;
+            --accent:       #8B4513;
+            --bg:           #F7F3ED;
+            --bg-card:      #FFFFFF;
+            --text-main:    #3E2723;
+            --text-sub:     #6D4C41;
+            --text-muted:   #9E9E9E;
+            --border:       rgba(139,69,19,0.14);
+            --shadow-sm:    0 2px 8px rgba(62,39,35,0.08);
+            --shadow-md:    0 6px 20px rgba(62,39,35,0.12);
+            --shadow-lg:    0 16px 48px rgba(62,39,35,0.18);
+            --radius-md:    12px;
+            --radius-lg:    20px;
+            --radius-full:  9999px;
+            --transition:   0.32s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            color: var(--text-main);
+        }
+
+        /* 导航栏 */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: rgba(139,69,19,0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 0 48px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.22);
+        }
+
+        .nav-logo {
+            color: #F7F3ED;
+            font-size: 1.4em;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links { display: flex; gap: 4px; }
+
+        .nav-link {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: all var(--transition);
+            font-size: 0.95em;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(212,165,116,0.35);
+            color: #F7F3ED;
+        }
+
+        /* 英雄区 */
+        .page-hero {
+            margin-top: 64px;
+            background: linear-gradient(135deg, #4A2810 0%, #8B4513 50%, #A0522D 100%);
+            color: #F7F3ED;
+            text-align: center;
+            padding: 52px 24px 44px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23F5F5DC' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .hero-title {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+            position: relative;
+        }
+
+        .hero-subtitle {
+            font-size: 1em;
+            opacity: 0.8;
+            letter-spacing: 0.06em;
+            position: relative;
+        }
+
+        /* 主内容 */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        /* 搜索行 */
+        .search-row {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto 32px;
+            gap: 10px;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-full);
+            padding: 8px 8px 8px 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 0.95em;
+            background: transparent;
+            color: var(--text-main);
+            font-family: inherit;
+        }
+
+        .search-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all var(--transition);
+            font-family: inherit;
+        }
+
+        .search-btn:hover {
+            background: var(--primary-light);
+        }
+
+        /* 分类筛选芯片 */
+        .category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 36px;
+        }
+
+        .category-tag {
+            padding: 7px 20px;
+            background: var(--bg-card);
+            color: var(--text-sub);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 0.9em;
+            font-family: inherit;
+        }
+
+        .category-tag:hover { border-color: var(--secondary); color: var(--primary); }
+
+        .category-tag.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* 知识卡片网格 */
+        .knowledge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .knowledge-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            cursor: pointer;
+        }
+
+        .knowledge-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--secondary);
+        }
+
+        .knowledge-image {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, rgba(139,69,19,0.12) 0%, rgba(212,165,116,0.25) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5em;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .knowledge-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .knowledge-card:hover .knowledge-image img {
+            transform: scale(1.06);
+        }
+
+        .knowledge-image-icon {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5em;
+            background: linear-gradient(135deg, rgba(139,69,19,0.12) 0%, rgba(212,165,116,0.25) 100%);
+        }
+
+        .knowledge-img-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(139,69,19,0.85);
+            color: #F7F3ED;
+            font-size: 0.72em;
+            padding: 3px 10px;
+            border-radius: 99px;
+            backdrop-filter: blur(4px);
+        }
+
+        .knowledge-content { padding: 22px; }
+
+        .knowledge-category {
+            display: inline-block;
+            background: rgba(139,69,19,0.1);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.8em;
+            margin-bottom: 10px;
+            border: 1px solid rgba(139,69,19,0.2);
+        }
+
+        .knowledge-name {
+            font-size: 1.3em;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .knowledge-desc {
+            color: var(--text-sub);
+            line-height: 1.7;
+            font-size: 0.9em;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-content {
+            background: var(--bg-card);
+            width: 90%;
+            max-width: 860px;
+            max-height: 88vh;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            width: 36px; height: 36px;
+            background: rgba(245,245,220,0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.3em;
+            cursor: pointer;
+            z-index: 10;
+            transition: all var(--transition);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .modal-close:hover { background: var(--accent); transform: rotate(90deg); }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 28px 32px;
+        }
+
+        .modal-title { font-size: 1.9em; margin-bottom: 8px; }
+        .modal-subtitle { font-size: 0.95em; opacity: 0.85; }
+
+        .modal-body {
+            padding: 28px 32px;
+            overflow-y: auto;
+            max-height: 58vh;
+        }
+
+        .modal-section { margin-bottom: 24px; }
+
+        .modal-section-title {
+            font-size: 1.05em;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-left: 12px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .modal-text { line-height: 1.85; color: var(--text-sub); font-size: 0.93em; }
+
+        .modal-quote {
+            background: rgba(139,69,19,0.06);
+            border-left: 4px solid var(--secondary);
+            padding: 18px 20px;
+            margin: 18px 0;
+            font-style: italic;
+            color: var(--text-sub);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            font-size: 0.92em;
+            line-height: 1.75;
+        }
+
+        /* 页脚 */
+        .footer {
+            background: var(--text-main);
+            color: rgba(245,245,220,0.75);
+            text-align: center;
+            padding: 36px 24px;
+            font-size: 0.88em;
+            line-height: 2.2;
+        }
+
+        @media (max-width: 768px) {
+            .nav-bar { padding: 0 16px; }
+            .nav-link { font-size: 0.85em; padding: 6px 10px; }
+            .knowledge-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            营造中华
+        </a>
+        <div class="nav-links">
+            <a href="space.html" class="nav-link">空间漫游</a>
+            <a href="know.html" class="nav-link">民族之窗</a>
+            <a href="time.html" class="nav-link">时间之境</a>
+            <a href="3d_architecture.html" class="nav-link">3D展示</a>
+            <a href="indivisual.html" class="nav-link">喜好映射</a>
+            <a href="chat.html" class="nav-link">AI助手</a>
+        </div>
+    </nav>
+
+    <!-- 英雄区 -->
+    <div class="page-hero">
+        <h1 class="hero-title">营造知识库</h1>
+        <p class="hero-subtitle">探索中国古建筑的营造智慧与技艺精髓</p>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+        <!-- 搜索行 -->
+        <div class="search-row">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9E9E9E" stroke-width="2" style="flex-shrink:0">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="输入关键词，如：斗拱、庑殿顶、榫卯...">
+            <button class="search-btn" onclick="searchElements()">搜索</button>
+        </div>
+
+        <!-- 分类标签 -->
+        <div class="category-tags">
+            <button class="category-tag active" onclick="filterByCategory('all', this)">全部</button>
+            <button class="category-tag" onclick="filterByCategory('结构', this)">结构构件</button>
+            <button class="category-tag" onclick="filterByCategory('屋顶', this)">屋顶形式</button>
+            <button class="category-tag" onclick="filterByCategory('装饰', this)">装饰艺术</button>
+            <button class="category-tag" onclick="filterByCategory('材料', this)">建筑材料</button>
+        </div>
+
+        <!-- 知识卡片网格 -->
+        <div class="knowledge-grid" id="knowledgeGrid">
+            <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--primary)">
+                <div class="loading-ring" style="margin:0 auto 16px"></div>
+                <p>正在加载营造知识...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <div class="modal-subtitle" id="modalCategory"></div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-quote" id="modalOriginal"></div>
+                <div class="modal-section">
+                    <div class="modal-section-title">概念解释</div>
+                    <p class="modal-text" id="modalExplanation"></p>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">结构描述</div>
+                    <p class="modal-text" id="modalStructure"></p>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">功能作用</div>
+                    <p class="modal-text" id="modalFunction"></p>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">历史演变</div>
+                    <p class="modal-text" id="modalEvolution"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>© 2024 营造中华 - 中国古建筑史可视化平台</p>
+        <p>基于梁思成《中国建筑史》学术体系构建</p>
+    </footer>
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/architecture_common.js"></script>
+    <script>
+        // 全局变量
+        let allElements = [];
+        let filteredElements = [];
+        let currentCategory = 'all';
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadElements();
+            
+            // 搜索框回车事件
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchElements();
+                }
+            });
+        });
+
+        // 加载建筑元素数据（优先后端API，备用内置数据）
+        async function loadElements() {
+            try {
+                const response = await fetch(BASE_URL + '/architecture/elements/');
+                if (response.ok) {
+                    const data = await response.json();
+                    allElements = data.results || data;
+                    filteredElements = allElements;
+                    renderGrid();
+                    return;
+                }
+            } catch (e) {
+                console.warn('后端API不可用，使用内置知识库数据', e);
+            }
+            useDefaultData();
+        }
+
+        // 使用默认数据
+        function useDefaultData() {
+            allElements = [
+                {
+                    eid: 1,
+                    ename: '斗拱',
+                    category: '结构',
+                    original_text: '斗拱者，中国建筑所特有之结构也。其功用在以伸出之拱承受上部之荷载，转纳于下部之柱上。',
+                    explanation: '斗拱是中国古代建筑特有的结构构件，位于柱顶和屋檐之间，起到传递荷载、加深挑檐的作用。它由斗、拱、昂等构件组成，层层叠叠，既实用又美观。',
+                    structure_description: '斗拱主要由斗、拱、昂三部分组成。斗是方形木块，拱是弓形短木，昂是斜置构件。这些构件通过榫卯连接，形成悬挑结构。',
+                    function_description: '1. 结构功能：将屋顶荷载传递到柱子；2. 挑出功能：增加屋檐出挑深度；3. 抗震功能：柔性连接可缓冲地震力；4. 装饰功能：丰富建筑立面。',
+                    evolution: '唐代斗拱雄大，高度约占柱高一半；宋代斗拱比例变小，装饰性增强；明清斗拱成为纯装饰构件，排列密集。'
+                },
+                {
+                    eid: 2,
+                    ename: '庑殿顶',
+                    category: '屋顶',
+                    original_text: '庑殿顶者，四阿顶也。有一条正脊，四条垂脊，形成四坡五脊之形制。',
+                    explanation: '庑殿顶是中国古建筑等级最高的屋顶形式，有一条正脊和四条垂脊，形成四坡五脊的形制。多用于皇宫主殿和大型庙宇。',
+                    structure_description: '庑殿顶由一条正脊和四条垂脊组成，屋面呈四坡形。正脊位于屋顶最高处，垂脊从正脊两端延伸至屋檐四角。',
+                    function_description: '1. 等级象征：最高等级的屋顶形式；2. 排水功能：四坡排水，利于雨水排泄；3. 结构稳定：四面受力均衡，结构稳定。',
+                    evolution: '庑殿顶起源于汉代，唐代成熟，明清时期规制更加严格。重檐庑殿顶是最高等级，如太和殿。'
+                },
+                {
+                    eid: 3,
+                    ename: '歇山顶',
+                    category: '屋顶',
+                    original_text: '歇山顶者，由悬山顶与庑殿顶合成。上段呈悬山形象，下段似庑殿顶。',
+                    explanation: '歇山顶是中国古建筑中等级仅次于庑殿顶的屋顶形式，由悬山顶和庑殿顶结合而成。有一条正脊、四条垂脊和四条戗脊，形成九脊顶。',
+                    structure_description: '歇山顶可分为上下两段，上段呈悬山顶形象，下段类似庑殿顶。正脊两端各有两条垂脊和戗脊，形成山花。',
+                    function_description: '1. 等级象征：仅次于庑殿顶的高等级形式；2. 造型优美：山花部分丰富了建筑立面；3. 应用广泛：适用于宫殿、庙宇、城楼等。',
+                    evolution: '歇山顶起源于南北朝，唐代成熟，宋代以后广泛应用。重檐歇山顶等级很高，如天安门城楼。'
+                },
+                {
+                    eid: 4,
+                    ename: '抬梁式构架',
+                    category: '结构',
+                    original_text: '抬梁式者，于柱上架梁，梁上再抬梁，层叠而上，以承屋盖之重也。',
+                    explanation: '抬梁式是中国古建筑最高级的木构架形式，多用于宫殿、庙宇。特点是在柱上架梁，梁上再抬梁，层叠而上，形成宏大的室内空间。',
+                    structure_description: '抬梁式构架由柱、梁、檩、枋等构件组成。柱上承梁，梁上承檩，檩上铺椽。梁的跨度大，可获得较大的室内空间。',
+                    function_description: '1. 空间开阔：可获得较大的室内空间；2. 结构稳定：梁柱体系承载力强；3. 等级较高：多用于重要建筑。',
+                    evolution: '抬梁式构架起源于先秦，汉代成熟，唐宋时期发展完善，明清时期规制更加严格。'
+                },
+                {
+                    eid: 5,
+                    ename: '和玺彩画',
+                    category: '装饰',
+                    original_text: '和玺彩画者，等级最高之彩画也。以龙纹为主，绘于梁枋之上，用于皇宫主殿。',
+                    explanation: '和玺彩画是中国古建筑中等级最高的彩画形式，以龙纹为主要题材，用于皇宫主殿和大型庙宇。色彩以青、绿、红、金为主，富丽堂皇。',
+                    structure_description: '和玺彩画分为枋心、藻头、箍头三部分。枋心绘龙纹或锦纹，藻头绘旋花或西番莲，箍头绘回纹或万字纹。',
+                    function_description: '1. 等级象征：最高等级的彩画形式；2. 装饰美化：丰富建筑色彩；3. 保护木构：油漆可保护木材。',
+                    evolution: '和玺彩画形成于明代，清代发展成熟，规制更加严格。根据用金量的多少，又分为金龙和玺、龙凤和玺、龙草和玺等。'
+                }
+            ];
+            filteredElements = allElements;
+            renderGrid();
+        }
+
+        // 知识类型 → 配图映射（从 img 目录精选）
+        const KNOWLEDGE_IMAGES = {
+            '斗拱':      '../img/太和殿-明清-北京故宫/taihe_03.jpg',
+            '庑殿顶':    '../img/太和殿-明清-北京故宫/taihe_01.jpg',
+            '歇山顶':    '../img/晋祠圣母殿-宋代-山西太原/jinsheng_01.jpg',
+            '抬梁式构架':'../img/佛光寺东大殿-唐代-山西五台山/foguang_01.jpg',
+            '和玺彩画':  '../img/太和殿-明清-北京故宫/taihe_02.jpg',
+            '悬山顶':    '../img/苏州拙政园-明代-江苏苏州/zhuozheng_01.jpg',
+            '硬山顶':    '../img/苏州拙政园-明代-江苏苏州/zhuozheng_02.jpg',
+            '攒尖顶':    '../img/天坛-明清-北京/tiantan_01.jpg',
+            '旋子彩画':  '../img/颐和园-清代-北京/yiheyuan_01.jpg',
+            '苏式彩画':  '../img/苏州拙政园-明代-江苏苏州/zhuozheng_03.jpg',
+        };
+
+        const CATEGORY_BG_COLORS = {
+            '结构': 'linear-gradient(135deg,rgba(139,69,19,0.18),rgba(180,100,30,0.28))',
+            '屋顶': 'linear-gradient(135deg,rgba(42,92,149,0.15),rgba(90,140,200,0.22))',
+            '装饰': 'linear-gradient(135deg,rgba(196,30,58,0.12),rgba(220,80,80,0.20))',
+            '材料': 'linear-gradient(135deg,rgba(46,125,50,0.12),rgba(100,160,80,0.22))',
+        };
+
+        // 渲染网格
+        function renderGrid() {
+            const grid = document.getElementById('knowledgeGrid');
+            
+            if (filteredElements.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; padding: 50px; color: #8B4513;">没有找到相关元素</div>';
+                return;
+            }
+            
+            const categoryIcons = {
+                '结构': '⚙️',
+                '屋顶': '🏛️',
+                '装饰': '🎨',
+                '材料': '🪵',
+                'default': '📐'
+            };
+            
+            grid.innerHTML = filteredElements.map(element => {
+                const icon = categoryIcons[element.category] || categoryIcons['default'];
+                const imgSrc = KNOWLEDGE_IMAGES[element.ename];
+                const bgColor = CATEGORY_BG_COLORS[element.category] || CATEGORY_BG_COLORS['结构'];
+                const imgHtml = imgSrc
+                    ? `<img src="${imgSrc}" alt="${element.ename}" onerror="this.parentElement.style.background='${bgColor}';this.remove()">`
+                    : '';
+                return `
+                    <div class="knowledge-card" onclick="showDetail(${element.eid})">
+                        <div class="knowledge-image" style="background:${imgSrc ? 'transparent' : bgColor}">
+                            ${imgHtml}
+                            ${!imgSrc ? `<div class="knowledge-image-icon">${icon}</div>` : ''}
+                            <span class="knowledge-img-badge">${element.category}</span>
+                        </div>
+                        <div class="knowledge-content">
+                            <div class="knowledge-name">${element.ename}</div>
+                            <div class="knowledge-desc">${element.explanation || '暂无简介'}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 按分类筛选
+        function filterByCategory(category) {
+            currentCategory = category;
+            
+            // 更新标签样式
+            document.querySelectorAll('.category-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 筛选数据
+            if (category === 'all') {
+                filteredElements = allElements;
+            } else {
+                filteredElements = allElements.filter(e => e.category === category);
+            }
+            
+            renderGrid();
+        }
+
+        // 搜索元素
+        function searchElements() {
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            if (!keyword) {
+                filteredElements = currentCategory === 'all' 
+                    ? allElements 
+                    : allElements.filter(e => e.category === currentCategory);
+            } else {
+                filteredElements = allElements.filter(e => {
+                    const matchCategory = currentCategory === 'all' || e.category === currentCategory;
+                    const matchKeyword = e.ename.toLowerCase().includes(keyword) ||
+                                       (e.explanation && e.explanation.toLowerCase().includes(keyword));
+                    return matchCategory && matchKeyword;
+                });
+            }
+            
+            renderGrid();
+        }
+
+        // 显示详情
+        function showDetail(elementId) {
+            const element = allElements.find(e => e.eid === elementId);
+            if (!element) return;
+            
+            document.getElementById('modalTitle').textContent = element.ename;
+            document.getElementById('modalCategory').textContent = element.category + ' | 建筑元素';
+            document.getElementById('modalOriginal').textContent = '《梁思成中国建筑史》：' + (element.original_text || '暂无原文');
+            document.getElementById('modalExplanation').textContent = element.explanation || '暂无解释';
+            document.getElementById('modalStructure').textContent = element.structure_description || '暂无结构描述';
+            document.getElementById('modalFunction').textContent = element.function_description || '暂无功能描述';
+            document.getElementById('modalEvolution').textContent = element.evolution || '暂无演变信息';
+            
+            document.getElementById('detailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // 点击遮罩关闭
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // ESC键关闭
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+[
+  {
+    "dynasty_id": 1,
+    "dynasty_name": "汉代"
+  },
+  {
+    "dynasty_id": 2,
+    "dynasty_name": "魏晋南北朝"
+  },
+  {
+    "dynasty_id": 3,
+    "dynasty_name": "唐代"
+  },
+  {
+    "dynasty_id": 4,
+    "dynasty_name": "五代十国"
+  },
+  {
+    "dynasty_id": 5,
+    "dynasty_name": "宋代"
+  },
+  {
+    "dynasty_id": 6,
+    "dynasty_name": "辽金"
+  },
+  {
+    "dynasty_id": 7,
+    "dynasty_name": "元代"
+  },
+  {
+    "dynasty_id": 8,
+    "dynasty_name": "明代"
+  },
+  {
+    "dynasty_id": 9,
+    "dynasty_name": "清代"
+  }
+]

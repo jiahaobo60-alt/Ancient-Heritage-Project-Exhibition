@@ -1,0 +1,1759 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <title>飞檐翚影-飞檐翚影</title>
+    <link rel="stylesheet" href="css/architecture_common.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== 设计系统变量 ===== */
+        :root {
+            --primary:       #444C5E;
+            --primary-light: #5A6478;
+            --primary-dark:  #2A3246;
+            --secondary:     #A29192;
+            --accent:        #8A9BC5;
+            --accent-light:  #A8B8D8;
+            --bg:            #F0F2F5;
+            --bg-card:       #FFFFFF;
+            --bg-muted:      #E8EBF0;
+            --text-main:     #2A3246;
+            --text-sub:      #4A5568;
+            --text-muted:    #9E9E9E;
+            --text-light:    rgba(240,242,245,0.85);
+            --border:        rgba(68,76,94,0.14);
+            --border-light:  rgba(68,76,94,0.08);
+            --shadow-sm:     0 2px 8px rgba(42,50,70,0.08);
+            --shadow-md:     0 6px 20px rgba(42,50,70,0.12);
+            --shadow-lg:     0 16px 48px rgba(42,50,70,0.18);
+            --shadow-xl:     0 24px 64px rgba(42,50,70,0.24);
+            --radius-xs:     4px;
+            --radius-sm:     6px;
+            --radius-md:     12px;
+            --radius-lg:     20px;
+            --radius-xl:     28px;
+            --radius-full:   9999px;
+            --transition:    0.32s cubic-bezier(0.4,0,0.2,1);
+            --transition-fast: 0.18s ease;
+            /* 朝代色 */
+            --han-red:       #C0392B;
+            --weijin-gold:   #D4AC0D;
+            --tang-red:      #A93226;
+            --song-green:    #1E8449;
+            --liao-gold:     #B7950B;
+            --yuan-brown:    #7D6608;
+            --ming-brown:    #884EA0;
+            --qing-blue:     #2471A3;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== 导航栏 ===== */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: #444C5E;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 0 48px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.22);
+            transition: background var(--transition);
+        }
+
+        .nav-logo {
+            color: #F7F3ED;
+            font-size: 1.4em;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.08em;
+        }
+
+        .nav-logo-icon {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: #F7F3ED;
+        }
+
+        .nav-links { display: flex; gap: 4px; }
+
+        .nav-link {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+            font-size: 0.95em;
+            letter-spacing: 0.03em;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #A29192;
+            color: #F7F3ED;
+        }
+
+        .nav-user {
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .nav-user a {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color var(--transition);
+        }
+
+        .nav-user a:hover { color: #F7F3ED; }
+
+
+
+         /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139,69,19,0.15);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139,69,19,0.3);
+        }
+        
+        /* ===== 页面头部标题区 ===== */
+        .page-header {
+            padding-top: 96px;
+            padding-bottom: 24px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(93,43,10,0.08) 0%, transparent 100%);
+            position: relative;
+        }
+
+        /* 传统云纹装饰 */
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10'%3E%3Cpath d='M0,5 Q25,0 50,5 T100,5' stroke='%23D4A574' stroke-width='1' fill='none'/%3E%3C/svg%3E") repeat-x;
+            opacity: 0.6;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--text-main);
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .page-header h1 span {
+            background: linear-gradient(135deg, var(--accent), var(--liao-gold), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(196,30,58,0.1);
+        }
+
+        .page-header p {
+            color: var(--text-sub);
+            font-size: 0.95em;
+            letter-spacing: 0.08em;
+            font-style: italic;
+        }
+
+        /* ===== 主体布局（三栏） ===== */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 25% 50% 25%;
+            gap: 16px;
+            padding: 16px 24px 24px;
+            height: calc(100vh - 160px);
+            min-height: 600px;
+        }
+
+        /* ===== 面板卡片 ===== */
+        .panel {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 传统纹样边框 */
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+            opacity: 0.7;
+        }
+        .panel {
+            transition: box-shadow var(--transition);
+        }
+        .panel {
+            transition: box-shadow var(--transition);
+        }
+
+        .panel:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .panel-header {
+            padding: 14px 18px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+        }
+
+        .panel-header-icon {
+            width: 28px; height: 28px;
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: #F7F3ED;
+        }
+
+        .panel-header h3 {
+            font-size: 0.92rem;
+            color: var(--text-main);
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .panel-body {
+            flex: 1;
+            padding: 8px;
+            min-height: 0;
+            overflow-y: auto;
+        }
+
+        .panel-body > div {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ===== 左侧面板 ===== */
+        .left-panel {
+            grid-column: 1;
+            grid-row: 1 / 3;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* 搜索框 */
+        .search-box {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+        }
+
+        .search-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-muted);
+            border-radius: var(--radius-lg);
+            padding: 4px 4px 4px 14px;
+            border: 1.5px solid var(--border);
+            transition: all var(--transition);
+        }
+
+        .search-input-wrap:focus-within {
+            background: #fff;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(212,165,116,0.15);
+        }
+
+        .search-input-wrap input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 13px;
+            font-family: 'Noto Serif SC', serif;
+            color: var(--text-main);
+            padding: 6px 0;
+        }
+
+        .search-input-wrap input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #A29192, #8A9BC5);
+            color: #F7F3ED;
+            border: none;
+            border-radius: var(--radius-full);
+            padding: 6px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: 'Noto Serif SC', serif;
+            letter-spacing: 0.05em;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(162,145,146,0.4);
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
+        }
+
+        .filter-title {
+            font-size: 0.82rem;
+            color: var(--text-sub);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-title::before {
+            content: '';
+            width: 3px;
+            height: 12px;
+            background: linear-gradient(180deg, var(--accent), var(--liao-gold));
+            border-radius: 2px;
+        }
+
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-height: 120px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--secondary) transparent;
+        }
+
+        .filter-chips::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .filter-chips::-webkit-scrollbar-thumb {
+            background: var(--secondary);
+            border-radius: 2px;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            border: 1.5px solid var(--border);
+            background: var(--bg-card);
+            font-size: 0.78rem;
+            font-family: 'Noto Serif SC', serif;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            user-select: none;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--secondary);
+            background: rgba(212,165,116,0.08);
+        }
+
+        .filter-chip.active {
+            border-color: var(--accent);
+            background: rgba(196,30,58,0.08);
+            color: var(--accent);
+        }
+
+        .filter-chip .chip-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* 重置按钮 */
+        .reset-btn {
+            margin-left: auto;
+            background: var(--bg-muted);
+            border: 1.5px solid #A29192;
+            border-radius: var(--radius-full);
+            padding: 2px 10px;
+            font-size: 0.72rem;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        .reset-btn:hover {
+            background: #A29192;
+            color: #fff;
+            border-color: #A29192;
+        }
+
+        /* 筛选状态提示 */
+        .filter-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: linear-gradient(135deg, rgba(196,30,58,0.06), rgba(201,168,76,0.06));
+            border-radius: var(--radius-md);
+            margin: 8px 0;
+            border: 1px solid rgba(196,30,58,0.12);
+        }
+
+        .status-icon {
+            font-size: 1rem;
+        }
+
+        .status-text {
+            font-size: 0.78rem;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+
+        /* 建筑列表 */
+        .building-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 10px;
+        }
+
+        .building-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .building-list::-webkit-scrollbar-thumb {
+            background: rgba(139,69,19,0.2);
+            border-radius: 4px;
+        }
+        .building-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 1px solid transparent;
+            margin-bottom: 4px;
+        }
+
+        .building-card:hover {
+            background: rgba(212,165,116,0.08);
+            border-color: var(--border);
+        }
+
+        .building-card.highlighted {
+            background: rgba(196,30,58,0.06);
+            border-color: rgba(196,30,58,0.2);
+        }
+
+        .building-card-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            margin-top: 4px;
+            flex-shrink: 0;
+            box-shadow: 0 0 6px rgba(0,0,0,0.15);
+        }
+
+        .building-card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .building-card-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .building-card-meta {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .building-count-badge {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 8px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        /* ===== 中间地图区域 ===== */
+        .center-map {
+            grid-column: 2;
+            grid-row: 1 / 3;
+        }
+
+        .center-map .panel-body {
+            padding: 0;
+            position: relative;
+        }
+
+        #scatterMap {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ===== 右侧面板 ===== */
+        .right-panel {
+            grid-column: 3;
+            grid-row: 1 / 3;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .right-panel .panel {
+            flex: 1;
+            min-height: 0;
+        }
+
+        .right-panel .panel-body {
+            padding: 4px;
+        }
+
+        /* 面板图标背景色 */
+        .icon-search    { background: linear-gradient(135deg, var(--tang-red), var(--accent-light)); }
+        .icon-map       { background: linear-gradient(135deg, var(--song-green), #3CB371); }
+        .icon-pie       { background: linear-gradient(135deg, var(--liao-gold), #DAA520); }
+        .icon-bar       { background: linear-gradient(135deg, var(--ming-brown), var(--primary-light)); }
+        .icon-type      { background: linear-gradient(135deg, var(--qing-blue), #6495ED); }
+
+        /* ===== 建筑详情弹窗 ===== */
+        .popup-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(42,50,70,0.5);
+            z-index: 9998;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .popup-container {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border);
+            padding: 28px;
+            z-index: 9999;
+            min-width: 340px;
+            max-width: 520px;
+            animation: popupIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes popupIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .popup-container h2 {
+            font-size: 1.3rem;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            padding-right: 32px;
+            letter-spacing: 0.05em;
+        }
+
+        .popup-dynasty-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .popup-container p {
+            font-size: 0.88rem;
+            color: var(--text-sub);
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+
+        .popup-container .popup-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 10px;
+            margin-bottom: 4px;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--text-muted);
+            transition: color var(--transition-fast);
+            line-height: 1;
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            background: var(--bg-muted);
+        }
+
+        .popup-close:hover {
+            color: var(--accent);
+            background: rgba(196,30,58,0.1);
+        }
+
+        /* ===== 底部 ===== */
+        footer {
+            background: var(--primary-dark);
+            color: #F7F3ED99;
+            text-align: center;
+            padding: 20px 24px;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            position: relative;
+            border-top: 2px solid var(--secondary);
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M0,10 Q25,2 50,10 T100,10 L100,0 L0,0 Z' fill='%23D4A574'/%3E%3C/svg%3E") top left/50px 6px repeat-x;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto;
+                height: auto;
+            }
+            .center-map {
+                grid-column: 1 / 3;
+                grid-row: auto;
+                min-height: 500px;
+            }
+            .left-panel, .right-panel {
+                grid-column: auto;
+                grid-row: auto;
+            }
+            .left-panel {
+                max-height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-bar { padding: 0 16px; }
+            .nav-links { display: none; }
+            .dashboard {
+                grid-template-columns: 1fr;
+                padding: 12px;
+                gap: 12px;
+            }
+            .center-map {
+                grid-column: 1;
+                min-height: 400px;
+            }
+            .left-panel, .right-panel {
+                grid-column: 1;
+                grid-row: auto;
+                max-height: none;
+            }
+            .page-header { padding-top: 80px; padding-bottom: 16px; }
+            .page-header h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ===== 导航栏 ===== -->
+<nav class="nav-bar">
+    <a href="index.html" class="nav-logo">
+        <img 
+        src="./img/logo.png" 
+        style="width:30px; height:30px; vertical-align:middle;"
+        >
+        飞檐翚影
+    </a>
+    <div class="nav-links">
+        <a href="space.html" class="nav-link active">空间漫游</a>
+        <a href="know.html" class="nav-link">民族之窗</a>
+        <a href="time.html" class="nav-link">时间之境</a>
+        <a href="3d_architecture.html" class="nav-link">3D展示</a>
+        <a href="museum_3d.html" class="nav-link">3D展厅</a>
+        <a href="indivisual.html" class="nav-link">喜好映射</a>
+        <a href="chat.html" class="nav-link">AI助手</a>
+    </div>
+    <div class="nav-user">
+        <a href="index.html">返回首页</a>
+    </div>
+</nav>
+
+<!-- ===== 页面头部 ===== -->
+<div class="page-header">
+    <h1><span>空间漫游</span> · 飞檐翚影</h1>
+    <p>在地图上探索中国古建筑的地理分布与地域特色</p>
+</div>
+
+<!-- ===== 主体面板 ===== -->
+<div class="dashboard">
+    <!-- 左侧面板 -->
+    <div class="left-panel panel">
+        <div class="panel-header">
+            <div class="panel-header-icon icon-search">🔍</div>
+            <h3>筛选与搜索</h3>
+        </div>
+
+        <!-- 搜索框 -->
+        <div class="search-box">
+            <div class="search-input-wrap">
+                <input type="text" id="search-input" placeholder="搜索古建筑名称..." />
+                <button class="search-btn" id="search-btn">搜索</button>
+            </div>
+        </div>
+
+        <!-- 快捷筛选 -->
+        <div class="filter-section">
+            <div class="filter-title">
+                快捷筛选
+                <button class="reset-btn" id="reset-filters-btn" title="重置为全部数据">重置筛选</button>
+            </div>
+            <div class="filter-chips">
+                <span class="filter-chip active" id="all-data-chip" data-all="true">
+                    <span class="chip-dot" style="background:linear-gradient(135deg, var(--accent), var(--liao-gold));"></span>
+                    全部数据
+                </span>
+            </div>
+        </div>
+
+        <!-- 朝代筛选 -->
+        <div class="filter-section">
+            <div class="filter-title">朝代筛选</div>
+            <div class="filter-chips" id="dynasty-filters"></div>
+        </div>
+
+        <!-- 建筑类型筛选 -->
+        <div class="filter-section">
+            <div class="filter-title">建筑类型</div>
+            <div class="filter-chips" id="type-filters"></div>
+        </div>
+
+        <!-- 当前筛选状态 -->
+        <div class="filter-status" id="filter-status">
+            <span class="status-icon">📊</span>
+            <span class="status-text">当前显示：全部数据</span>
+        </div>
+
+        <!-- 筛选结果列表 -->
+        <div class="building-list" id="building-list"></div>
+        <div class="building-count-badge" id="building-count">共 0 座古建筑</div>
+    </div>
+
+    <!-- 中间地图 -->
+    <div class="center-map panel">
+        <div class="panel-body">
+            <div id="scatterMap"></div>
+        </div>
+    </div>
+
+    <!-- 右侧面板 -->
+    <div class="right-panel">
+        <!-- 朝代分布饼图 -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-header-icon icon-pie">📊</div>
+                <h3>朝代分布</h3>
+            </div>
+            <div class="panel-body">
+                <div id="dynasty-pie-chart"></div>
+            </div>
+        </div>
+        <!-- 地域分布柱状图 -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-header-icon icon-bar">🏛</div>
+                <h3>地域分布</h3>
+            </div>
+            <div class="panel-body">
+                <div id="region-bar-chart"></div>
+            </div>
+        </div>
+        <!-- 建筑类型分布 -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-header-icon icon-type">🏠</div>
+                <h3>建筑类型分布</h3>
+            </div>
+            <div class="panel-body">
+                <div id="type-chart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 底部 ===== -->
+<footer>
+    <p>飞檐翚影 · 中国古建筑文化展示平台 | 审图号：GS(2024) 0650</p>
+</footer>
+
+<!-- ===== 脚本引用 ===== -->
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/echarts-5.4.2.min.js"></script>
+<script type="text/javascript" src="js/echarts-map-china.js"></script>
+
+<script type="text/javascript">
+(function() {
+    'use strict';
+
+    // ===== 通用配色常量 =====
+    var chartFont = "'Noto Serif SC', 'SimSun', serif";
+    var chartTextMain = '#2A3246';
+    var chartTextSub = '#4A5568';
+    var chartAxisLine = '#A29192';
+    var chartSplitLine = 'rgba(68,76,94,0.08)';
+    var chartTooltipBg = 'rgba(42,50,70,0.92)';
+    var chartTooltipText = '#F0F2F5';
+    var chartTooltipBorder = '#8A9BC5';
+
+    // ===== 朝代颜色映射 =====
+    var DYNASTY_COLORS = {
+        '汉代':         '#C0392B',
+        '魏晋南北朝':   '#D4AC0D',
+        '唐代':         '#A93226',
+        '五代十国':     '#B7950B',
+        '宋代':         '#1E8449',
+        '辽金':         '#B7950B',
+        '元代':         '#7D6608',
+        '明代':         '#884EA0',
+        '清代':         '#2471A3'
+    };
+
+    var DYNASTY_ORDER = ['汉代', '魏晋南北朝', '唐代', '五代十国', '宋代', '辽金', '元代', '明代', '清代'];
+
+    var TYPE_COLORS = {
+        '殿宇': '#444C5E',
+        '佛塔': '#8A9BC5',
+        '楼阁': '#1E8449',
+        '园林': '#2471A3',
+        '石窟': '#A29192',
+        '城墙': '#5A6478',
+        '民居': '#884EA0',
+        '陵墓': '#C0392B',
+        '桥梁': '#B7950B'
+    };
+
+    // ===== 全局数据 =====
+    var allBuildings = [];
+    var filteredBuildings = [];
+    var activeDynasties = new Set();
+    var activeTypes = new Set();
+    var searchKeyword = '';
+
+    // ===== ECharts 实例 =====
+    var scatterMapChart = null;
+    var dynastyPieChart = null;
+    var regionBarChart = null;
+    var typeChart = null;
+
+    // ===== 数据加载 =====
+    function loadData() {
+        $.ajax({
+            url: BASE_URL + '/architecture/charts-data/',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                if (data && data.scatter_data && data.scatter_data.length > 0) {
+                    allBuildings = data.scatter_data;
+                } else if (data && data.buildings && data.buildings.length > 0) {
+                    allBuildings = data.buildings;
+                } else {
+                    loadStaticData();
+                    return;
+                }
+                initPage();
+            },
+            error: function() {
+                loadStaticData();
+            }
+        });
+    }
+
+    function loadStaticData() {
+        $.ajax({
+            url: 'data/buildings_static.json',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                allBuildings = data || [];
+                initPage();
+            },
+            error: function() {
+                allBuildings = [];
+                initPage();
+            }
+        });
+    }
+
+    // ===== 初始化页面 =====
+    function initPage() {
+        // 去重（按 bname）
+        var seen = {};
+        allBuildings = allBuildings.filter(function(b) {
+            if (seen[b.bname]) return false;
+            seen[b.bname] = true;
+            return true;
+        });
+
+        filteredBuildings = allBuildings.slice();
+        initFilters();
+        renderBuildingList();
+        initScatterMap();
+        updateScatterMap();
+        initDynastyPie();
+        initRegionBar();
+        initTypeChart();
+        updateCharts();
+    }
+
+    // ===== 筛选器初始化 =====
+    function initFilters() {
+        // 收集所有朝代
+        var dynasties = new Set();
+        var types = new Set();
+        allBuildings.forEach(function(b) {
+            if (b.dynasty) dynasties.add(b.dynasty);
+            if (b.structure_type) types.add(b.structure_type);
+        });
+
+        // 绑定"全部数据"点击事件
+        var allDataChip = document.getElementById('all-data-chip');
+        allDataChip.addEventListener('click', function() {
+            resetAllFilters();
+        });
+
+        // 绑定"重置筛选"按钮
+        var resetBtn = document.getElementById('reset-filters-btn');
+        resetBtn.addEventListener('click', function() {
+            resetAllFilters();
+        });
+
+        // 渲染朝代筛选
+        var dynastyContainer = document.getElementById('dynasty-filters');
+        dynastyContainer.innerHTML = '';
+        DYNASTY_ORDER.forEach(function(d) {
+            if (!dynasties.has(d)) return;
+            var chip = document.createElement('span');
+            chip.className = 'filter-chip';
+            chip.dataset.dynasty = d;
+            chip.innerHTML = '<span class="chip-dot" style="background:' + (DYNASTY_COLORS[d] || '#999') + '"></span>' + d;
+            chip.addEventListener('click', function() {
+                if (activeDynasties.has(d)) {
+                    activeDynasties.delete(d);
+                    chip.classList.remove('active');
+                } else {
+                    activeDynasties.add(d);
+                    chip.classList.add('active');
+                }
+                updateAllDataChipState();
+                applyFilters();
+            });
+            dynastyContainer.appendChild(chip);
+        });
+
+        // 渲染类型筛选
+        var typeContainer = document.getElementById('type-filters');
+        typeContainer.innerHTML = '';
+        var typeList = Array.from(types).sort();
+        typeList.forEach(function(t) {
+            if (!t) return;
+            var chip = document.createElement('span');
+            chip.className = 'filter-chip';
+            chip.dataset.type = t;
+            chip.innerHTML = '<span class="chip-dot" style="background:' + (TYPE_COLORS[t] || '#999') + '"></span>' + t;
+            chip.addEventListener('click', function() {
+                if (activeTypes.has(t)) {
+                    activeTypes.delete(t);
+                    chip.classList.remove('active');
+                } else {
+                    activeTypes.add(t);
+                    chip.classList.add('active');
+                }
+                updateAllDataChipState();
+                applyFilters();
+            });
+            typeContainer.appendChild(chip);
+        });
+
+        // 初始化状态显示
+        updateFilterStatus();
+    }
+
+    // ===== 重置所有筛选 =====
+    function resetAllFilters() {
+        activeDynasties.clear();
+        activeTypes.clear();
+        searchKeyword = '';
+        document.getElementById('search-input').value = '';
+
+        // 清除所有选中状态
+        document.querySelectorAll('.filter-chip[data-dynasty], .filter-chip[data-type]').forEach(function(chip) {
+            chip.classList.remove('active');
+        });
+
+        // 设置"全部数据"为选中状态
+        document.getElementById('all-data-chip').classList.add('active');
+
+        applyFilters();
+    }
+
+    // ===== 更新"全部数据"按钮状态 =====
+    function updateAllDataChipState() {
+        var allDataChip = document.getElementById('all-data-chip');
+        if (activeDynasties.size === 0 && activeTypes.size === 0 && !searchKeyword) {
+            allDataChip.classList.add('active');
+        } else {
+            allDataChip.classList.remove('active');
+        }
+    }
+
+    // ===== 更新筛选状态提示 =====
+    function updateFilterStatus() {
+        var statusEl = document.getElementById('filter-status');
+        var textEl = statusEl.querySelector('.status-text');
+        var parts = [];
+
+        if (activeDynasties.size === 0 && activeTypes.size === 0 && !searchKeyword) {
+            textEl.textContent = '当前显示：全部数据（共 ' + filteredBuildings.length + ' 座）';
+        } else {
+            if (activeDynasties.size > 0) {
+                parts.push(Array.from(activeDynasties).join('、') + '朝');
+            }
+            if (activeTypes.size > 0) {
+                parts.push(Array.from(activeTypes).join('、'));
+            }
+            if (searchKeyword) {
+                parts.push('关键词"' + searchKeyword + '"');
+            }
+            textEl.textContent = '当前筛选：' + parts.join(' + ') + '（共 ' + filteredBuildings.length + ' 座）';
+        }
+    }
+
+    // ===== 筛选逻辑 =====
+    function applyFilters() {
+        filteredBuildings = allBuildings.filter(function(b) {
+            // 朝代筛选
+            if (activeDynasties.size > 0 && !activeDynasties.has(b.dynasty)) return false;
+            // 类型筛选
+            if (activeTypes.size > 0 && !activeTypes.has(b.structure_type)) return false;
+            // 搜索
+            if (searchKeyword && b.bname && b.bname.indexOf(searchKeyword) === -1) return false;
+            return true;
+        });
+        renderBuildingList();
+        updateScatterMap();
+        updateCharts();
+        updateFilterStatus();
+    }
+
+    // ===== 渲染建筑列表 =====
+    function renderBuildingList() {
+        var container = document.getElementById('building-list');
+        var countEl = document.getElementById('building-count');
+        container.innerHTML = '';
+
+        filteredBuildings.forEach(function(b, idx) {
+            var card = document.createElement('div');
+            card.className = 'building-card';
+            card.dataset.bid = b.bid;
+            var dynastyColor = DYNASTY_COLORS[b.dynasty] || '#999';
+            card.innerHTML =
+                '<span class="building-card-dot" style="background:' + dynastyColor + '"></span>' +
+                '<div class="building-card-info">' +
+                    '<div class="building-card-name">' + (b.bname || '未命名') + '</div>' +
+                    '<div class="building-card-meta">' +
+                        '<span>' + (b.dynasty || '') + '</span>' +
+                        '<span>' + (b.structure_type || '') + '</span>' +
+                        '<span>' + (b.region || '') + '</span>' +
+                    '</div>' +
+                '</div>';
+
+            card.addEventListener('click', function() {
+                highlightBuildingOnMap(b);
+                showBuildingPopup(b);
+            });
+
+            card.addEventListener('mouseenter', function() {
+                highlightBuildingOnMap(b);
+            });
+
+            container.appendChild(card);
+        });
+
+        countEl.textContent = '共 ' + filteredBuildings.length + ' 座古建筑';
+    }
+
+    // ===== 高亮地图上的建筑 =====
+    function highlightBuildingOnMap(b) {
+        if (!scatterMapChart || !b.bname) return;
+        // 找到该建筑在散点数据中的索引
+        var idx = -1;
+        var currentData = scatterMapChart.getOption().series[0].data || [];
+        for (var i = 0; i < currentData.length; i++) {
+            if (currentData[i].name === b.bname) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx >= 0) {
+            scatterMapChart.dispatchAction({
+                type: 'highlight',
+                seriesIndex: 0,
+                dataIndex: idx
+            });
+        }
+    }
+
+    // ===== 建筑详情弹窗 =====
+    function showBuildingPopup(b) {
+        // 移除已有弹窗
+        removePopup();
+
+        var dynastyColor = DYNASTY_COLORS[b.dynasty] || '#999';
+
+        var overlay = document.createElement('div');
+        overlay.className = 'popup-overlay';
+        overlay.addEventListener('click', removePopup);
+
+        var popup = document.createElement('div');
+        popup.className = 'popup-container';
+
+        var html = '<span class="popup-close">&times;</span>';
+        html += '<h2>' + (b.bname || '未命名') + '</h2>';
+        html += '<span class="popup-dynasty-tag" style="background:' + dynastyColor + '22;color:' + dynastyColor + ';border:1px solid ' + dynastyColor + '44">' + (b.dynasty || '') + '</span>';
+
+        if (b.introduction) {
+            html += '<p>' + b.introduction + '</p>';
+        }
+
+        if (b.architectural_features) {
+            html += '<div class="popup-label">建筑特征</div>';
+            html += '<p>' + b.architectural_features + '</p>';
+        }
+
+        if (b.address) {
+            html += '<div class="popup-label">地址</div>';
+            html += '<p style="font-size:0.82rem;">' + b.address + '</p>';
+        }
+
+        if (b.roof_type) {
+            html += '<div class="popup-label">屋顶形制</div>';
+            html += '<p style="font-size:0.82rem;">' + b.roof_type + '</p>';
+        }
+
+        popup.innerHTML = html;
+        document.body.appendChild(overlay);
+        document.body.appendChild(popup);
+
+        popup.querySelector('.popup-close').addEventListener('click', removePopup);
+    }
+
+    function removePopup() {
+        var overlay = document.querySelector('.popup-overlay');
+        var popup = document.querySelector('.popup-container');
+        if (overlay) overlay.remove();
+        if (popup) popup.remove();
+    }
+
+    // ===== 搜索功能 =====
+    document.getElementById('search-btn').addEventListener('click', function() {
+        var keyword = document.getElementById('search-input').value.trim();
+        if (!keyword) {
+            searchKeyword = '';
+            applyFilters();
+            return;
+        }
+
+        // 先尝试API搜索
+        $.ajax({
+            url: BASE_URL + '/architecture/search/',
+            type: 'POST',
+            dataType: 'json',
+            data: { keyword: keyword },
+            success: function(data) {
+                if (data && data.results && data.results.length > 0) {
+                    searchKeyword = keyword;
+                    applyFilters();
+                    // 高亮搜索结果
+                    if (data.results[0] && data.results[0].bname) {
+                        highlightBuildingOnMap(data.results[0]);
+                    }
+                } else {
+                    searchKeyword = keyword;
+                    applyFilters();
+                }
+            },
+            error: function() {
+                searchKeyword = keyword;
+                applyFilters();
+            }
+        });
+    });
+
+    document.getElementById('search-input').addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('search-btn').click();
+        }
+        // 实时筛选（不调API）
+        searchKeyword = this.value.trim();
+        applyFilters();
+    });
+
+    // ===== 散点地图 =====
+    function initScatterMap() {
+        var dom = document.getElementById('scatterMap');
+        scatterMapChart = echarts.init(dom);
+    }
+
+    function updateScatterMap() {
+        if (!scatterMapChart) return;
+
+        // 构建散点数据
+        var scatterData = [];
+        var effectData = [];
+
+        filteredBuildings.forEach(function(b) {
+            if (b.longitude && b.latitude) {
+                var dynastyColor = DYNASTY_COLORS[b.dynasty] || '#999';
+                var item = {
+                    name: b.bname || '',
+                    value: [b.longitude, b.latitude, 1],
+                    dynasty: b.dynasty || '',
+                    structure_type: b.structure_type || '',
+                    introduction: b.introduction || '',
+                    address: b.address || '',
+                    roof_type: b.roof_type || '',
+                    architectural_features: b.architectural_features || '',
+                    itemStyle: { color: dynastyColor }
+                };
+                scatterData.push(item);
+                effectData.push(item);
+            }
+        });
+
+        var option = {
+            animation: true,
+            tooltip: {
+                trigger: 'item',
+                textStyle: {
+                    fontFamily: chartFont,
+                    color: chartTooltipText,
+                    fontSize: 13
+                },
+                backgroundColor: chartTooltipBg,
+                borderColor: chartTooltipBorder,
+                borderWidth: 1,
+                padding: [12, 16],
+                formatter: function(params) {
+                    if (params.seriesType === 'effectScatter' || params.seriesType === 'scatter') {
+                        var d = params.data || {};
+                        var dynastyColor = DYNASTY_COLORS[d.dynasty] || '#999';
+                        var html = '<div style="font-weight:700;color:' + chartTooltipBorder + ';font-size:14px;margin-bottom:4px;">' + (params.name || '') + '</div>';
+                        if (d.dynasty) {
+                            html += '<div style="margin-bottom:2px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + dynastyColor + ';margin-right:6px;"></span>朝代：' + d.dynasty + '</div>';
+                        }
+                        if (d.structure_type) {
+                            html += '<div style="margin-bottom:2px;">类型：' + d.structure_type + '</div>';
+                        }
+                        if (d.address) {
+                            html += '<div style="font-size:11px;color:rgba(245,245,220,0.7);margin-top:4px;">' + d.address + '</div>';
+                        }
+                        return html;
+                    }
+                    return '';
+                }
+            },
+            geo: {
+                map: 'china',
+                roam: true,
+                zoom: 1.1,
+                center: [104.5, 36],
+                selectedMode: false,
+                left: 5,
+                right: 5,
+                top: 20,
+                bottom: 15,
+                layoutCenter: ['50%', '50%'],
+                layoutSize: '98%',
+                label: {
+                    emphasis: { show: false }
+                },
+                itemStyle: {
+                    normal: {
+                        areaColor: 'rgba(138,155,197,0.18)',
+                        borderWidth: 1,
+                        borderColor: 'rgba(68,76,94,0.35)'
+                    },
+                    emphasis: {
+                        areaColor: 'rgba(138,155,197,0.35)',
+                        borderColor: '#8A9BC5',
+                        borderWidth: 2
+                    }
+                }
+            },
+            graphic: [{
+                type: 'text',
+                right: 10,
+                bottom: 4,
+                style: {
+                    text: '审图号：GS(2024) 0650',
+                    textAlign: 'right',
+                    fill: '#9E9E9E',
+                    fontSize: 10,
+                    fontFamily: chartFont
+                }
+            }],
+            series: [
+                {
+                    name: '古建筑',
+                    type: 'scatter',
+                    coordinateSystem: 'geo',
+                    symbolSize: 5,
+                    label: {
+                        normal: { show: false },
+                        emphasis: { show: false }
+                    },
+                    itemStyle: {
+                        normal: {
+                            opacity: 0.6,
+                            shadowBlur: 2,
+                            shadowColor: 'rgba(0,0,0,0.15)'
+                        },
+                        emphasis: {
+                            opacity: 1,
+                            borderColor: '#8A9BC5',
+                            borderWidth: 2,
+                            shadowBlur: 12,
+                            shadowColor: 'rgba(138,155,197,0.6)'
+                        }
+                    },
+                    data: scatterData
+                },
+                {
+                    name: '高亮建筑',
+                    type: 'effectScatter',
+                    coordinateSystem: 'geo',
+                    symbolSize: 4,
+                    showEffectOn: 'render',
+                    rippleEffect: {
+                        brushType: 'stroke',
+                        scale: 4,
+                        period: 4
+                    },
+                    label: {
+                        normal: { show: false }
+                    },
+                    itemStyle: {
+                        normal: {
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(196,30,58,0.4)'
+                        }
+                    },
+                    data: effectData.length <= 30 ? effectData : []
+                }
+            ]
+        };
+
+        scatterMapChart.setOption(option, true);
+
+        // ===== 散点随地图缩放适当调整大小 =====
+        var BASE_ZOOM = 1.1;
+        var BASE_SIZE = 5;
+        var BASE_EFFECT_SIZE = 4;
+
+        scatterMapChart.off('georoam');
+        scatterMapChart.on('georoam', function() {
+            var curOption = scatterMapChart.getOption();
+            var curZoom = (curOption.geo && curOption.geo[0] && curOption.geo[0].zoom) || BASE_ZOOM;
+            // 放大时点缓慢放大，缩小时缓慢缩小，范围 [3, 14]
+            var ratio = Math.pow(curZoom / BASE_ZOOM, 0.25);
+            var newSize = Math.max(3, Math.min(14, Math.round(BASE_SIZE * ratio)));
+            var newEffectSize = Math.max(2, Math.min(10, Math.round(BASE_EFFECT_SIZE * ratio)));
+            scatterMapChart.setOption({
+                series: [
+                    { symbolSize: newSize },
+                    { symbolSize: newEffectSize }
+                ]
+            });
+        });
+
+        // 点击散点弹出建筑信息
+        scatterMapChart.off('click');
+        scatterMapChart.on('click', 'series', function(params) {
+            if (params.data && params.data.name) {
+                // 找到完整建筑数据
+                var building = allBuildings.find(function(b) { return b.bname === params.data.name; });
+                if (building) {
+                    showBuildingPopup(building);
+                }
+            }
+        });
+    }
+
+    // ===== 朝代分布饼图 =====
+    function initDynastyPie() {
+        var dom = document.getElementById('dynasty-pie-chart');
+        dynastyPieChart = echarts.init(dom);
+    }
+
+    function updateDynastyPie() {
+        if (!dynastyPieChart) return;
+
+        // 统计朝代分布
+        var dynastyCount = {};
+        filteredBuildings.forEach(function(b) {
+            var d = b.dynasty || '其他';
+            dynastyCount[d] = (dynastyCount[d] || 0) + 1;
+        });
+
+        var pieData = [];
+        DYNASTY_ORDER.forEach(function(d) {
+            if (dynastyCount[d]) {
+                pieData.push({
+                    name: d,
+                    value: dynastyCount[d],
+                    itemStyle: { color: DYNASTY_COLORS[d] || '#999' }
+                });
+            }
+        });
+
+        // 其他朝代
+        Object.keys(dynastyCount).forEach(function(d) {
+            if (!DYNASTY_COLORS[d]) {
+                pieData.push({ name: d, value: dynastyCount[d], itemStyle: { color: '#999' } });
+            }
+        });
+
+        var option = {
+            tooltip: {
+                trigger: 'item',
+                textStyle: {
+                    fontFamily: chartFont,
+                    color: chartTooltipText
+                },
+                backgroundColor: chartTooltipBg,
+                borderColor: chartTooltipBorder,
+                borderWidth: 1,
+                formatter: function(params) {
+                    return '<span style="font-weight:600;color:' + chartTooltipBorder + '">' + params.name + '</span><br/>' +
+                           '数量：' + params.value + ' 座<br/>' +
+                           '占比：' + params.percent + '%';
+                }
+            },
+            legend: {
+                orient: 'horizontal',
+                bottom: 4,
+                itemWidth: 10,
+                itemHeight: 10,
+                itemGap: 6,
+                textStyle: {
+                    color: chartTextSub,
+                    fontSize: 10,
+                    fontFamily: chartFont
+                }
+            },
+            series: [{
+                type: 'pie',
+                radius: ['35%', '65%'],
+                center: ['50%', '45%'],
+                avoidLabelOverlap: true,
+                label: {
+                    show: true,
+                    fontSize: 10,
+                    fontFamily: chartFont,
+                    color: chartTextSub,
+                    formatter: function(params) {
+                        if (params.percent < 5) return '';
+                        return params.name;
+                    }
+                },
+                labelLine: {
+                    length: 8,
+                    length2: 8,
+                    lineStyle: { color: 'rgba(139,69,19,0.2)' }
+                },
+                emphasis: {
+                    label: { show: true, fontWeight: 'bold', fontSize: 12 },
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0,0,0,0.2)'
+                    }
+                },
+                data: pieData
+            }]
+        };
+
+        dynastyPieChart.setOption(option, true);
+    }
+
+    // ===== 地域分布柱状图 =====
+    function initRegionBar() {
+        var dom = document.getElementById('region-bar-chart');
+        regionBarChart = echarts.init(dom);
+    }
+
+    function updateRegionBar() {
+        if (!regionBarChart) return;
+
+        var regionCount = {};
+        filteredBuildings.forEach(function(b) {
+            var r = b.region || '其他';
+            regionCount[r] = (regionCount[r] || 0) + 1;
+        });
+
+        var regions = Object.keys(regionCount).sort(function(a, b) {
+            return regionCount[b] - regionCount[a];
+        });
+
+        var values = regions.map(function(r) { return regionCount[r]; });
+
+        var barColors = regions.map(function(r, i) {
+            var colorList = ['#444C5E', '#8A9BC5', '#1E8449', '#2471A3', '#884EA0', '#A93226', '#B7950B', '#C0392B', '#5A6478'];
+            return colorList[i % colorList.length];
+        });
+
+        var option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'shadow' },
+                textStyle: {
+                    fontFamily: chartFont,
+                    color: chartTooltipText
+                },
+                backgroundColor: chartTooltipBg,
+                borderColor: chartTooltipBorder,
+                borderWidth: 1,
+                formatter: function(params) {
+                    var p = params[0];
+                    return '<span style="font-weight:600;color:' + chartTooltipBorder + '">' + p.name + '</span><br/>古建筑数量：' + p.value + ' 座';
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '8%',
+                top: '8%',
+                bottom: '12%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                data: regions,
+                axisLine: { lineStyle: { color: chartAxisLine } },
+                axisLabel: {
+                    color: chartTextSub,
+                    fontSize: 10,
+                    fontFamily: chartFont,
+                    rotate: regions.length > 5 ? 30 : 0
+                }
+            },
+            yAxis: {
+                type: 'value',
+                axisLine: { show: false },
+                axisLabel: {
+                    color: chartTextSub,
+                    fontSize: 10,
+                    fontFamily: chartFont
+                },
+                splitLine: {
+                    lineStyle: { color: chartSplitLine }
+                }
+            },
+            series: [{
+                type: 'bar',
+                barWidth: '50%',
+                data: values.map(function(v, i) {
+                    return {
+                        value: v,
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: barColors[i] },
+                                { offset: 1, color: barColors[i] + '66' }
+                            ]),
+                            borderRadius: [3, 3, 0, 0]
+                        }
+                    };
+                }),
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 6,
+                        shadowColor: 'rgba(0,0,0,0.15)'
+                    }
+                }
+            }]
+        };
+
+        regionBarChart.setOption(option, true);
+    }
+
+    // ===== 建筑类型分布 =====
+    function initTypeChart() {
+        var dom = document.getElementById('type-chart');
+        typeChart = echarts.init(dom);
+    }
+
+    function updateTypeChart() {
+        if (!typeChart) return;
+
+        var typeCount = {};
+        filteredBuildings.forEach(function(b) {
+            var t = b.structure_type || '其他';
+            typeCount[t] = (typeCount[t] || 0) + 1;
+        });
+
+        var types = Object.keys(typeCount).sort(function(a, b) {
+            return typeCount[b] - typeCount[a];
+        });
+
+        var typeData = types.map(function(t) {
+            return {
+                name: t,
+                value: typeCount[t],
+                itemStyle: { color: TYPE_COLORS[t] || '#999' }
+            };
+        });
+
+        var option = {
+            tooltip: {
+                trigger: 'item',
+                textStyle: {
+                    fontFamily: chartFont,
+                    color: chartTooltipText
+                },
+                backgroundColor: chartTooltipBg,
+                borderColor: chartTooltipBorder,
+                borderWidth: 1,
+                formatter: function(params) {
+                    return '<span style="font-weight:600;color:' + chartTooltipBorder + '">' + params.name + '</span><br/>' +
+                           '数量：' + params.value + ' 座<br/>' +
+                           '占比：' + params.percent + '%';
+                }
+            },
+            legend: {
+                orient: 'horizontal',
+                bottom: 4,
+                itemWidth: 10,
+                itemHeight: 10,
+                itemGap: 6,
+                textStyle: {
+                    color: chartTextSub,
+                    fontSize: 10,
+                    fontFamily: chartFont
+                }
+            },
+            series: [{
+                type: 'pie',
+                radius: ['30%', '60%'],
+                center: ['50%', '42%'],
+                roseType: 'radius',
+                label: {
+                    show: true,
+                    fontSize: 10,
+                    fontFamily: chartFont,
+                    color: chartTextSub,
+                    formatter: function(params) {
+                        if (params.percent < 5) return '';
+                        return params.name;
+                    }
+                },
+                labelLine: {
+                    length: 6,
+                    length2: 8,
+                    lineStyle: { color: 'rgba(139,69,19,0.2)' }
+                },
+                emphasis: {
+                    label: { show: true, fontWeight: 'bold' }
+                },
+                data: typeData
+            }]
+        };
+
+        typeChart.setOption(option, true);
+    }
+
+    // ===== 统一更新图表 =====
+    function updateCharts() {
+        updateDynastyPie();
+        updateRegionBar();
+        updateTypeChart();
+    }
+
+    // ===== 窗口自适应 =====
+    window.addEventListener('resize', function() {
+        if (scatterMapChart) scatterMapChart.resize();
+        if (dynastyPieChart) dynastyPieChart.resize();
+        if (regionBarChart) regionBarChart.resize();
+        if (typeChart) typeChart.resize();
+    });
+
+    // ===== 启动 =====
+    loadData();
+
+})();
+</script>
+
+</body>
+</html>

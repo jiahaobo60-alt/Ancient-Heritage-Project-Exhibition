@@ -1,0 +1,367 @@
+/* ==========================================================================
+   中国古建筑SVG图案库 - Architecture Patterns Library
+   ========================================================================== 
+   包含斗拱、屋顶、云纹、回纹等传统建筑装饰元素
+   可作为背景图案、装饰元素或动画组件使用
+   */
+
+/* 基础变量 */
+:root {
+  --pattern-primary: #8B4513;
+  --pattern-secondary: #D4A574;
+  --pattern-accent: #8B4513;
+  --pattern-gold: #D4A574;
+  --pattern-bg: #F7F3ED;
+  --pattern-size-sm: 24px;
+  --pattern-size-md: 48px;
+  --pattern-size-lg: 96px;
+}
+
+/* ==========================================================================
+   一、斗拱图案 (Dougong - Bracket Sets)
+   ========================================================================== */
+
+/* 1.1 基础斗拱图案 */
+.pattern-dougong-base {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20,80 L30,60 L70,60 L80,80 L80,85 L20,85 Z' fill='%23D4A574' stroke='%238B4513' stroke-width='1'/%3E%3Cpath d='M25,60 L35,40 L65,40 L75,60 L25,60 Z' fill='%238B4513' stroke='%236B3410' stroke-width='1'/%3E%3Cpath d='M30,40 L40,30 L60,30 L70,40 L30,40 Z' fill='%23D4A574' stroke='%238B4513' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: var(--pattern-size-md) var(--pattern-size-md);
+}
+
+/* 1.2 简化斗拱图案 */
+.pattern-dougong-simple {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 40'%3E%3Cpath d='M5,35 L15,15 L45,15 L55,35 L55,38 L5,38 Z' fill='%23D4A574' stroke='%238B4513' stroke-width='0.5'/%3E%3Cpath d='M10,15 L20,5 L40,5 L50,15 L10,15 Z' fill='%238B4513' stroke='%236B3410' stroke-width='0.5'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: var(--pattern-size-sm) calc(var(--pattern-size-sm) * 0.67);
+}
+
+/* 1.3 斗拱阵列图案 */
+.pattern-dougong-array {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80'%3E%3Cpath d='M10,70 L20,50 L40,50 L50,70 L50,75 L10,75 Z' fill='%23D4A574'/%3E%3Cpath d='M70,70 L80,50 L100,50 L110,70 L110,75 L70,75 Z' fill='%23D4A574'/%3E%3Cpath d='M15,50 L25,30 L35,30 L45,50 L15,50 Z' fill='%238B4513'/%3E%3Cpath d='M75,50 L85,30 L95,30 L105,50 L75,50 Z' fill='%238B4513'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: var(--pattern-size-lg) calc(var(--pattern-size-lg) * 0.67);
+}
+
+/* 1.4 动画斗拱 - 用于加载状态 */
+.pattern-dougong-animated {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20,80 L30,60 L70,60 L80,80 L80,85 L20,85 Z' fill='%23D4A574'/%3E%3Cpath d='M25,60 L35,40 L65,40 L75,60 L25,60 Z' fill='%238B4513'/%3E%3Cpath d='M30,40 L40,30 L60,30 L70,40 L30,40 Z' fill='%23D4A574'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60px 60px;
+  animation: dougongFloat 1.5s ease-in-out infinite;
+}
+
+@keyframes dougongFloat {
+  0%, 100% { transform: translateY(0) rotateX(0); }
+  50% { transform: translateY(-5px) rotateX(5deg); }
+}
+
+/* ==========================================================================
+   二、屋顶图案 (Roof Patterns)
+   ========================================================================== */
+
+/* 2.1 庑殿顶图案 */
+.pattern-roof-wudian {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'%3E%3Cpath d='M0,40 L25,15 L75,15 L100,40 L100,55 L0,55 Z' fill='%23C41E3A'/%3E%3Cpath d='M0,40 L25,15 L75,15 L100,40' fill='none' stroke='%238B4513' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: var(--pattern-size-lg) calc(var(--pattern-size-lg) * 0.6);
+}
+
+/* 2.2 歇山顶图案 */
+.pattern-roof-xieshan {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 70'%3E%3Cpath d='M0,45 L20,20 L40,20 L50,45 L60,20 L80,20 L100,45 L100,60 L0,60 Z' fill='%23C41E3A'/%3E%3Cpath d='M0,45 L20,20 L40,20 L50,45 L60,20 L80,20 L100,45' fill='none' stroke='%238B4513' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: var(--pattern-size-lg) calc(var(--pattern-size-lg) * 0.7);
+}
+
+/* 2.3 悬山顶图案 */
+.pattern-roof-xuanshan {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50'%3E%3Cpath d='M10,35 L30,15 L70,15 L90,35 L90,45 L10,45 Z' fill='%23A0522D'/%3E%3Cpath d='M10,35 L30,15 L70,15 L90,35' fill='none' stroke='%236B3410' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: var(--pattern-size-lg) calc(var(--pattern-size-lg) * 0.5);
+}
+
+/* 2.4 瓦片图案 */
+.pattern-roof-tiles {
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cellipse cx='10' cy='15' rx='8' ry='12' fill='%238B4513' opacity='0.8'/%3E%3Cellipse cx='30' cy='15' rx='8' ry='12' fill='%23A0522D' opacity='0.8'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cellipse cx='20' cy='15' rx='8' ry='12' fill='%23D4A574' opacity='0.6'/%3E%3C/svg%3E");
+  background-repeat: repeat-x, repeat-x;
+  background-size: var(--pattern-size-md) calc(var(--pattern-size-md) * 0.75);
+  background-position: 0 0, 20px 0;
+}
+
+/* ==========================================================================
+   三、云纹图案 (Cloud Patterns - Yunwen)
+   ========================================================================== */
+
+/* 3.1 基础云纹 */
+.pattern-cloud-basic {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 Q30,30 50,40 Q70,30 80,50 Q70,70 50,60 Q30,70 20,50 Z' fill='%23D4A574' opacity='0.6'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: var(--pattern-size-lg) var(--pattern-size-lg);
+}
+
+/* 3.2 云纹阵列 */
+.pattern-cloud-array {
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100'%3E%3Cpath d='M30,50 Q40,30 60,40 Q80,30 90,50 Q80,70 60,60 Q40,70 30,50 Z' fill='%23D4A574' opacity='0.4'/%3E%3Cpath d='M110,50 Q120,30 140,40 Q160,30 170,50 Q160,70 140,60 Q120,70 110,50 Z' fill='%23D4A574' opacity='0.4'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: var(--pattern-size-lg) calc(var(--pattern-size-lg) * 0.5);
+}
+
+/* 3.3 流动云纹 */
+.pattern-cloud-flow {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M0,50 Q25,30 50,40 Q75,30 100,50 Q75,70 50,60 Q25,70 0,50 Z' fill='%23EDE3CC' opacity='0.3'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: var(--pattern-size-lg) var(--pattern-size-lg);
+  animation: cloudFlow 20s linear infinite;
+}
+
+@keyframes cloudFlow {
+  0% { background-position: 0 0; }
+  100% { background-position: var(--pattern-size-lg) 0; }
+}
+
+/* 3.4 背景云纹 - 低透明度 */
+.pattern-cloud-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 Q30,30 50,40 Q70,30 80,50 Q70,70 50,60 Q30,70 20,50 Z' fill='%238B4513' opacity='0.05'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: cloudDrift 30s infinite linear;
+}
+
+@keyframes cloudDrift {
+  0% { background-position: 0 0; }
+  25% { background-position: 20% 25%; }
+  50% { background-position: 15% 30%; }
+  75% { background-position: 25% 20%; }
+  100% { background-position: 0 0; }
+}
+
+/* ==========================================================================
+   四、回纹图案 (Huiwen - Swastika Patterns)
+   ========================================================================== */
+
+/* 4.1 基础回纹 */
+.pattern-huiwen-basic {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M5,5 L15,5 L15,15 L25,15 L25,5 L35,5 L35,15 L25,15 L25,25 L35,25 L35,35 L25,35 L25,25 L15,25 L15,35 L5,35 L5,25 L15,25 L15,15 L5,15 Z' fill='%23D4A574' opacity='0.7'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: var(--pattern-size-md) var(--pattern-size-md);
+}
+
+/* 4.2 连续回纹 */
+.pattern-huiwen-continuous {
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 40'%3E%3Cpath d='M5,5 L15,5 L15,15 L25,15 L25,5 L35,5 L35,15 L25,15 L25,25 L35,25 L35,35 L25,35 L25,25 L15,25 L15,35 L5,35 L5,25 L15,25 L15,15 L5,15 Z' fill='%23D4A574' opacity='0.6'/%3E%3Cpath d='M45,5 L55,5 L55,15 L65,15 L65,5 L75,5 L75,15 L65,15 L65,25 L75,25 L75,35 L65,35 L65,25 L55,25 L55,35 L45,35 L45,25 L55,25 L55,15 L45,15 Z' fill='%23D4A574' opacity='0.6'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: var(--pattern-size-lg) calc(var(--pattern-size-lg) * 0.5);
+}
+
+/* 4.3 回纹边框 */
+.pattern-huiwen-border {
+  border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M5,5 L15,5 L15,15 L25,15 L25,5 L35,5 L35,15 L25,15 L25,25 L35,25 L35,35 L25,35 L25,25 L15,25 L15,35 L5,35 L5,25 L15,25 L15,15 L5,15 Z' fill='%238B4513'/%3E%3C/svg%3E") 20 / var(--pattern-size-sm) / 0 stretch;
+}
+
+/* ==========================================================================
+   五、纹样边框 (Decorative Borders)
+   ========================================================================== */
+
+/* 5.1 波浪纹边框 */
+.pattern-border-wave {
+  border-style: solid;
+  border-width: 3px;
+  border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M0,10 Q25,0 50,10 T100,10 L100,20 L0,20 Z' fill='%23D4A574'/%3E%3C/svg%3E") 10 / 3 / 0 repeat;
+}
+
+/* 5.2 云纹边框 */
+.pattern-border-cloud {
+  border-style: solid;
+  border-width: 4px;
+  border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M0,10 Q20,0 40,10 T80,10 T100,10 L100,20 L0,20 Z' fill='%238B4513'/%3E%3C/svg%3E") 10 / 4 / 0 repeat;
+}
+
+/* 5.3 几何纹边框 */
+.pattern-border-geometric {
+  border-style: solid;
+  border-width: 2px;
+  border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M0,0 L20,0 L20,20 L40,20 L40,40 L0,40 Z' fill='none' stroke='%23D4A574' stroke-width='1'/%3E%3C/svg%3E") 20 / 2 / 0 repeat;
+}
+
+/* 5.4 底部装饰条 */
+.pattern-border-bottom {
+  position: relative;
+}
+
+.pattern-border-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10' preserveAspectRatio='none'%3E%3Cpath d='M0,0 Q25,8 50,0 T100,0 L100,10 L0,10 Z' fill='%23D4A574'/%3E%3C/svg%3E") top left/50px 4px repeat-x;
+}
+
+/* ==========================================================================
+   六、装饰元素 (Decorative Elements)
+   ========================================================================== */
+
+/* 6.1 窗棂图案 */
+.pattern-lattice {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cpath d='M0,30 L60,30 M30,0 L30,60' stroke='%238B4513' stroke-width='2'/%3E%3Cpath d='M10,10 L20,20 M40,10 L50,20 M10,50 L20,40 M40,50 L50,40' stroke='%23D4A574' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: var(--pattern-size-md) var(--pattern-size-md);
+}
+
+/* 6.2 花格图案 */
+.pattern-geometric-flower {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20,5 L25,15 L35,20 L25,25 L20,35 L15,25 L5,20 L15,15 Z' fill='%23D4A574' opacity='0.6'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: var(--pattern-size-md) var(--pattern-size-md);
+}
+
+/* 6.3 冰裂纹图案 */
+.pattern-ice-crack {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M0,20 L30,10 L40,30 L20,40 Z M60,0 L80,20 L70,40 L50,30 Z M80,60 L100,80 L70,90 L60,70 Z' fill='none' stroke='%23D4A574' stroke-width='0.5' opacity='0.5'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: var(--pattern-size-lg) var(--pattern-size-lg);
+}
+
+/* 6.4 锦纹图案 */
+.pattern-brocade {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect x='10' y='10' width='20' height='20' fill='%238B4513' opacity='0.3'/%3E%3Crect x='50' y='10' width='20' height='20' fill='%238B4513' opacity='0.3'/%3E%3Crect x='30' y='30' width='20' height='20' fill='%23D4A574' opacity='0.3'/%3E%3Crect x='10' y='50' width='20' height='20' fill='%23D4A574' opacity='0.3'/%3E%3Crect x='50' y='50' width='20' height='20' fill='%23D4A574' opacity='0.3'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: var(--pattern-size-lg) var(--pattern-size-lg);
+}
+
+/* ==========================================================================
+   七、动画效果 (Animation Effects)
+   ========================================================================== */
+
+/* 7.1 旋转纹样 */
+.pattern-rotate {
+  animation: patternRotate 20s linear infinite;
+}
+
+@keyframes patternRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 7.2 脉动纹样 */
+.pattern-pulse {
+  animation: patternPulse 2s ease-in-out infinite;
+}
+
+@keyframes patternPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+/* 7.3 浮动纹样 */
+.pattern-float {
+  animation: patternFloat 3s ease-in-out infinite;
+}
+
+@keyframes patternFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* 7.4 闪烁纹样 */
+.pattern-twinkle {
+  animation: patternTwinkle 1.5s ease-in-out infinite;
+}
+
+@keyframes patternTwinkle {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* ==========================================================================
+   八、实用工具类 (Utility Classes)
+   ========================================================================== */
+
+/* 图案大小 */
+.pattern-size-sm { background-size: var(--pattern-size-sm) var(--pattern-size-sm); }
+.pattern-size-md { background-size: var(--pattern-size-md) var(--pattern-size-md); }
+.pattern-size-lg { background-size: var(--pattern-size-lg) var(--pattern-size-lg); }
+
+/* 图案重复 */
+.pattern-repeat { background-repeat: repeat; }
+.pattern-repeat-x { background-repeat: repeat-x; }
+.pattern-repeat-y { background-repeat: repeat-y; }
+.pattern-no-repeat { background-repeat: no-repeat; }
+
+/* 图案位置 */
+.pattern-center { background-position: center; }
+.pattern-top { background-position: top; }
+.pattern-bottom { background-position: bottom; }
+.pattern-left { background-position: left; }
+.pattern-right { background-position: right; }
+
+/* 透明度 */
+.pattern-opacity-10 { opacity: 0.1; }
+.pattern-opacity-20 { opacity: 0.2; }
+.pattern-opacity-30 { opacity: 0.3; }
+.pattern-opacity-40 { opacity: 0.4; }
+.pattern-opacity-50 { opacity: 0.5; }
+
+/* ==========================================================================
+   使用示例 (Usage Examples)
+   ========================================================================== 
+   
+   示例1：背景装饰
+   .element {
+     @extend .pattern-cloud-bg;
+     @extend .pattern-opacity-10;
+   }
+   
+   示例2：边框装饰
+   .element {
+     @extend .pattern-border-wave;
+   }
+   
+   示例3：加载动画
+   .loader {
+     @extend .pattern-dougong-animated;
+     width: 60px;
+     height: 60px;
+   }
+   
+   示例4：组合使用
+   .header {
+     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+     position: relative;
+     
+     &::before {
+       content: '';
+       @extend .pattern-cloud-bg;
+       @extend .pattern-opacity-10;
+       position: absolute;
+       top: 0; left: 0; right: 0; bottom: 0;
+     }
+   }
+   */
+
+/* ==========================================================================
+   版本信息
+   ========================================================================== */
+/* 
+ * 中国古建筑SVG图案库 v1.0
+ * 创建日期：2026-03-25
+ * 设计系统：营造中华 - 中国古建筑史数字化平台
+ * 设计规范：基于《古建筑动画设计规范.md》
+ * 
+ * 包含图案：
+ * - 斗拱图案 (4种)
+ * - 屋顶图案 (4种)
+ * - 云纹图案 (4种)
+ * - 回纹图案 (3种)
+ * - 边框图案 (3种)
+ * - 装饰元素 (4种)
+ * 
+ * 动画效果：4种
+ * 工具类：多种
+ */

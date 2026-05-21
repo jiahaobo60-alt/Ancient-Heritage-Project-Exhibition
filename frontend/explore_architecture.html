@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>建筑探索 - 营造中华</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/time.css"/>
+    <link rel="stylesheet" href="css/architecture_common.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== 古建筑主题配色 - 蓝灰系（与indivisual一致）===== */
+        :root {
+            --primary-color: #444C5E;
+            --primary-dark: #2D3344;
+            --primary-light: #6B7494;
+            --secondary-color: #A29192;
+            --accent-color: #8A9BC5;
+            --accent-gold: #B8C5E0;
+            --bg-color: #F0F2F5;
+            --bg-warm: #E8EBF0;
+            --text-color: #2D3344;
+            --text-muted: #7A8099;
+            --card-bg: #FFFFFF;
+            --border-color: rgba(68,76,94,0.14);
+            --shadow-sm: 0 2px 8px rgba(68,76,94,0.10);
+            --shadow-md: 0 6px 24px rgba(68,76,94,0.14);
+            --shadow-lg: 0 12px 40px rgba(68,76,94,0.18);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(160deg, #F0F2F5 0%, #E8EBF0 50%, #DDE1E8 100%);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        /* ===== 导航栏 ===== */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(68, 76, 94, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 12px 48px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 0 rgba(138,155,197,0.25), 0 4px 20px rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(138,155,197,0.2);
+        }
+        .nav-logo { color: #F0F2F5; font-size: 1.4em; font-weight: 700; text-decoration: none; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-link { color: rgba(240,242,245,0.85); text-decoration: none; padding: 7px 14px; border-radius: var(--radius-sm); transition: all 0.2s ease; font-size: 0.95em; letter-spacing: 0.02em; }
+        .nav-link:hover, .nav-link.active { background: rgba(138,155,197,0.25); color: #F0F2F5; }
+        .nav-link.active { border-bottom: 2px solid var(--accent-gold); }
+
+        /* ===== 页面标题区 ===== */
+        .page-hero {
+            margin-top: 60px;
+            background: linear-gradient(135deg, rgba(68,76,94,0.06) 0%, rgba(138,155,197,0.10) 100%);
+            border-bottom: 1px solid rgba(138,155,197,0.25);
+            padding: 32px 48px 24px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+        }
+        .page-hero-title { font-size: 1.8em; font-weight: 700; color: var(--primary-color); letter-spacing: 0.1em; line-height: 1.2; }
+        .page-hero-title small { display: block; font-size: 0.45em; color: var(--text-muted); letter-spacing: 0.05em; font-weight: 400; margin-top: 4px; }
+        .building-count-badge { background: linear-gradient(135deg, var(--primary-color), var(--primary-light)); color: #F0F2F5; padding: 8px 20px; border-radius: 20px; font-size: 0.9em; font-weight: 500; box-shadow: var(--shadow-sm); }
+
+        /* ===== 搜索栏 ===== */
+        .search-row { padding: 16px 48px; background: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(68,76,94,0.08); display: flex; align-items: center; gap: 12px; }
+        .search-input-wrap { position: relative; flex: 1; max-width: 380px; }
+        .search-input-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-input { width: 100%; padding: 10px 12px 10px 38px; border: 1.5px solid rgba(68,76,94,0.20); border-radius: var(--radius-md); background: rgba(255,255,255,0.90); color: var(--text-color); font-size: 0.95em; font-family: inherit; transition: all 0.2s; outline: none; }
+        .search-input:focus { border-color: var(--accent-color); background: white; box-shadow: 0 0 0 3px rgba(138,155,197,0.15); }
+
+        /* ===== 筛选栏 ===== */
+        .filter-bar { background: rgba(255,255,255,0.55); backdrop-filter: blur(8px); padding: 14px 48px; display: flex; gap: 16px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid rgba(68,76,94,0.08); }
+        .filter-label-text { font-size: 0.82em; font-weight: 600; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+        .filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-chip { padding: 5px 14px; border: 1.5px solid rgba(68,76,94,0.25); border-radius: 20px; background: transparent; color: var(--primary-color); font-size: 0.85em; font-family: inherit; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .filter-chip:hover { background: rgba(138,155,197,0.10); border-color: var(--accent-color); }
+        .filter-chip.active { background: var(--accent-color); border-color: var(--accent-color); color: white; box-shadow: var(--shadow-sm); }
+        .filter-divider { width: 1px; height: 24px; background: rgba(68,76,94,0.15); }
+
+        /* ===== 视图切换 ===== */
+        .view-toggle { display: flex; gap: 4px; background: rgba(138,155,197,0.10); border-radius: var(--radius-sm); padding: 3px; margin-left: auto; }
+        .view-btn { padding: 6px 14px; border: none; border-radius: 4px; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.85em; font-family: inherit; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
+        .view-btn.active { background: white; color: var(--accent-color); font-weight: 600; box-shadow: var(--shadow-sm); }
+
+        /* ===== 建筑卡片网格 ===== */
+        .buildings-wrapper { padding: 28px 40px; min-height: 500px; }
+        .buildings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .building-card { background: var(--card-bg); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); transition: all 0.3s cubic-bezier(0.4,0,0.2,1); cursor: pointer; position: relative; border: 1px solid var(--border-color); }
+        .building-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: rgba(138,155,197,0.4); }
+
+        /* 图片容器 */
+        .building-img-wrap { position: relative; width: 100%; height: 200px; overflow: hidden; background: #1a2030; }
+        .building-img-slider { display: flex; height: 100%; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
+        .building-img-slide { flex: 0 0 100%; height: 100%; }
+        .building-img-slide img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+        .building-card:hover .building-img-slide img { transform: scale(1.04); }
+
+        /* 轮播控制 */
+        .img-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.45); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; opacity: 0; }
+        .building-card:hover .img-nav { opacity: 1; }
+        .img-nav:hover { background: rgba(0,0,0,0.7); transform: translateY(-50%) scale(1.1); }
+        .img-nav-prev { left: 8px; }
+        .img-nav-next { right: 8px; }
+        .img-counter { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.5); color: white; padding: 3px 8px; border-radius: 10px; font-size: 0.75em; z-index: 10; }
+        .img-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 10; }
+        .img-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s; }
+        .img-dot.active { background: white; width: 18px; border-radius: 3px; }
+        .dynasty-strip { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+
+        /* 卡片信息区 */
+        .building-info { padding: 16px 18px 14px; }
+        .building-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+        .building-name { font-size: 1.1em; font-weight: 700; color: var(--primary-color); letter-spacing: 0.03em; line-height: 1.3; }
+        .building-dynasty { display: inline-block; background: linear-gradient(135deg, var(--accent-color), #6B7494); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.75em; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+        .building-meta { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 0.83em; margin-bottom: 8px; }
+        .building-meta svg { flex-shrink: 0; }
+        .building-desc { color: var(--text-muted); font-size: 0.85em; line-height: 1.65; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .building-footer { padding: 10px 18px 14px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color); }
+        .building-type-tag { background: rgba(68,76,94,0.07); color: var(--primary-light); padding: 3px 10px; border-radius: 10px; font-size: 0.75em; }
+        .detail-link { font-size: 0.82em; color: var(--accent-color); font-weight: 500; display: flex; align-items: center; gap: 4px; }
+
+        /* 地图容器 */
+        .map-container { height: 600px; margin: 24px 40px; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-color); }
+
+        /* 详情弹窗 */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(30,38,58,0.75); z-index: 2000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(4px); }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: var(--card-bg); width: 100%; max-width: 860px; max-height: 92vh; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.35); display: flex; flex-direction: column; animation: modalIn 0.3s cubic-bezier(0.4,0,0.2,1); }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; background: rgba(0,0,0,0.5); border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s; }
+        .modal-close:hover { background: rgba(0,0,0,0.7); }
+        .modal-gallery { position: relative; width: 100%; height: 340px; background: #1a2030; overflow: hidden; }
+        .modal-gallery-slider { display: flex; height: 100%; transition: transform 0.4s ease; }
+        .modal-gallery-slide { flex: 0 0 100%; height: 100%; }
+        .modal-gallery-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
+        .modal-gallery-nav:hover { background: rgba(0,0,0,0.75); }
+        .modal-gallery-nav-prev { left: 16px; }
+        .modal-gallery-nav-next { right: 16px; }
+        .modal-gallery-dots { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+        .modal-gallery-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.45); cursor: pointer; transition: all 0.2s; }
+        .modal-gallery-dot.active { background: white; width: 20px; border-radius: 3px; }
+        .modal-gallery-count { position: absolute; bottom: 14px; right: 16px; background: rgba(0,0,0,0.5); color: white; padding: 3px 10px; border-radius: 10px; font-size: 0.78em; z-index: 10; }
+        .modal-body { padding: 28px 32px; overflow-y: auto; flex: 1; }
+        .modal-title { font-size: 1.6em; font-weight: 700; color: var(--primary-color); margin: 0 0 12px; letter-spacing: 0.05em; }
+        .modal-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .modal-meta-item { background: rgba(138,155,197,0.12); color: var(--primary-light); padding: 4px 12px; border-radius: 16px; font-size: 0.82em; font-weight: 500; }
+        .modal-section { margin-bottom: 20px; }
+        .modal-section-title { font-size: 1em; font-weight: 700; color: var(--primary-color); margin-bottom: 8px; letter-spacing: 0.05em; border-left: 3px solid var(--accent-color); padding-left: 10px; }
+        .modal-text { color: var(--text-muted); font-size: 0.92em; line-height: 1.8; margin: 0; }
+        .modal-quote { background: rgba(138,155,197,0.08); border-left: 3px solid var(--accent-color); padding: 12px 16px; border-radius: 0 8px 8px 0; color: var(--primary-color); font-style: italic; font-size: 0.9em; line-height: 1.8; margin: 0; }
+
+        /* 结果统计栏 */
+        .results-bar { padding: 10px 48px; font-size: 0.85em; color: var(--text-muted); background: rgba(255,255,255,0.3); border-top: 1px solid rgba(68,76,94,0.06); }
+        .results-count { font-weight: 700; color: var(--primary-color); }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .buildings-grid { grid-template-columns: 1fr; }
+            .page-hero, .search-row, .filter-bar { padding-left: 20px; padding-right: 20px; }
+            .buildings-wrapper { padding: 16px 16px; }
+            .nav-bar { padding: 10px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M3 21h18M3 7l9-4 9 4M4 7v14M20 7v14M8 10v7M12 10v7M16 10v7"/>
+            </svg>
+            营造中华
+        </a>
+        <div class="nav-links">
+            <a href="space.html" class="nav-link">空间漫游</a>
+            <a href="know.html" class="nav-link">民族之窗</a>
+            <a href="time.html" class="nav-link">时间之境</a>
+            <a href="3d_architecture.html" class="nav-link">3D展示</a>
+            <a href="indivisual.html" class="nav-link">喜好映射</a>
+            <a href="chat.html" class="nav-link">AI助手</a>
+        </div>
+    </nav>
+
+    <!-- 页面标题区 -->
+    <div class="page-hero">
+        <div class="page-hero-title">
+            中国古建筑探索
+            <small>穿越千年营造智慧 · 探索华夏建筑遗珍</small>
+        </div>
+        <div class="building-count-badge" id="totalBadge">正在加载...</div>
+    </div>
+
+    <!-- 搜索行 -->
+    <div class="search-row">
+        <div class="search-input-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="搜索建筑名称..." oninput="onSearchInput(this.value)">
+        </div>
+
+        <div class="view-toggle">
+            <button class="view-btn active" onclick="showGridView()" id="gridBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                </svg>
+                网格
+            </button>
+            <button class="view-btn" onclick="showMapView()" id="mapBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                    <line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>
+                </svg>
+                地图
+            </button>
+        </div>
+    </div>
+
+    <!-- 筛选栏 - 标签式 -->
+    <div class="filter-bar" id="filterBar">
+        <span class="filter-label-text">朝代</span>
+        <div class="filter-chips" id="dynastyChips">
+            <button class="filter-chip active" data-filter="dynasty" data-val="">全部</button>
+            <button class="filter-chip" data-filter="dynasty" data-val="汉代">汉代</button>
+            <button class="filter-chip" data-filter="dynasty" data-val="魏晋南北朝">魏晋</button>
+            <button class="filter-chip" data-filter="dynasty" data-val="唐代">唐代</button>
+            <button class="filter-chip" data-filter="dynasty" data-val="宋代">宋代</button>
+            <button class="filter-chip" data-filter="dynasty" data-val="辽金">辽金</button>
+            <button class="filter-chip" data-filter="dynasty" data-val="元代">元代</button>
+            <button class="filter-chip" data-filter="dynasty" data-val="明代">明代</button>
+            <button class="filter-chip" data-filter="dynasty" data-val="清代">清代</button>
+        </div>
+        <div class="filter-divider"></div>
+        <span class="filter-label-text">类型</span>
+        <div class="filter-chips" id="typeChips">
+            <button class="filter-chip active" data-filter="type" data-val="">全部</button>
+            <button class="filter-chip" data-filter="type" data-val="殿宇">殿宇</button>
+            <button class="filter-chip" data-filter="type" data-val="佛塔">佛塔</button>
+            <button class="filter-chip" data-filter="type" data-val="楼阁">楼阁</button>
+            <button class="filter-chip" data-filter="type" data-val="园林">园林</button>
+            <button class="filter-chip" data-filter="type" data-val="民居">民居</button>
+            <button class="filter-chip" data-filter="type" data-val="石窟">石窟</button>
+        </div>
+    </div>
+
+    <!-- 结果统计栏 -->
+    <div class="results-bar" id="resultsBar">
+        共 <span class="results-count" id="resultsCount">0</span> 处古建筑
+    </div>
+
+    <!-- 网格视图 -->
+    <div class="buildings-wrapper" id="gridView">
+        <div class="buildings-grid" id="buildingsGrid">
+            <div class="loading-state">
+                <div class="loading-ring"></div>
+                <p>正在加载古建筑数据...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 地图视图 -->
+    <div class="map-container" id="mapView" style="display: none;">
+        <div id="architectureMap" style="width: 100%; height: 100%;"></div>
+    </div>
+
+
+    <!-- 详情弹窗 - 升级版 -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <!-- 图片画廊 -->
+            <div class="modal-gallery" id="modalGallery">
+                <div class="modal-gallery-slider" id="modalGallerySlider"></div>
+                <button class="modal-gallery-nav modal-gallery-nav-prev" onclick="galleryNav(-1)" id="galleryPrev">&#8249;</button>
+                <button class="modal-gallery-nav modal-gallery-nav-next" onclick="galleryNav(1)" id="galleryNext">&#8250;</button>
+                <div class="modal-gallery-dots" id="modalGalleryDots"></div>
+                <div class="modal-gallery-count" id="modalGalleryCount"></div>
+            </div>
+            <button class="modal-close" onclick="closeModal()">&#10005;</button>
+            <div class="modal-body">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <div class="modal-meta">
+                    <span class="modal-meta-item" id="modalDynasty"></span>
+                    <span class="modal-meta-item" id="modalRegion"></span>
+                    <span class="modal-meta-item" id="modalType"></span>
+                    <span class="modal-meta-item" id="modalRoof" style="display:none"></span>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">建筑简介</div>
+                    <p class="modal-text" id="modalIntro"></p>
+                </div>
+                <div class="modal-section" id="modalHistorySection">
+                    <div class="modal-section-title">历史价值</div>
+                    <p class="modal-text" id="modalHistory"></p>
+                </div>
+                <div class="modal-section" id="modalFeaturesSection">
+                    <div class="modal-section-title">建筑特色</div>
+                    <p class="modal-text" id="modalFeatures"></p>
+                </div>
+                <div class="modal-section" id="modalLiangSection">
+                    <div class="modal-section-title">梁思成评语</div>
+                    <p class="modal-quote" id="modalLiang"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>© 2024 营造中华 - 中国古建筑史可视化平台</p>
+        <p>基于梁思成《中国建筑史》学术体系构建</p>
+    </footer>
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/echarts-5.4.2.min.js"></script>
+    <script src="js/echarts-map-china.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/building_images.js"></script>
+    <script src="js/architecture_common.js"></script>
+    <script>
+        // ==================== 全局状态 ====================
+        let allBuildings = [];
+        let filteredBuildings = [];
+        let currentView = 'grid';
+        let mapChart = null;
+        let activeFilters = { dynasty: '', type: '', search: '' };
+        let modalGalleryCurrent = 0;
+        let modalGalleryImages = [];
+        let cardSliders = {};
+
+        // ==================== 初始化 ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initFilterChips();
+            loadBuildings();
+            initSearchDebounce();
+        });
+
+        // ==================== 筛选芯片交互 ====================
+        function initFilterChips() {
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const filterType = this.dataset.filter;
+                    const val = this.dataset.val || null; // 空字符串转 null
+                    // 同组内取消其他选中
+                    document.querySelectorAll(`.filter-chip[data-filter="${filterType}"]`).forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    // 朝代筛选存 dynasty_name，类型筛选存 structure_type_name
+                    if (filterType === 'dynasty') activeFilters.dynasty = val;
+                    if (filterType === 'type') activeFilters.type = val;
+                    applyFilters();
+                });
+            });
+        }
+
+        // ==================== 搜索防抖 ====================
+        let searchTimer;
+        function initSearchDebounce() {}
+        function onSearchInput(val) {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                activeFilters.search = val.trim();
+                applyFilters();
+            }, 300);
+        }
+
+        // ==================== 加载建筑数据（优先后端API，备用本地JSON） ====================
+        async function loadBuildings() {
+            // 先尝试后端 API
+            try {
+                const response = await fetch(BASE_URL + '/architecture/buildings/');
+                if (response.ok) {
+                    const data = await response.json();
+                    onBuildingsLoaded(data.results || data);
+                    return;
+                }
+            } catch (e) {
+                console.warn('后端API不可用，切换到本地静态数据', e);
+            }
+            // 备用：本地静态JSON
+            try {
+                const res = await fetch('data/buildings_static.json');
+                if (res.ok) {
+                    const data = await res.json();
+                    onBuildingsLoaded(data.results || data);
+                    // 提示用户当前使用的是离线数据
+                    const badge = document.getElementById('totalBadge');
+                    if (badge) badge.title = '当前使用本地缓存数据，请启动后端服务获取最新数据';
+                    return;
+                }
+            } catch (e2) {
+                console.error('本地静态数据也不可用', e2);
+            }
+            // 全部失败
+            document.getElementById('buildingsGrid').innerHTML = `
+                <div class="loading-state" style="grid-column:1/-1">
+                    <div style="font-size:48px;margin-bottom:16px">🏛️</div>
+                    <p style="color:#8B4513;font-size:16px;font-weight:600">数据加载失败</p>
+                    <p style="font-size:13px;color:#8D6E63;margin-top:8px">请在 backend/ 目录运行 <code>python manage.py runserver 80</code> 启动后端服务</p>
+                    <button onclick="loadBuildings()" style="margin-top:16px;padding:8px 20px;background:#8B4513;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px">重新加载</button>
+                </div>
+            `;
+        }
+
+        function onBuildingsLoaded(buildings) {
+            allBuildings = buildings;
+            filteredBuildings = allBuildings;
+            document.getElementById('totalBadge').textContent = `共 ${allBuildings.length} 处古建筑`;
+            // 初始化朝代/类型筛选芯片选项（从数据中提取）
+            populateFilterChips();
+            renderGrid();
+            initMap();
+        }
+
+        function populateFilterChips() {
+            // 动态生成朝代筛选芯片
+            const dynasties = [...new Set(allBuildings.map(b => b.dynasty_name).filter(Boolean))];
+            const types = [...new Set(allBuildings.map(b => b.structure_type_name).filter(Boolean))];
+            const dynastyWrap = document.getElementById('dynastyChips');
+            const typeWrap = document.getElementById('typeChips');
+            if (dynastyWrap) {
+                dynastyWrap.innerHTML = '<button class="filter-chip active" onclick="setFilter(\'dynasty\',null,this)">全部</button>' +
+                    dynasties.map(d => `<button class="filter-chip" onclick="setFilter('dynasty','${d}',this)">${d}</button>`).join('');
+            }
+            if (typeWrap) {
+                typeWrap.innerHTML = '<button class="filter-chip active" onclick="setFilter(\'type\',null,this)">全部</button>' +
+                    types.map(t => `<button class="filter-chip" onclick="setFilter('type','${t}',this)">${t}</button>`).join('');
+            }
+        }
+
+        function setFilter(key, val, btn) {
+            // key: 'dynasty' | 'type'
+            const wrap = btn.closest('.chips-row');
+            if (wrap) wrap.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            // 朝代筛选用 dynasty_name，类型筛选用 structure_type_name
+            if (key === 'dynasty') activeFilters.dynasty = val;
+            if (key === 'type') activeFilters.type = val;
+            applyFilters();
+        }
+
+        // ==================== 渲染网格 ====================
+        function renderGrid() {
+            const grid = document.getElementById('buildingsGrid');
+            document.getElementById('resultsCount').textContent = filteredBuildings.length;
+
+            if (filteredBuildings.length === 0) {
+                grid.innerHTML = '<div class="loading-state" style="grid-column:1/-1"><p>没有找到符合条件的建筑</p></div>';
+                return;
+            }
+
+            grid.innerHTML = filteredBuildings.map((building, idx) => {
+                const localImgs = getBuildingImages(building.bname);
+                
+                // 处理图片路径：移除前导斜杠，转换为相对路径
+                const processImagePath = (path) => {
+                    if (!path) return 'img/殿宇.jpg';
+                    // 移除前导斜杠
+                    if (path.startsWith('/img/')) {
+                        return path.substring(1);
+                    }
+                    if (path.startsWith('img/')) {
+                        return path;
+                    }
+                    return path;
+                };
+                
+                const coverImg = localImgs.length > 0 ? localImgs[0] : getBuildingCoverImage(building.bname, building.image_url);
+                const hasMultiple = localImgs.length > 1;
+
+                const slidesHtml = localImgs.length > 0
+                    ? localImgs.map(src => `
+                        <div class="building-img-slide">
+                            <img src="${src}" alt="${building.bname}" loading="lazy"
+                                 onerror="this.src='img/殿宇.jpg'">
+                        </div>`).join('')
+                    : `<div class="building-img-slide">
+                            <img src="${getBuildingCoverImage(building.bname, building.image_url)}" alt="${building.bname}"
+                                 onerror="this.src='img/殿宇.jpg'">
+                       </div>`;
+
+                const dotsHtml = localImgs.length > 1
+                    ? localImgs.map((_, i) => `<div class="img-dot ${i===0?'active':''}" onclick="event.stopPropagation();cardSlide(${idx},${i})"></div>`).join('')
+                    : '';
+
+                return `
+                <div class="building-card" onclick="showDetail(${building.bid})" data-idx="${idx}">
+                    <div class="building-img-wrap">
+                        <div class="building-img-slider" id="slider-${idx}">${slidesHtml}</div>
+                        ${hasMultiple ? `
+                        <button class="img-nav img-nav-prev" onclick="event.stopPropagation();cardSlide(${idx},-1,true)">&#8249;</button>
+                        <button class="img-nav img-nav-next" onclick="event.stopPropagation();cardSlide(${idx},1,true)">&#8250;</button>
+                        <div class="img-dots" id="dots-${idx}">${dotsHtml}</div>
+                        <div class="img-counter" id="counter-${idx}">1/${localImgs.length}</div>
+                        ` : ''}
+                    </div>
+                    <div class="building-info">
+                        <div class="building-header">
+                            <div class="building-name">${building.bname}</div>
+                            <span class="building-dynasty">${building.dynasty_name || '未知朝代'}</span>
+                        </div>
+                        <div class="building-meta">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            ${building.address || building.region_name || '未知地点'}
+                        </div>
+                        <div class="building-desc">${building.introduction || '暂无简介'}</div>
+                    </div>
+                    <div class="building-footer">
+                        <span class="building-type-tag">${building.structure_type_name || '建筑'}</span>
+                        <span class="detail-link">查看详情 ›</span>
+                    </div>
+                </div>`;
+            }).join('');
+
+            // 初始化卡片轮播状态
+            cardSliders = {};
+            filteredBuildings.forEach((b, idx) => {
+                const imgs = getBuildingImages(b.bname);
+                if (imgs.length > 1) cardSliders[idx] = 0;
+            });
+        }
+
+        // ==================== 卡片轮播 ====================
+        function cardSlide(idx, step, isRelative = false) {
+            const imgs = getBuildingImages(filteredBuildings[idx].bname);
+            if (!imgs || imgs.length < 2) return;
+            let current = cardSliders[idx] || 0;
+            if (isRelative) {
+                current = (current + step + imgs.length) % imgs.length;
+            } else {
+                current = step;
+            }
+            cardSliders[idx] = current;
+            const slider = document.getElementById(`slider-${idx}`);
+            if (slider) slider.style.transform = `translateX(-${current * 100}%)`;
+            // 更新指示点
+            const dotsEl = document.getElementById(`dots-${idx}`);
+            if (dotsEl) {
+                dotsEl.querySelectorAll('.img-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+            }
+            // 更新计数
+            const counter = document.getElementById(`counter-${idx}`);
+            if (counter) counter.textContent = `${current + 1}/${imgs.length}`;
+        }
+
+        // ==================== 弹窗图片画廊 ====================
+        let galleryTimer = null;
+        function showModal_gallery(bname) {
+            const imgs = getBuildingImages(bname);
+            modalGalleryImages = imgs;
+            modalGalleryCurrent = 0;
+            const slider = document.getElementById('modalGallerySlider');
+            slider.innerHTML = imgs.map(src => `
+                <div class="modal-gallery-slide">
+                    <img src="${src}" alt="" loading="lazy" onerror="this.src='img/殿宇.jpg'">
+                </div>`).join('') || `<div class="modal-gallery-slide"><img src="img/殿宇.jpg" alt=""></div>`;
+            slider.style.transform = 'translateX(0)';
+
+            const dots = document.getElementById('modalGalleryDots');
+            dots.innerHTML = imgs.length > 1 ? imgs.map((_, i) => `<div class="modal-gallery-dot ${i===0?'active':''}" onclick="galleryGoTo(${i})"></div>`).join('') : '';
+
+            const count = document.getElementById('modalGalleryCount');
+            count.textContent = imgs.length > 1 ? `1/${imgs.length}` : '';
+
+            document.getElementById('galleryPrev').style.display = imgs.length > 1 ? 'flex' : 'none';
+            document.getElementById('galleryNext').style.display = imgs.length > 1 ? 'flex' : 'none';
+
+            // 自动轮播
+            clearInterval(galleryTimer);
+            if (imgs.length > 1) {
+                galleryTimer = setInterval(() => galleryNav(1), 4000);
+            }
+        }
+
+        function galleryNav(dir) {
+            if (modalGalleryImages.length < 2) return;
+            modalGalleryCurrent = (modalGalleryCurrent + dir + modalGalleryImages.length) % modalGalleryImages.length;
+            galleryGoTo(modalGalleryCurrent);
+        }
+
+        function galleryGoTo(idx) {
+            modalGalleryCurrent = idx;
+            document.getElementById('modalGallerySlider').style.transform = `translateX(-${idx * 100}%)`;
+            document.querySelectorAll('.modal-gallery-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+            document.getElementById('modalGalleryCount').textContent = `${idx + 1}/${modalGalleryImages.length}`;
+        }
+
+        // ==================== 显示详情 ====================
+        function showDetail(buildingId) {
+            const building = allBuildings.find(b => b.bid === buildingId);
+            if (!building) return;
+
+            showModal_gallery(building.bname);
+
+            document.getElementById('modalTitle').textContent = building.bname;
+            document.getElementById('modalDynasty').textContent = '朝代：' + (building.dynasty_name || '未知朝代');
+            document.getElementById('modalRegion').textContent = '地域：' + (building.region_name || '未知地域');
+            document.getElementById('modalType').textContent = '类型：' + (building.structure_type_name || '未知类型');
+
+            const roofEl = document.getElementById('modalRoof');
+            if (building.roof_type) {
+                roofEl.textContent = '屋顶：' + building.roof_type;
+                roofEl.style.display = '';
+            } else {
+                roofEl.style.display = 'none';
+            }
+
+            document.getElementById('modalIntro').textContent = building.introduction || '暂无简介';
+
+            const histEl = document.getElementById('modalHistorySection');
+            document.getElementById('modalHistory').textContent = building.historical_value || '';
+            histEl.style.display = building.historical_value ? '' : 'none';
+
+            const featEl = document.getElementById('modalFeaturesSection');
+            document.getElementById('modalFeatures').textContent = building.architectural_features || '';
+            featEl.style.display = building.architectural_features ? '' : 'none';
+
+            const liangEl = document.getElementById('modalLiangSection');
+            document.getElementById('modalLiang').textContent = building.liang_sicheng_note ? `「${building.liang_sicheng_note}」` : '';
+            liangEl.style.display = building.liang_sicheng_note ? '' : 'none';
+
+            document.getElementById('detailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // ==================== 关闭弹窗 ====================
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+            document.body.style.overflow = '';
+            clearInterval(galleryTimer);
+        }
+
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+            if (document.getElementById('detailModal').classList.contains('active')) {
+                if (e.key === 'ArrowLeft') galleryNav(-1);
+                if (e.key === 'ArrowRight') galleryNav(1);
+            }
+        });
+
+        // ==================== 应用筛选 ====================
+        function applyFilters() {
+            filteredBuildings = allBuildings.filter(b => {
+                if (activeFilters.dynasty && b.dynasty_name !== activeFilters.dynasty) return false;
+                if (activeFilters.type && b.structure_type_name !== activeFilters.type) return false;
+                if (activeFilters.search) {
+                    const q = activeFilters.search.toLowerCase();
+                    if (!b.bname.toLowerCase().includes(q) &&
+                        !(b.introduction || '').toLowerCase().includes(q) &&
+                        !(b.address || '').toLowerCase().includes(q)) return false;
+                }
+                return true;
+            });
+
+            if (currentView === 'grid') {
+                renderGrid();
+            } else {
+                updateMap();
+            }
+        }
+
+        // ==================== 地图 ====================
+        function initMap() {
+            mapChart = echarts.init(document.getElementById('architectureMap'));
+            updateMap();
+            window.addEventListener('resize', () => mapChart.resize());
+        }
+
+        function updateMap() {
+            if (!mapChart) return;
+            const scatterData = filteredBuildings.map(b => ({
+                name: b.bname,
+                value: [b.longitude, b.latitude],
+                item: b
+            }));
+
+            const option = {
+                backgroundColor: '#F7F3ED',
+                title: {
+                    text: '中国古建筑分布图',
+                    left: 'center',
+                    top: 16,
+                    textStyle: { color: '#444C5E', fontSize: 18, fontFamily: '"Noto Serif SC", serif' }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(255,248,220,0.95)',
+                    borderColor: '#D4A574',
+                    textStyle: { color: '#3E2723' },
+                    formatter: function(params) {
+                        const b = params.data.item;
+                        const img = getBuildingCoverImage(b.bname, b.image_url);
+                        return `<div style="padding:8px;max-width:220px">
+                            <img src="${img}" style="width:100%;height:80px;object-fit:cover;border-radius:6px;margin-bottom:6px" onerror="this.style.display='none'">
+                            <div style="font-weight:700;font-size:15px;color:#444C5E">${b.bname}</div>
+                            <div style="color:#8D6E63;font-size:12px;margin-top:4px">${b.dynasty_name || ''} · ${b.address || ''}</div>
+                        </div>`;
+                    }
+                },
+                geo: {
+                    map: 'china',
+                    roam: true,
+                    zoom: 1.2,
+                    itemStyle: {
+                        areaColor: '#F5F5DC',
+                        borderColor: '#C4A77D',
+                        borderWidth: 0.8
+                    },
+                    emphasis: { itemStyle: { areaColor: '#D4A574' } },
+                    select: { itemStyle: { areaColor: '#D4A574' } }
+                },
+                series: [{
+                    name: '古建筑',
+                    type: 'scatter',
+                    coordinateSystem: 'geo',
+                    data: scatterData,
+                    symbolSize: 14,
+                    label: {
+                        show: true,
+                        formatter: '{b}',
+                        position: 'right',
+                        fontSize: 11,
+                        color: '#444C5E',
+                        textBorderColor: 'rgba(240,242,245,0.8)',
+                        textBorderWidth: 2
+                    },
+                    itemStyle: {
+                        color: '#444C5E',
+                        borderColor: '#DDE1E8',
+                        borderWidth: 2,
+                        shadowBlur: 8,
+                        shadowColor: 'rgba(138,155,197,0.5)'
+                    },
+                    emphasis: {
+                        scale: 1.6,
+                        itemStyle: { color: '#8A9BC5', borderWidth: 3 }
+                    }
+                }]
+            };
+
+            mapChart.setOption(option, true);
+            mapChart.off('click');
+            mapChart.on('click', params => {
+                if (params.data && params.data.item) showDetail(params.data.item.bid);
+            });
+        }
+
+        // ==================== 视图切换 ====================
+        function showGridView() {
+            currentView = 'grid';
+            document.getElementById('gridView').style.display = 'block';
+            document.getElementById('mapView').style.display = 'none';
+            document.getElementById('gridBtn').classList.add('active');
+            document.getElementById('mapBtn').classList.remove('active');
+            renderGrid();
+        }
+
+        function showMapView() {
+            currentView = 'map';
+            document.getElementById('gridView').style.display = 'none';
+            document.getElementById('mapView').style.display = 'block';
+            document.getElementById('gridBtn').classList.remove('active');
+            document.getElementById('mapBtn').classList.add('active');
+            if (mapChart) setTimeout(() => { mapChart.resize(); updateMap(); }, 100);
+        }
+    </script>
+</body>
+</html>

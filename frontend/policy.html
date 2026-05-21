@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <title>山川异域，风月同天</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <link rel="stylesheet" href="css/mychart.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/policy.css" />
+</head>
+
+<body class="bg01">
+    <nav id="nav-1">
+        <div class="div-big">
+            <div class="div-left">
+                <text class="nav-topic">个性化文旅推荐与可视化平台</text>
+            </div>
+            <div class="div-center">
+                <a class="link-1" href="space.html">空间可视化</a>
+                <a class="link-1" href="time.html">时间可视化</a>
+                <a class="link-1" href="indivisual.html">个性可视化</a>
+                <a class="link-1" href="policy.html">政策可视化</a>
+                <a class="link-1" href="know.html">民族可视化</a>
+
+            </div>
+            <div class="div-right">
+                <!-- <div class="right">
+                    <input id="search-input" class="nav-search" type="text" placeholder="请输入要搜索的关键词" />
+                    <button type="submit" onclick="search()" id="search-button">搜索</button>
+                </div> -->
+            </div>
+        </div>
+    </nav>
+
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row fill-h">
+
+                <div class="col-lg-6 fill-h">
+                    <div class="xpanel-wrapper xpanel-wrapper-1">
+                        <div class="xpanel">
+                            <style>
+                                .together {
+                                    display: grid;
+                                    grid-template-columns: 1fr 1fr;
+                                    grid-gap: 1px;
+                                }
+
+                                .time1 {
+                                    margin-left: 100px;
+                                    width: 60px;
+                                }
+
+                                .time2 {
+                                    margin-left: 0px;
+                                    width: 80px;
+                                }
+
+                                .year1 {
+                                    position: absolute;
+                                    left: -100px;
+                                    /* 调整位置 */
+                                    top: 10%;
+                                    font-size: 20px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .year2 {
+                                    position: absolute;
+                                    left: -100px;
+                                    /* 调整位置 */
+                                    top: 20%;
+                                    font-size: 20px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .year3 {
+                                    position: absolute;
+                                    left: -100px;
+                                    /* 调整位置 */
+                                    top: 25%;
+                                    font-size: 20px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .year4 {
+                                    position: absolute;
+                                    left: -100px;
+                                    /* 调整位置 */
+                                    top: 30%;
+                                    font-size: 20px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .year5 {
+                                    position: absolute;
+                                    left: -100px;
+                                    /* 调整位置 */
+                                    top: 90%;
+                                    font-size: 20px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                /* Style for the timeline container */
+                                .timeline {
+                                    position: relative;
+                                    margin: 50px 0;
+                                    padding: 0;
+                                    padding-left: 20px;
+                                    list-style: none;
+                                }
+
+                                .dates {
+                                    position: relative;
+                                    margin: 0px 0;
+                                    padding: 0;
+                                    list-style: none;
+                                    width: 20px;
+                                    top: 20px;
+                                }
+
+                                #dates li {
+                                    position: relative;
+                                    list-style: none;
+                                    width: 4px;
+                                    padding-top: 30px;
+                                }
+
+                                #dates li.next {
+                                    position: relative;
+                                    list-style: none;
+                                    width: 4px;
+                                    padding-top: 70px;
+                                }
+
+
+
+                                /* Style for the timeline item container */
+                                .timeline li {
+                                    position: relative;
+                                    width: 2px;
+                                    margin: 0 auto;
+                                    padding-top: 100px;
+                                    background: #787777;
+                                    list-style: none;
+                                }
+
+                                #dates a {
+                                    display: inline-block;
+                                    width: 10px;
+                                    height: 10px;
+                                    text-align: center;
+                                    line-height: 20px;
+                                    border-radius: 50%;
+                                    background-color: #ccc;
+                                    color: #ffffff00;
+                                    text-decoration: none;
+                                    top: -10px;
+                                    margin-right: 20px;
+                                }
+
+                                .text1 {
+                                    position: absolute;
+                                    /* 调整位置 */
+                                    top: 35px;
+                                    font-size: 15px;
+                                    margin-left: 20px;
+                                    width: 300px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .text2 {
+                                    position: absolute;
+                                    /* 调整位置 */
+                                    top: 130px;
+                                    font-size: 15px;
+                                    margin-left: 20px;
+                                    width: 300px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .text3 {
+                                    position: absolute;
+                                    /* 调整位置 */
+                                    top: 170px;
+                                    font-size: 15px;
+                                    margin-left: 20px;
+                                    width: 300px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .text4 {
+                                    position: absolute;
+                                    /* 调整位置 */
+                                    top: 270px;
+                                    font-size: 15px;
+                                    margin-left: 20px;
+                                    width: 300px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .text5 {
+                                    position: absolute;
+                                    /* 调整位置 */
+                                    top: 360px;
+                                    font-size: 15px;
+                                    margin-left: 20px;
+                                    width: 300px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .text6 {
+                                    position: absolute;
+                                    /* 调整位置 */
+                                    top: 410px;
+                                    font-size: 15px;
+                                    margin-left: 20px;
+                                    width: 300px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .text7 {
+                                    position: absolute;
+                                    /* 调整位置 */
+                                    top: 450px;
+                                    font-size: 15px;
+                                    margin-left: 20px;
+                                    width: 300px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .text8 {
+                                    position: absolute;
+                                    /* 调整位置 */
+                                    top: 510px;
+                                    font-size: 15px;
+                                    margin-left: 20px;
+                                    width: 300px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .text9 {
+                                    position: absolute;
+                                    /* 调整位置 */
+                                    bottom: 90px;
+                                    font-size: 15px;
+                                    margin-left: 20px;
+                                    width: 300px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .text10 {
+                                    position: absolute;
+                                    /* 调整位置 */
+                                    bottom: 40px;
+                                    font-size: 15px;
+                                    margin-left: 20px;
+                                    width: 300px;
+                                    /* 调整字体大小 */
+                                    color: #ffffff;
+                                    /* 调整字体颜色 */
+                                    font-family: FZQKBYSJW;
+                                }
+
+                                .radius1 {
+                                    width: 70px;
+                                    height: 70px;
+                                    border-radius: 100%;
+                                    position: absolute;
+                                    top: 10%;
+                                    left: 50%;
+                                    -webkit-transform: translate(-50%, -50%);
+                                    transform: translate(-50%, -50%);
+                                }
+
+                                .radius2 {
+                                    width: 60px;
+                                    height: 60px;
+                                    border-radius: 100%;
+                                    position: absolute;
+                                    top: 25%;
+                                    left: 50%;
+                                    -webkit-transform: translate(-50%, -50%);
+                                    transform: translate(-50%, -50%);
+                                }
+
+                                .radius3 {
+                                    width: 50px;
+                                    height: 50px;
+                                    border-radius: 100%;
+                                    position: absolute;
+                                    top: 40%;
+                                    left: 50%;
+                                    -webkit-transform: translate(-50%, -50%);
+                                    transform: translate(-50%, -50%);
+                                }
+
+                                .radius5 {
+                                    width: 20px;
+                                    height: 20px;
+                                    border-radius: 100%;
+                                    position: absolute;
+                                    bottom: -10%;
+                                    left: 50%;
+                                    -webkit-transform: translate(-50%, -50%);
+                                    transform: translate(-50%, -50%);
+                                }
+
+                                .radius {
+                                    width: 40px;
+                                    height: 40px;
+                                    border-radius: 100%;
+                                    position: absolute;
+                                    top: 70%;
+                                    left: 50%;
+                                    -webkit-transform: translate(-50%, -50%);
+                                    transform: translate(-50%, -50%);
+                                }
+
+                                .place {
+                                    background: #6e4a0e;
+                                    z-index: 2;
+                                }
+
+                                .radius1 .border-animation,
+                                .radius2 .border-animation,
+                                .radius3 .border-animation,
+                                .radius5 .border-animation,
+                                .radius .border-animation,
+                                .place {
+                                    display: block;
+                                    width: 100%;
+                                    height: 100%;
+                                    position: absolute;
+                                    border-radius: 100%;
+                                }
+
+                                .radius1 .border-animation,
+                                .radius2 .border-animation,
+                                .radius3 .border-animation,
+                                .radius5 .border-animation,
+                                .radius .border-animation {
+                                    z-index: 1;
+                                }
+
+                                .ba1 {
+                                    animation: rounder1 2s linear 0s infinite alternate;
+                                    background: rgba(230, 159, 54, 0.6);
+                                }
+
+                                @keyframes rounder1 {
+                                    from {
+                                        transform: scale(1);
+                                    }
+
+                                    to {
+                                        transform: scale(1.19);
+                                    }
+                                }
+
+                                .ba2 {
+                                    animation: rounder2 2s linear 0s infinite alternate;
+                                    background: rgba(243, 182, 91, 0.6);
+                                }
+
+                                @keyframes rounder2 {
+                                    from {
+                                        transform: scale(1);
+                                    }
+
+                                    to {
+                                        transform: scale(1.39);
+                                    }
+                                }
+
+                                .ba3 {
+                                    animation: rounder3 2s linear 0s infinite alternate;
+                                    background: rgba(234, 214, 185, 0.6);
+                                }
+
+                                @keyframes rounder3 {
+                                    from {
+                                        transform: scale(1);
+                                    }
+
+                                    to {
+                                        transform: scale(1.59);
+                                    }
+                                }
+                            </style>
+                            <div class="together">
+                                <div class="time1">
+                                    <ul class="timeline">
+                                        <li class="t1">
+                                            <div class="radius1">
+                                                <span class="place" id="place_a"></span>
+                                                <span class="border-animation ba1"></span>
+                                                <span class="border-animation ba2"></span>
+                                                <span class="border-animation ba3"></span>
+                                            </div>
+                                            <span class="year1">2022年</span>
+                                        </li>
+                                        <li class="t2">
+                                            <div class="radius2">
+                                                <span class="place" id="place_b"></span>
+                                                <span class="border-animation ba1"></span>
+                                                <span class="border-animation ba2"></span>
+                                                <span class="border-animation ba3"></span>
+                                            </div>
+                                            <span class="year2">2021年</span>
+                                        </li>
+                                        <li class="t3">
+                                            <div class="radius3">
+                                                <span class="place" id="place_c"></span>
+                                                <span class="border-animation ba1"></span>
+                                                <span class="border-animation ba2"></span>
+                                                <span class="border-animation ba3"></span>
+                                            </div>
+                                            <span class="year3">2016年</span>
+                                        </li>
+                                        <li class="t4">
+                                            <div class="radius">
+                                                <span class="place" id="place_d"></span>
+                                                <span class="border-animation ba1"></span>
+                                                <span class="border-animation ba2"></span>
+                                                <span class="border-animation ba3"></span>
+                                            </div>
+                                            <span class="year4">2014年、2011年、2008年、2006年</span>
+                                        </li>
+                                        <li class="t5">
+                                            <div class="radius5">
+                                                <span class="place" id="place_e"></span>
+                                                <span class="border-animation ba1"></span>
+                                                <span class="border-animation ba2"></span>
+                                                <span class="border-animation ba3"></span>
+                                            </div>
+                                            <span class="year5">2005年</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="time2">
+                                    <ul id="dates">
+                                        <li><a href="http://www.gov.cn/zhengce/content/2022-02/17/content_5674176.htm"
+                                                id="a_0">2022</a>
+                                        </li>
+                                        <span class="text1">《关于调整完善非物质文化遗产保护工作部际联席会议制度的请示》</span>
+
+                                        <li class="next"><a
+                                                href="http://www.gov.cn/zhengce/2021-08/12/content_5630974.htm"
+                                                id="a_a">2021</a>
+                                        </li>
+                                        <span class="text2">《关于进一步加强非物质文化遗产保护工作的意见》</span>
+
+                                        <li><a href="http://www.gov.cn/zhengce/content/2021-06/10/content_5616457.htm"
+                                                id="a_b">2021</a>
+                                        </li>
+                                        <span class="text3">《关于公布第五批国家级非物质文化遗产代表性项目名录的通知》</span>
+
+                                        <li class="next"><a
+                                                href="http://www.gov.cn/zhengce/content/2016-09/29/content_5113289.htm"
+                                                id="a_2019">2016</a>
+                                        </li>
+                                        <span class="text4">《关于同意设立“文化和自然遗产日”的批复》</span>
+
+
+                                        <li class="next"><a
+                                                href="http://www.gov.cn/zhengce/content/2014-12/03/content_9286.htm"
+                                                id="a_2014">2014</a>
+                                        </li>
+                                        <span class="text5">《关于公布第四批国家级非物质文化遗产代表性项目名录的通知》</span>
+
+                                        <li><a href="http://www.gov.cn/zhengce/content/2011-06/09/content_5804.htm"
+                                                id="a_2011">2011</a>
+                                        </li>
+                                        <span class="text6">《关于公布第三批国家级非物质文化遗产名录的通知》</span>
+
+                                        <li><a href="http://www.gov.cn/zhengce/content/2008-06/16/content_5835.htm"
+                                                id="a_2008">2008</a>
+                                        </li>
+                                        <span class="text7">《关于公布第二批国家级非物质文化遗产名录和第一批国家级非物质文化遗产扩展项目名录的通知》</span>
+
+                                        <li><a href="http://www.gov.cn/zhengce/content/2008-03/28/content_5917.htm"
+                                                id="a_2006">2006</a>
+                                        </li>
+                                        <span class="text8">《关于公布第一批国家级非物质文化遗产名录的通知》</span>
+
+                                        <li><a href="http://www.gov.cn/zhengce/content/2008-03/28/content_5926.htm"
+                                                id="a_2005_1">2005</a>
+                                        </li>
+                                        <span class="text9">《关于加强文化遗产保护的通知》</span>
+
+                                        <li><a href="#2011" id="a_2005_2">2005</a>
+                                        </li>
+                                        <span class="text10">《关于加强我国非物质文化遗产保护工作的意见 》</span>
+
+                                    </ul>
+                                </div>
+                                <script src="js/leaderline.js"></script>
+                                <script>
+                                    var leader_line = new LeaderLine(
+                                        document.getElementById('place_a'),
+                                        document.getElementById('a_0'),
+                                        {
+                                            path: 'arc',
+                                            startPlug: 'behind',
+                                            endPlug: 'disc',
+                                            startPlugColor: '#6e4a0e', // 渐变色开始色
+                                            endPlugColor: '#f6de46', // 渐变色结束色
+                                            gradient: true, // 使用渐变色
+                                            dash: { // 虚线样式
+                                                animation: true, // 让线条滚动起来
+                                            },
+                                            hide: true,
+                                        },
+                                    );
+                                    /** 显示效果
+                                     *  draw 从起点到终点绘制线条
+                                     *  fade 淡入淡出
+                                     *  none 无效果，即直接显示
+                                     */
+                                    var showEffectName = 'draw';
+                                    // 动画参数
+                                    var animOptions = {
+                                        duration: 1000, //持续时长
+                                        timing: 'ease-in', // 动画函数
+                                    }
+                                    leader_line.show(showEffectName, animOptions)
+                                </script>
+                                <script>
+                                    var leader_line = new LeaderLine(
+                                        document.getElementById('place_b'),
+                                        document.getElementById('a_a'),
+                                        {
+                                            path: 'arc',
+                                            startPlug: 'behind',
+                                            endPlug: 'disc',
+                                            startPlugColor: '#6e4a0e', // 渐变色开始色
+                                            endPlugColor: '#fff386', // 渐变色结束色
+                                            gradient: true, // 使用渐变色
+                                            dash: { // 虚线样式
+                                                animation: true, // 让线条滚动起来
+                                            },
+                                            hide: true,
+                                        },
+                                    );
+                                    /** 显示效果
+                                     *  draw 从起点到终点绘制线条
+                                     *  fade 淡入淡出
+                                     *  none 无效果，即直接显示
+                                     */
+                                    var showEffectName = 'draw';
+                                    // 动画参数
+                                    var animOptions = {
+                                        duration: 1000, //持续时长
+                                        timing: 'ease-in', // 动画函数
+                                    }
+                                    leader_line.show(showEffectName, animOptions)
+                                    leader_line.setOptions({ path: arc });
+                                </script>
+                                <script>
+                                    var leader_line = new LeaderLine(
+                                        document.getElementById('place_b'),
+                                        document.getElementById('a_b'),
+                                        {
+                                            path: 'arc',
+                                            startPlug: 'behind',
+                                            endPlug: 'disc',
+                                            startPlugColor: '#6e4a0e', // 渐变色开始色
+                                            endPlugColor: '#fff386', // 渐变色结束色
+                                            gradient: true, // 使用渐变色
+                                            dash: { // 虚线样式
+                                                animation: true, // 让线条滚动起来
+                                            },
+                                            hide: true,
+                                        },
+                                    );
+                                    /** 显示效果
+                                     *  draw 从起点到终点绘制线条
+                                     *  fade 淡入淡出
+                                     *  none 无效果，即直接显示
+                                     */
+                                    var showEffectName = 'draw';
+                                    // 动画参数
+                                    var animOptions = {
+                                        duration: 1000, //持续时长
+                                        timing: 'ease-in', // 动画函数
+                                    }
+                                    leader_line.show(showEffectName, animOptions)
+                                    leader_line.setOptions({ path: arc });
+                                </script>
+                                <script>
+                                    var leader_line = new LeaderLine(
+                                        document.getElementById('place_c'),
+                                        document.getElementById('a_2019'),
+                                        {
+                                            path: 'arc',
+                                            startPlug: 'behind',
+                                            endPlug: 'disc',
+                                            startPlugColor: '#6e4a0e', // 渐变色开始色
+                                            endPlugColor: '#fff386', // 渐变色结束色
+                                            gradient: true, // 使用渐变色
+                                            dash: { // 虚线样式
+                                                animation: true, // 让线条滚动起来
+                                            },
+                                            hide: true,
+                                        },
+                                    );
+                                    /** 显示效果
+                                     *  draw 从起点到终点绘制线条
+                                     *  fade 淡入淡出
+                                     *  none 无效果，即直接显示
+                                     */
+                                    var showEffectName = 'draw';
+                                    // 动画参数
+                                    var animOptions = {
+                                        duration: 1000, //持续时长
+                                        timing: 'ease-in', // 动画函数
+                                    }
+                                    leader_line.show(showEffectName, animOptions)
+                                    leader_line.setOptions({ path: arc });
+                                </script>
+                                <script>
+                                    var leader_line = new LeaderLine(
+                                        document.getElementById('place_d'),
+                                        document.getElementById('a_2014'),
+                                        {
+                                            path: 'arc',
+                                            startPlug: 'behind',
+                                            endPlug: 'disc',
+                                            startPlugColor: '#6e4a0e', // 渐变色开始色
+                                            endPlugColor: '#fff386', // 渐变色结束色
+                                            gradient: true, // 使用渐变色
+                                            dash: { // 虚线样式
+                                                animation: true, // 让线条滚动起来
+                                            },
+                                            hide: true,
+                                        },
+                                    );
+                                    /** 显示效果
+                                     *  draw 从起点到终点绘制线条
+                                     *  fade 淡入淡出
+                                     *  none 无效果，即直接显示
+                                     */
+                                    var showEffectName = 'draw';
+                                    // 动画参数
+                                    var animOptions = {
+                                        duration: 1000, //持续时长
+                                        timing: 'ease-in', // 动画函数
+                                    }
+                                    leader_line.show(showEffectName, animOptions)
+                                    leader_line.setOptions({ path: arc });
+                                </script>
+                                <script>
+                                    var leader_line = new LeaderLine(
+                                        document.getElementById('place_d'),
+                                        document.getElementById('a_2011'),
+                                        {
+                                            path: 'arc',
+                                            startPlug: 'behind',
+                                            endPlug: 'disc',
+                                            startPlugColor: '#6e4a0e', // 渐变色开始色
+                                            endPlugColor: '#fff386', // 渐变色结束色
+                                            gradient: true, // 使用渐变色
+                                            dash: { // 虚线样式
+                                                animation: true, // 让线条滚动起来
+                                            },
+                                            hide: true,
+                                        },
+                                    );
+                                    /** 显示效果
+                                     *  draw 从起点到终点绘制线条
+                                     *  fade 淡入淡出
+                                     *  none 无效果，即直接显示
+                                     */
+                                    var showEffectName = 'draw';
+                                    // 动画参数
+                                    var animOptions = {
+                                        duration: 1000, //持续时长
+                                        timing: 'ease-in', // 动画函数
+                                    }
+                                    leader_line.show(showEffectName, animOptions)
+                                    leader_line.setOptions({ path: arc });
+                                </script>
+                                <script>
+                                    var leader_line = new LeaderLine(
+                                        document.getElementById('place_d'),
+                                        document.getElementById('a_2008'),
+                                        {
+                                            path: 'arc',
+                                            startPlug: 'behind',
+                                            endPlug: 'disc',
+                                            startPlugColor: '#6e4a0e', // 渐变色开始色
+                                            endPlugColor: '#fff386', // 渐变色结束色
+                                            gradient: true, // 使用渐变色
+                                            dash: { // 虚线样式
+                                                animation: true, // 让线条滚动起来
+                                            },
+                                            hide: true,
+                                        },
+                                    );
+                                    /** 显示效果
+                                     *  draw 从起点到终点绘制线条
+                                     *  fade 淡入淡出
+                                     *  none 无效果，即直接显示
+                                     */
+                                    var showEffectName = 'draw';
+                                    // 动画参数
+                                    var animOptions = {
+                                        duration: 1000, //持续时长
+                                        timing: 'ease-in', // 动画函数
+                                    }
+                                    leader_line.show(showEffectName, animOptions)
+                                    leader_line.setOptions({ path: arc });
+                                </script>
+                                <script>
+                                    var leader_line = new LeaderLine(
+                                        document.getElementById('place_d'),
+                                        document.getElementById('a_2006'),
+                                        {
+                                            path: 'arc',
+                                            startPlug: 'behind',
+                                            endPlug: 'disc',
+                                            startPlugColor: '#6e4a0e', // 渐变色开始色
+                                            endPlugColor: '#fff386', // 渐变色结束色
+                                            gradient: true, // 使用渐变色
+                                            dash: { // 虚线样式
+                                                animation: true, // 让线条滚动起来
+                                            },
+                                            hide: true,
+                                        },
+                                    );
+                                    /** 显示效果
+                                     *  draw 从起点到终点绘制线条
+                                     *  fade 淡入淡出
+                                     *  none 无效果，即直接显示
+                                     */
+                                    var showEffectName = 'draw';
+                                    // 动画参数
+                                    var animOptions = {
+                                        duration: 1000, //持续时长
+                                        timing: 'ease-in', // 动画函数
+                                    }
+                                    leader_line.show(showEffectName, animOptions)
+                                    leader_line.setOptions({ path: arc });
+                                </script>
+                                <script>
+                                    var leader_line = new LeaderLine(
+                                        document.getElementById('place_e'),
+                                        document.getElementById('a_2005_1'),
+                                        {
+                                            path: 'arc',
+                                            startPlug: 'behind',
+                                            endPlug: 'disc',
+                                            startPlugColor: '#6e4a0e', // 渐变色开始色
+                                            endPlugColor: '#fff386', // 渐变色结束色
+                                            gradient: true, // 使用渐变色
+                                            dash: { // 虚线样式
+                                                animation: true, // 让线条滚动起来
+                                            },
+                                            hide: true,
+                                        },
+                                    );
+                                    /** 显示效果
+                                     *  draw 从起点到终点绘制线条
+                                     *  fade 淡入淡出
+                                     *  none 无效果，即直接显示
+                                     */
+                                    var showEffectName = 'draw';
+                                    // 动画参数
+                                    var animOptions = {
+                                        duration: 1000, //持续时长
+                                        timing: 'ease-in', // 动画函数
+                                    }
+                                    leader_line.show(showEffectName, animOptions)
+                                    leader_line.setOptions({ path: arc });
+                                </script>
+                                <script>
+                                    var leader_line = new LeaderLine(
+                                        document.getElementById('place_e'),
+                                        document.getElementById('a_2005_2'),
+                                        {
+                                            path: 'arc',
+                                            startPlug: 'behind',
+                                            endPlug: 'disc',
+                                            startPlugColor: '#6e4a0e', // 渐变色开始色
+                                            endPlugColor: '#fff386', // 渐变色结束色
+                                            gradient: true, // 使用渐变色
+                                            dash: { // 虚线样式
+                                                animation: true, // 让线条滚动起来
+                                            },
+                                            hide: true,
+                                        },
+                                    );
+                                    /** 显示效果
+                                     *  draw 从起点到终点绘制线条
+                                     *  fade 淡入淡出
+                                     *  none 无效果，即直接显示
+                                     */
+                                    var showEffectName = 'draw';
+                                    // 动画参数
+                                    var animOptions = {
+                                        duration: 1000, //持续时长
+                                        timing: 'ease-in', // 动画函数
+                                    }
+                                    leader_line.show(showEffectName, animOptions)
+                                    leader_line.setOptions({ path: arc });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 fill-h">
+                    <!-- 日历 -->
+                    <div class="xpanel-wrapper xpanel-wrapper-3">
+                        <div class="xpanel">
+                            <div id="chart-container1"></div>
+                            <script src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+                            <script>
+                                var dom = document.getElementById('chart-container1');
+                                var myChart = echarts.init(dom, null, {
+                                    renderer: 'canvas',
+                                    useDirtyRect: false
+                                });
+                                var app = {};
+
+                                var option;
+
+                                function getVirtualData(year) {
+                                    const date = +echarts.time.parse(year + '-01-01');
+                                    const end = +echarts.time.parse(+year + 1 + '-01-01');
+                                    const dayTime = 3600 * 24 * 1000;
+                                    const data = [];
+                                    for (let time = date; time < end; time += dayTime) {
+                                        if (time == new Date(year, 2, 23).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(1)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 3, 22).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(1)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 2, 20).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(5)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 2, 17).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(4)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 2, 17).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(3)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 1, 27).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(2)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 1, 22).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(2)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 1, 18).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(1)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 1, 17).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(2)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 1, 4).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(2)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 1, 2).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(1)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 0, 31).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(1)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 0, 26).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(2)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 0, 19).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(2)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 0, 16).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(1)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 0, 13).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(1)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 0, 12).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(1)
+                                            ]);
+                                        }
+                                        else if (time == new Date(year, 0, 4).getTime()) {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(1)
+                                            ]);
+                                        }
+                                        else {
+                                            data.push([
+                                                echarts.time.format(time, '{yyyy}-{MM}-{dd}', false),
+                                                Math.floor(0)
+                                            ]);
+                                        }
+                                    }
+                                    return data;
+                                }
+                                option = {
+                                    title: {
+                                        top: 10,
+                                        left: 'center',
+                                        text: '2023年非遗政策发布一览',
+                                        textStyle: {
+                                            color: 'rgb(255,255,255)',
+                                            fontFamily: 'FZQKBYSJW'
+                                        }
+                                    },
+                                    tooltip: {
+                                        formatter: function (params) {
+                                            const date = echarts.format.formatTime('yyyy-MM-dd', params.value[0]);
+                                            const value = params.value[1];
+                                            return `${date}： ${value}`;
+                                        },
+                                        textStyle: {
+                                            fontFamily: 'FZQKBYSJW'
+                                        }
+                                    },
+                                    visualMap: {
+                                        // min: -1,
+                                        // max: 5,
+                                        type: 'piecewise',
+                                        pieces: [{
+                                            value: 0,
+                                            color: '#ffefc0'
+                                        }, {
+                                            min: 1,
+                                            max: 2,
+                                            color: '#efba4f'
+                                        }, {
+                                            min: 2,
+                                            max: 3,
+                                            color: '#d8a43d'
+                                        }, {
+                                            min: 3,
+                                            max: 4,
+                                            color: '#a97e29'
+                                        }, {
+                                            min: 4,
+                                            max: 5,
+                                            color: '#7c5b1a'
+                                        }, {
+                                            min: 5,
+                                            color: '#5b420f'
+                                        }],
+                                        orient: 'horizontal',
+                                        left: 'center',
+                                        top: 30,
+                                        show: false
+                                    },
+                                    calendar: {
+                                        top: 70,
+                                        left: 30,
+                                        right: 30,
+                                        cellSize: ['auto', 13],
+                                        range: '2023',
+                                        itemStyle: {
+                                            borderWidth: 0.5
+                                        },
+                                        textStyle: {
+                                            color: 'rgb(255,255,255)',
+                                            fontFamily: 'FZQKBYSJW'
+                                        },
+                                        yearLabel: { show: false },
+                                        dayLabel: {
+                                            textStyle: {
+                                                color: '#ffffff',
+                                                fontFamily: 'FZQKBYSJW'
+                                            }
+                                        },
+                                        monthLabel: {
+                                            textStyle: {
+                                                color: '#ffffff',
+                                                fontFamily: 'FZQKBYSJW'
+                                            }
+                                        },
+                                    },
+
+                                    series: {
+                                        type: 'heatmap',
+
+                                        coordinateSystem: 'calendar',
+                                        data: getVirtualData('2023'),
+                                        label: {
+                                            textStyle: {
+                                                color: '#ffffff',
+                                                fontFamily: 'FZQKBYSJW'
+                                            }
+                                        }
+                                    }
+                                };
+
+                                if (option && typeof option === 'object') {
+                                    myChart.setOption(option);
+                                }
+
+                                window.addEventListener('resize', myChart.resize);
+                            </script>
+                        </div>
+                    </div>
+
+                    <div class="xpanel-wrapper xpanel-wrapper-4">
+                        <style>
+                            * {
+                                margin: 0;
+                                padding: 0;
+                            }
+
+                            #chart-container {
+                                position: relative;
+                                height: 60vh;
+                                overflow: hidden;
+                            }
+                        </style>
+                        <div class="xpanel">
+                            <div id="chart-container"></div>
+                            <script src="https://fastly.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+                        </div>
+                        <script>
+                            var dom = document.getElementById('chart-container');
+                            var myChart = echarts.init(dom, null, {
+                                renderer: 'canvas',
+                                useDirtyRect: false
+                            });
+                            var app = {};
+
+                            var option;
+
+                            const pathSymbols = {
+                                fan:
+                                    'path://M512 174c209.62 0 392.91 112.76 492.51 280.93l-458.12 327.4c1.04 3.37 1.61 6.95 1.61 10.67v35c0 19.88-16.12 36-36 36s-36-16.12-36-36v-35c0-3.71 0.56-7.3 1.61-10.67L19.49 454.93C119.09 286.76 302.38 174 512 174zM333.06 590.53l123.63 88.34-52.45-144.01c-27 13.79-51.19 32.68-71.18 55.67z m287.52-55.24l-51.97 142.65 122.33-87.4a237.214 237.214 0 0 0-70.36-55.25zM512 509c-18.89 0-37.38 2.23-55.18 6.48l55.66 152.91L568.1 515.7c-18.08-4.39-36.88-6.7-56.1-6.7z m0-263c-156.25 0-299.92 72.22-393.38 191.28l168.75 120.59C341.12 493.76 421.8 453 512 453s170.88 40.76 224.63 104.87l168.75-120.59-2.82-3.56C809.04 316.78 666.69 246 512 246z',
+                                mask:
+                                    'path://M512 52c-187.2 0-339.6 159.8-339.6 356.2 0 57.5 5.8 120.1 10.7 161.8 1.7 19.7 4.2 38.8 7.3 56l2.2 15.5 0.8 0.3C233.7 836.9 363.2 972 512 972c152.3 0 284.4-141.5 321.5-345.1 3.3-18.1 5.8-37.3 7.4-56.3 4.9-42.3 10.7-104.9 10.7-162.5C851.6 211.8 699.2 52 512 52zM236.9 306.9c21.2 40.8 64.2 107.5 118.2 107.5 77.9 0 60.2 85.1-8.3 55-60.3-26.5-72-79.7-124.4-96.2 2.5-23 7.5-45.1 14.5-66.3zM424 517.5s-29.3 40.1-105-10.4c0 0.1 101.9-30.4 105 10.4z m197.9 374.3c-34 20.7-71.2 32.2-109.9 32.2s-75.9-11.5-109.9-32.2c-29.1-69.9-8.8-105 22-122.4 0.2-0.1 0.3-0.2 0.5-0.3 23.8-12.1 49.7-15.6 67.1-16.4 12.1-0.5 20.4 0.2 20.4 0.2s8.2-0.7 20.4-0.2c17.4 0.8 43.3 4.3 67.1 16.4 0.2 0.1 0.3 0.2 0.5 0.3 30.6 17.4 50.9 52.4 21.8 122.4z m171.2-325.9c-1.5 18.2-3.9 35.9-6.9 52.5l-0.1 0.7c-13.5 74.1-40.7 138.7-76.9 189.3 5.5-77.8-59.1-93.3-74.6-149-15.9-57.4-59.5-74.7-67.8-65.1-8.3 9.7 33.9 53.3 22.1 80.3-11.8 27-27.1 10.6-35.3-4.8-11.1-20.8-19.4 21.5-41.6 21.5-22.2 0-30.5-42.2-41.6-21.5-8.2 15.4-23.5 31.8-35.3 4.8-11.8-27 30.5-70.6 22.1-80.3-8.3-9.7-51.9 7.6-67.8 65.1-15.4 55.6-80 71.2-74.6 148.9-36.3-50.7-63.5-115.5-77.1-189.9-3-16.7-5.3-34.3-6.9-53.2-2.4-21-5.1-47.2-7.1-75.2 25.6 46.6 74.5 95.7 166.7 95.7 55 0 56.1-52.9 56.1-104.8s3.1-121.5-29.1-121.5-32.2 42.6-64.4 21.8c-29.8-19.2-49.9-47.7-53.5-183.4 53.2-60 128.7-97.8 212.4-97.8s159.2 37.8 212.4 97.8c-3.6 135.7-23.7 164.2-53.5 183.4-32.2 20.8-32.2-21.8-64.4-21.8s-29.1 69.6-29.1 121.5c0 51.9 1 104.8 56.1 104.8 92.3 0 141.1-49.1 166.7-95.7-1.9 28.1-4.5 54.5-7 75.9z m-88.4-58.7C629.2 557.7 600 517.5 600 517.5c3.1-40.8 104.7-10.3 104.7-10.3z m-27.6-37.8c-68.5 30.1-86.2-55-8.3-55 54.1 0 97-66.7 118.2-107.5 7 21.2 12 43.3 14.5 66.3-52.3 16.6-64 69.7-124.4 96.2z',
+                                rose:
+                                    'path://M891.2 579.8c3.9-5.2 7.4-10.8 10.6-16.9 11.6-22.3 17.4-50.1 16.3-78.2-0.5-13-3.6-45.3-20.6-64-4.7-5.2-9.7-10.1-14.9-15.3-20.5-20.4-45.9-45.8-72.6-102.3-16.2-34.3-36-67.9-70.8-81.4-23.3-9-48.9-7.7-78.5-2.7 10-11.3 16.2-26.5 16.2-43.3 0-34.6-26.2-62.8-58.5-62.8s-58.5 28.2-58.5 62.8c0 16.8 6.2 32.1 16.2 43.4-2 1-4 2.1-5.9 3.2-7.8-1.5-15.3-3.3-22.6-5.1-15.4-3.7-29.9-7.1-43.8-7.4-11.2-0.2-20.4 1.8-28 5-36.9-18.1-86.6-28.3-150.8-0.6-38.3 16.5-63.5 49.8-72.7 96.4-0.4 2-0.8 4.1-1.1 6.1l-2.4-0.3c-43.5-5.2-97.3-6.9-127.7 26.3-19 20.8-24.7 50.3-16.8 87.7 6.1 29.1 9.4 42.5 12.5 51.2 4.4 12.5 10.9 20.7 20.6 25.8 0 4.3-0.7 11-1.3 15.9-1.6 14.5-3.5 32.4 1.3 50.4 1.2 4.4 2.1 10.8 3.1 17.6 2.2 14.9 4.7 31.8 12.2 47.4 1.6 3.4 3.4 6.6 5.4 9.5-8.6 11-15.3 24.1-16.4 39.9-1.3 19 5.8 37.2 21.1 53.9 17.4 19 32.8 26 46.4 32.1 18.8 8.4 40 18 87 75.8 19.9 24.5 42.1 43.6 66.2 56.7 21.5 11.8 45 19.2 70 22 8.2 0.9 16.2 1.3 24.2 1.3 35.2 0 68.2-7.8 95.8-14.4 5.5-1.3 10.7-2.5 15.7-3.7 85.2 20.3 154 10.2 199.3-29.5 0.3-0.2 0.5-0.5 0.8-0.7 8.8 2 16.6 2.8 23.6 2.8 19.3 0 32.3-6.5 40.6-13.5 14.4-12.1 20.6-30.6 16.9-50.8 0-0.2-0.7-4.2 4.3-17 4.7-12.2 12.8-27.8 22.1-46 4.1-8 8.4-16.3 12.9-25.4 14-28.1 17.2-67.6 9.2-117.6-1.8-12.6-4.3-24.4-6.6-34.3zM618.4 153c10.2 0 18.5 10.2 18.5 22.8s-8.3 22.8-18.5 22.8-18.5-10.2-18.5-22.8 8.3-22.8 18.5-22.8z m19 229.5c14.9 0 27 14.5 27 32.3s-12.1 32.3-27 32.3c-14.1 0-25.6-12.9-26.9-29.3 1.1-4.9 1.8-10.1 1.9-15.3 4.1-11.7 13.8-20 25-20z m-55.2-117.1c5.2-8 13-12.6 21.4-12.6 8.5 0 16.6 5 21.8 13.3 3.4 5.6 5.2 12.1 5.2 19 0 17.8-12.1 32.3-27 32.3s-27-14.5-27-32.3c0-7.2 2-14 5.6-19.7z m2.5 193.9h-0.5c0.1-0.1 0.2-0.2 0.4-0.3-0.1 0.1 0 0.2 0.1 0.3z m28.7 23c7.5 3.1 15.5 4.8 24 4.8 36.9 0 67-32.4 67-72.3 0-37.5-26.7-68.5-60.6-71.9 16.3-13.2 26.8-34.2 26.8-57.8v-1.7c21.3-3.6 36-4.5 45-1 7.2 2.8 17.7 10.8 35.5 48.5 31.5 66.8 62.8 97.9 85.5 120.6 4.6 4.5 8.5 8.5 12 12.3 4.7 9 9.4 48.4-7.5 74.2-4.2 6.4-17 25.9-59.7 20.4-58.1-7.5-103.1-2.3-134 15.6-7 4-12.6 8.3-17.2 12.7-0.3-0.1-0.6-0.3-0.9-0.4-27.1-11.7-51.1-12.6-71.1-12.4 30.8-30.2 49.3-60.9 55.2-91.6z m-41-85c-1.1 4.9-1.8 10.1-1.9 15.3-4.1 11.7-13.7 19.9-24.9 19.9-14.9 0-27-14.5-27-32.3 0-17.8 12.1-32.3 27-32.3 14 0.1 25.5 13 26.8 29.4zM549 472.5c-2.5 10.2-7.8 20.4-14.7 30.1-3.7-9.6-8.1-21.2-13-34.9 7.5 3.2 15.7 4.9 24.3 4.9 1.1 0 2.3-0.1 3.4-0.1z m-68.8-162c1.7-10.8 6.3-16.7 16.6-29 1.8-2.1 3.6-4.3 5.5-6.6 6.3-0.1 20.6 3.3 30.4 5.6 1.3 0.3 2.7 0.6 4.1 1-0.1 1.2-0.1 2.4-0.1 3.6 0 16.1 4.9 31.1 13.3 43.1-1.4-0.1-2.9-0.2-4.3-0.2-25.1 0-47.1 15-58.5 37.2-6.7-24-8.9-42.3-7-54.7zM350.8 274c31.1-13.4 56-14 77.2-8.1-5.3 9.5-9.8 20.6-12 34.4-4.4 27.8 0.8 61.8 16.8 110.3 2.8 8.5 5.5 16.6 8.1 24.3-6.5-5.4-13.2-10.9-20.1-16.5-46.7-37.7-81.1-61.5-107-76.5 1.2-22.1 8.1-55.4 37-67.9zM200.4 556.8c-1.7-6.2-0.6-16.6 0.5-26.5 2.2-20.2 4.9-45.4-12.7-65.6-4.1-4.7-8-8-11.7-10.4-1.9-7.2-4.7-19.6-8.5-37.2-3.1-14.8-2.7-26.2 1.1-30.4 3.5-3.8 17.6-12.1 72-5.6 8.2 1 42.4 10.2 138.5 87.8 49.5 39.9 92.4 79.6 99.7 86.4-1.4 1-2.8 1.9-4.1 2.8-7.5-3-15.1-6.1-22.4-9.2-33-13.8-61.5-25.6-85.4-24.5-14.3 0.7-37.7 6.6-103.5 45.5-22.6 13.4-43.2 26.5-54.9 34.1-1.8-6.4-3-14.4-4.1-22.1-1.1-8.4-2.3-17-4.5-25.1z m523.3 277.5c-4.7 4.1-15.5 12.5-35.4 17.9-29.6 7.9-67.1 6.2-111.4-5.2l-7.3-1.9-7.4 1.6c-8 1.7-16 3.6-24.5 5.6-64.1 15.2-130.4 30.9-190.7-43.4-56.7-69.8-88-83.8-110.8-94.1-11.2-5-16.8-7.5-25.1-16.7-2.6-2.8-3.7-4.8-4.1-5.6 1.9-5.6 15.6-16.9 21.6-21.8 3-2.5 5.9-4.8 8.6-7.2 6.8-4.5 31-20.3 58.1-36.4 56.9-33.8 73.5-37.4 75.9-37.7 9.6-0.2 38.1 11.7 57 19.6 31.4 13.1 63.8 26.6 93.3 29.4 11.1 1.1 21.4 0.9 31.3 0.7 35.6-0.7 66.3-1.2 122 70.8 35.7 46.2 47.2 78 50.5 96.5 2.7 15.9 0 25-1.6 27.9z m107-131.6c-4.4 8.8-8.6 16.9-12.6 24.8-13.2 25.8-23.8 46.5-29.4 65.2-7.1-36.8-28.1-78-62.7-122.7-13.1-16.9-25.7-31.3-38.3-43.3 13.4-5.1 39.1-9.8 85.5-3.8 21.9 2.8 41.9 1.7 59.8-3.4 5.2 30.3 7.1 64.3-2.3 83.2z',
+                                noddle:
+                                    'path://M888.863797 438.65067c0-13.007763-10.839802-23.124912-23.124912-23.124911H507.302752V346.873677h357.713479c13.007763 0 23.124912-10.839802 23.124912-23.124912s-10.839802-23.124912-23.124912-23.124912H507.302752v-44.804516h357.713479c13.007763 0 23.124912-10.839802 23.124912-23.124912 0-13.007763-10.839802-23.124912-23.124912-23.124912H627.985886c-1.445307-44.804517-38.300635-80.937191-83.827806-80.937191-17.343684 0-33.242061 5.058574-46.972477 14.45307-13.730416-9.394495-29.628793-14.45307-46.972477-14.45307-17.343684 0-33.242061 5.058574-46.972477 14.45307-5.058574-3.613267-10.839802-6.503881-16.62103-8.671842-9.394495-3.613267-20.234298-5.781228-30.351447-5.781228-42.636556 0-78.046577 31.796754-83.105152 73.710656-0.722653 1.445307-0.722653 3.613267-0.722653 5.781228v2.167961H162.597036c-13.007763 0-23.124912 10.839802-23.124912 23.124911 0 13.007763 10.839802 23.124912 23.124912 23.124912h109.843331v44.804517H162.597036c-13.007763 0-23.124912 10.839802-23.124912 23.124911s10.839802 23.124912 23.124912 23.124912h109.843331v68.652082H158.983769c-13.007763 0-23.124912 10.839802-23.124912 23.124912 0 155.370501 94.667608 289.784051 229.803811 346.873677v80.214537c0 18.066337 13.730416 31.796754 31.0741 31.796754h231.249118c17.343684 0 31.0741-14.45307 31.0741-31.796754v-80.214537c135.136203-58.534933 229.803811-192.225829 229.803811-347.596331z m-428.533522-23.847565h-46.972477v-68.652082h46.972477v68.652082z m0-114.901905h-46.972477v-44.804517h46.972477v44.804517zM544.15808 173.436838c19.511644 0 35.410021 15.175723 36.855329 33.964715H507.302752c1.445307-18.788991 17.343684-33.964714 36.855328-33.964715z m-93.944954 0c5.781228 0 11.562456 1.445307 16.621031 4.335921-2.890614 7.226535-5.058574 14.45307-6.503882 22.402259-0.722653 1.445307-0.722653 3.613267-0.722653 5.781228v2.16796h-46.972477c2.16796-19.511644 18.788991-34.687368 37.577981-34.687368z m-93.2223 0c4.335921 0 9.394495 0.722653 13.730416 2.167961 1.445307 0.722653 2.16796 0.722653 2.890614 1.445307-2.890614 7.226535-5.058574 14.45307-6.503881 22.402258-0.722653 1.445307-0.722653 3.613267-0.722654 5.781228v2.167961h-46.972477c2.16796-18.788991 18.066337-33.964714 37.577982-33.964715z m-37.577982 80.937192h46.972477v44.804516h-46.972477v-44.804516z m0 91.776993h46.972477v68.652082h-46.972477v-68.652082z m292.674665 504.412139H411.912491v-49.140438c31.796754 8.671842 65.761468 13.730416 100.448836 13.730416 34.687368 0 67.929428-5.058574 100.448835-13.730416v49.140438z m-99.726182-82.382499c-174.159492 0-317.244884-135.136203-328.80734-306.405081h658.337333c-13.007763 171.268878-155.370501 306.405081-329.529993 306.405081z',
+                                bottle:
+                                    'path://M802.2 569.9c-19.7-40.1-48-76.4-82.3-105.4-2.1-3-4.7-5.6-7.7-7.7-34.5-23.8-63.3-55.9-83-92.7-20.4-38-31.2-81.1-31.2-124.5 0-46.2 11.9-91.2 34.4-129.9 5.5-9.5 5.6-23 0-32.5-5.5-9.6-15.7-17.1-26.7-17.1h-206c-11.2 0-21.5 7.7-26.9 17.5-5.4 9.8-5.2 22.5 0.7 32 25.6 41.5 39.2 89.6 39.2 138.4 0 38.7-8.2 76.1-24.3 110.8-15.6 33.5-37.7 63.1-65.8 87.7-5 4.4-10 8.5-14.8 12.2-3.1 2.4-6.4 4.9-9.6 7.1-1 0.7-2 1.5-2.9 2.3C224.5 530 184 619.4 184 713.3c0 47.1 9.8 92.5 29.3 135.1 18.7 41 45.3 77.1 79 107.7 5.7 5.1 13 7.9 20.7 7.9h96.3c17 0 30.8-18.5 30.8-35.5S426.2 893 409.2 893h-84c-23.5-14-42.3-45.1-55.9-75-15.7-34.5-23.7-68.9-23.7-107.1 0-75.6 32.4-146.4 88.8-196.6 3.8-2.6 7.3-4.7 10.4-7.1 6-4.5 12.2-9.3 18.2-14.6 34.6-30.3 61.9-66.5 81.1-107.9 19.9-42.9 30.1-92.8 30.1-140.5 0-42.6-8.3-85.3-24.4-127.3H557c-13.6 42-20.7 79-20.7 118.6 0 53.6 13.3 108.8 38.6 155.7 23 42.8 55.8 81.4 95.1 110.1 1.4 1.7 2.9 3.7 4.6 5.1 63 50.5 99.2 125.9 99.2 206.6 0 38.2-8 70.3-23.7 104.8-13.6 29.8-32.3 61.1-55.8 75.1h-86c-17 0-30.8 18.5-30.8 35.5s13.8 35.5 30.8 35.5h98.2c7.7 0 15-2.7 20.7-7.9 33.7-30.6 60.3-66.8 79-107.8 19.4-42.6 29.2-88 29.2-135 0-50.2-11.2-98.4-33.2-143.3z'
+                            };
+                            const labelSetting = {
+                                show: true,
+                                position: 'right',
+                                offset: [10, 0],
+                                fontSize: 15,
+                                fontFamily: 'FZQKBYSJW'
+                            };
+                            function makeOption(type, symbol) {
+                                return {
+                                    title: {
+                                        text: '近五年中共中央非遗政策数量变化',
+                                        top: 10,
+                                        left: 'center',
+                                        textStyle: {
+                                            color: 'rgb(255,255,255)',
+                                            fontFamily: 'FZQKBYSJW'
+                                        }
+                                    },
+                                    legend: {
+                                        data: ['2015', '2016'],
+                                        top: 10,
+                                        left: 'center',
+                                    },
+                                    tooltip: {
+                                        trigger: 'axis',
+                                        axisPointer: {
+                                            type: 'shadow'
+                                        }
+                                    },
+                                    grid: {
+                                        containLabel: true,
+                                        left: 20
+                                    },
+                                    yAxis: {
+                                        data: ['2019', '2020', '2021', '2022', '2023'],
+                                        inverse: true,
+                                        axisLine: { show: false },
+                                        axisTick: { show: false },
+                                        axisLabel: {
+                                            margin: 30,
+                                            fontSize: 14,
+                                            color: 'rgb(255,255,255)',
+                                            fontFamily: 'FZQKBYSJW'
+                                        },
+                                        axisPointer: {
+                                            label: {
+                                                show: true,
+                                                margin: 30
+                                            }
+                                        },
+                                        textStyle: {
+                                            color: '#ffffff',
+                                            fontFamily: 'FZQKBYSJW'
+                                        }
+                                    },
+                                    xAxis: {
+                                        splitLine: { show: false },
+                                        axisLabel: { show: false },
+                                        axisTick: { show: false },
+                                        axisLine: { show: false },
+                                        textStyle: {
+                                            color: '#ffffff',
+                                            fontFamily: 'FZQKBYSJW'
+                                        }
+                                    },
+                                    color: '#ffefc0',
+                                    animationDurationUpdate: 500,
+                                    series: [
+                                        {
+                                            name: '非遗政策数量',
+                                            id: 'bar1',
+                                            type: type,
+                                            label: labelSetting,
+                                            symbolRepeat: true,
+                                            symbolSize: ['75%', '75%'],
+                                            barCategoryGap: '40%',
+                                            universalTransition: {
+                                                enabled: true,
+                                                delay: function (idx, total) {
+                                                    return (idx / total) * 1000;
+                                                }
+                                            },
+                                            data: [
+                                                {
+                                                    value: 21,
+                                                    symbol: symbol || pathSymbols.fan
+                                                },
+                                                {
+                                                    value: 26,
+                                                    symbol: symbol || pathSymbols.mask
+                                                },
+                                                {
+                                                    value: 68,
+                                                    symbol: symbol || pathSymbols.rose
+                                                },
+                                                {
+                                                    value: 75,
+                                                    symbol: symbol || pathSymbols.noddle
+                                                },
+                                                {
+                                                    value: 96,
+                                                    symbol: symbol || pathSymbols.bottle
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                };
+                            }
+                            const options = [
+                                makeOption('pictorialBar'),
+                                makeOption('bar'),
+                                makeOption('pictorialBar', 'diamond')
+                            ];
+                            var optionIndex = 0;
+                            option = options[optionIndex];
+                            setInterval(function () {
+                                optionIndex = (optionIndex + 1) % options.length;
+                                myChart.setOption(options[optionIndex]);
+                            }, 2500);
+
+                            if (option && typeof option === 'object') {
+                                myChart.setOption(option);
+                            }
+
+                            window.addEventListener('resize', myChart.resize);
+                        </script>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="js/search.js"></script>
+	<script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/echarts-5.4.2.min.js"></script>
+
+</body>
+</html>

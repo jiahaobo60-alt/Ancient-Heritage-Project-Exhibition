@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史长河 - 营造中华</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/architecture_common.css"/>
+    <style>
+        /* ===== 设计系统变量 - 增强版 ===== */
+        :root {
+            --primary:      #8B4513;
+            --primary-light:#A0522D;
+            --primary-dark: #6B3410;
+            --secondary:    #D4A574;
+            --accent:       #8B4513;
+            --accent-gold:  #D4A574;
+            --bg:           #F7F3ED;
+            --bg-card:      #FFFFFF;
+            --bg-paper:     #FFFDF5;
+            --text-main:    #3E2723;
+            --text-sub:     #6D4C41;
+            --text-muted:   #9E9E9E;
+            --border:       rgba(139,69,19,0.15);
+            --shadow-sm:    0 2px 8px rgba(62,39,35,0.08);
+            --shadow-md:    0 6px 20px rgba(62,39,35,0.12);
+            --shadow-lg:    0 16px 48px rgba(62,39,35,0.18);
+            --radius-sm:    6px;
+            --radius-md:    12px;
+            --radius-lg:    20px;
+            --transition:   0.3s cubic-bezier(0.4,0,0.2,1);
+            --transition-slow: 0.6s cubic-bezier(0.4,0,0.2,1);
+            --transition-fast: 0.15s ease;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 背景云纹装饰 */
+        .cloud-pattern-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M20,50 Q30,30 50,40 Q70,30 80,50 Q70,70 50,60 Q30,70 20,50 Z' fill='%238B4513'/%3E%3C/svg%3E");
+            background-size: 300px 300px;
+            background-position: 0 0;
+            animation: cloudDrift 40s infinite linear;
+            z-index: -1;
+        }
+
+        @keyframes cloudDrift {
+            0% { background-position: 0 0; }
+            100% { background-position: 300px 300px; }
+        }
+
+        /* ===== 导航栏 - 卷轴效果 ===== */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 0 48px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+            transform: translateY(-100%);
+            animation: scrollUnroll 0.8s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+
+        @keyframes scrollUnroll {
+            to { transform: translateY(0); }
+        }
+
+        .nav-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-gold), var(--secondary), var(--accent-gold));
+            opacity: 0.7;
+        }
+
+        .nav-logo {
+            color: #F7F3ED;
+            font-size: 1.4em;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: inkSpread 0.6s ease 0.5s forwards;
+        }
+
+        @keyframes inkSpread {
+            to { opacity: 1; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-link {
+            color: rgba(245,245,220,0.85);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+            font-size: 0.95em;
+            letter-spacing: 0.03em;
+            position: relative;
+            opacity: 0;
+            animation: navItemFade 0.4s ease forwards;
+        }
+
+        .nav-link:nth-child(1) { animation-delay: 0.6s; }
+        .nav-link:nth-child(2) { animation-delay: 0.7s; }
+        .nav-link:nth-child(3) { animation-delay: 0.8s; }
+        .nav-link:nth-child(4) { animation-delay: 0.9s; }
+        .nav-link:nth-child(5) { animation-delay: 1.0s; }
+        .nav-link:nth-child(6) { animation-delay: 1.1s; }
+
+        @keyframes navItemFade {
+            to { opacity: 1; }
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent-gold);
+            transition: all var(--transition-fast);
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 70%;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(212,165,116,0.35);
+            color: #F7F3ED;
+        }
+
+        /* ===== 页面英雄区 - 卷轴展开 ===== */
+        .page-hero {
+            margin-top: 64px;
+            background: linear-gradient(135deg, #4A2810 0%, #8B4513 50%, #A0522D 100%);
+            color: #F7F3ED;
+            text-align: center;
+            padding: 60px 24px 50px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: scrollReveal 1s cubic-bezier(0.4,0,0.2,1) 1.2s forwards;
+        }
+
+        @keyframes scrollReveal {
+            0% {
+                clip-path: inset(0 50% 0 50%);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                clip-path: inset(0 0 0 0);
+                opacity: 1;
+            }
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F5F5DC' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .hero-title {
+            font-size: 2.6em;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+            position: relative;
+            opacity: 0;
+            animation: textFadeUp 0.8s ease 1.5s forwards;
+        }
+
+        .hero-subtitle {
+            font-size: 1.05em;
+            opacity: 0.82;
+            letter-spacing: 0.08em;
+            position: relative;
+            opacity: 0;
+            animation: textFadeUp 0.8s ease 1.7s forwards;
+        }
+
+        .hero-badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 24px;
+            position: relative;
+            opacity: 0;
+            animation: textFadeUp 0.8s ease 1.9s forwards;
+        }
+
+        @keyframes textFadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-badge {
+            background: rgba(245,245,220,0.18);
+            border: 1px solid rgba(245,245,220,0.3);
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 0.88em;
+            letter-spacing: 0.05em;
+            transition: all var(--transition-fast);
+        }
+
+        .hero-badge:hover {
+            transform: translateY(-2px);
+            background: rgba(245,245,220,0.25);
+        }
+
+        /* ===== 主体布局 ===== */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 24px 80px;
+            opacity: 0;
+            animation: contentFadeIn 0.8s ease 2.1s forwards;
+        }
+
+        @keyframes contentFadeIn {
+            to { opacity: 1; }
+        }
+
+        /* ===== 时间轴 - 卷轴效果 ===== */
+        .timeline-container {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom,
+                transparent 0%,
+                var(--primary) 8%,
+                var(--secondary) 50%,
+                var(--primary) 92%,
+                transparent 100%);
+            transform: translateX(-50%);
+            border-radius: 2px;
+            opacity: 0.7;
+        }
+
+        /* 时间轴线绘制动画 */
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            transform: scaleY(0);
+            transform-origin: top;
+            animation: lineDraw 2s ease 2.5s forwards;
+        }
+
+        @keyframes lineDraw {
+            to { transform: scaleY(1); }
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 56px;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            animation: itemSlideIn 0.6s ease forwards;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 3s; }
+        .timeline-item:nth-child(2) { animation-delay: 3.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 3.4s; }
+        .timeline-item:nth-child(4) { animation-delay: 3.6s; }
+        .timeline-item:nth-child(5) { animation-delay: 3.8s; }
+        .timeline-item:nth-child(6) { animation-delay: 4s; }
+        .timeline-item:nth-child(7) { animation-delay: 4.2s; }
+        .timeline-item:nth-child(8) { animation-delay: 4.4s; }
+        .timeline-item:nth-child(9) { animation-delay: 4.6s; }
+
+        @keyframes itemSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        /* 内容卡片 - 卷轴效果 */
+        .timeline-content {
+            width: 44%;
+            background: var(--bg-card);
+            padding: 28px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all var(--transition-slow);
+            position: relative;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            transform: translateX(-100%);
+            transition: transform var(--transition-slow);
+        }
+
+        .timeline-content:hover::before {
+            transform: translateX(0);
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-4px) rotateX(2deg);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--secondary);
+        }
+
+        .timeline-content.active-card {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139,69,19,0.15), var(--shadow-lg);
+            transform: translateY(-4px) rotateX(2deg);
+        }
+
+        /* 箭头连接 */
+        .timeline-item:nth-child(odd) .timeline-content::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -14px;
+            width: 0; height: 0;
+            border: 13px solid transparent;
+            border-left-color: var(--bg-card);
+            transform: translateY(-50%);
+            filter: drop-shadow(3px 0 2px rgba(0,0,0,0.08));
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -14px;
+            width: 0; height: 0;
+            border: 13px solid transparent;
+            border-right-color: var(--bg-card);
+            transform: translateY(-50%);
+            filter: drop-shadow(-3px 0 2px rgba(0,0,0,0.08));
+        }
+
+        /* 时间节点 - 涟漪效果 */
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 36px;
+            height: 36px;
+            background: var(--bg-card);
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+            z-index: 10;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .timeline-dot::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            transition: all var(--transition);
+        }
+
+        .timeline-dot:hover {
+            transform: translateX(-50%) scale(1.25);
+            border-color: var(--accent);
+        }
+
+        .timeline-dot:hover::before {
+            background: var(--accent);
+        }
+
+        .timeline-dot.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 6px rgba(196,30,58,0.15);
+        }
+
+        .timeline-dot.active::before {
+            background: var(--accent);
+            width: 14px;
+            height: 14px;
+        }
+
+        /* 涟漪效果 */
+        .timeline-dot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+        }
+
+        .timeline-dot.ripple::after {
+            animation: rippleEffect 0.8s ease-out;
+        }
+
+        @keyframes rippleEffect {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            100% {
+                width: 80px;
+                height: 80px;
+                opacity: 0;
+            }
+        }
+
+        /* 朝代标题 */
+        .dynasty-title {
+            font-size: 1.55em;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color var(--transition-fast);
+        }
+
+        .timeline-content:hover .dynasty-title {
+            color: var(--accent);
+        }
+
+        .dynasty-period-badge {
+            font-size: 0.55em;
+            font-weight: normal;
+            background: rgba(139,69,19,0.1);
+            color: var(--primary-light);
+            padding: 3px 10px;
+            border-radius: 10px;
+            letter-spacing: 0.03em;
+        }
+
+        .dynasty-desc {
+            color: var(--text-sub);
+            line-height: 1.7;
+            font-size: 0.93em;
+            margin-bottom: 16px;
+        }
+
+        .dynasty-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .feature-chip {
+            background: rgba(139,69,19,0.08);
+            color: var(--primary);
+            border: 1px solid rgba(139,69,19,0.2);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            transition: all var(--transition-fast);
+        }
+
+        .timeline-content:hover .feature-chip {
+            background: var(--primary);
+            color: white;
+        }
+
+        .dynasty-buildings {
+            padding-top: 14px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .buildings-label {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+
+        .building-tag {
+            display: inline-block;
+            background: var(--bg);
+            color: var(--primary);
+            padding: 5px 13px;
+            border-radius: 14px;
+            font-size: 0.83em;
+            margin: 4px 4px 0 0;
+            cursor: pointer;
+            transition: all var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .building-tag:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        /* ===== 详情侧面板 - 卷轴效果 ===== */
+        .detail-panel {
+            position: fixed;
+            right: -460px;
+            top: 64px;
+            bottom: 0;
+            width: 440px;
+            background: var(--bg-paper);
+            box-shadow: -8px 0 32px rgba(0,0,0,0.12);
+            transition: right 0.6s cubic-bezier(0.4,0,0.2,1);
+            z-index: 998;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: var(--secondary) transparent;
+            border-left: 2px solid var(--secondary);
+        }
+
+        .detail-panel::-webkit-scrollbar { width: 4px; }
+        .detail-panel::-webkit-scrollbar-track { background: transparent; }
+        .detail-panel::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 2px; }
+
+        .detail-panel.active {
+            right: 0;
+        }
+
+        /* 面板头部 */
+        .panel-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #F7F3ED;
+            padding: 28px 24px 24px;
+            position: relative;
+            border-bottom: 2px solid var(--accent-gold);
+        }
+
+        .detail-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            background: rgba(245,245,220,0.2);
+            border: none;
+            border-radius: 50%;
+            color: #F7F3ED;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detail-close:hover {
+            background: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        .panel-dynasty-name {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .panel-dynasty-name::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--accent-gold);
+        }
+
+        .panel-dynasty-period {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        /* 面板图片画廊 - 卷轴效果 */
+        .panel-gallery {
+            position: relative;
+            background: #1a1a1a;
+            overflow: hidden;
+            height: 240px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .panel-gallery-slider {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        .panel-gallery-slide {
+            min-width: 100%;
+            height: 100%;
+        }
+
+        .panel-gallery-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: rgba(0,0,0,0.45);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            backdrop-filter: blur(2px);
+        }
+
+        .gallery-nav:hover {
+            background: rgba(139,69,19,0.85);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .gallery-nav-prev { left: 12px; }
+        .gallery-nav-next { right: 12px; }
+
+        .gallery-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 2;
+        }
+
+        .gallery-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+        }
+
+        .gallery-dot.active {
+            background: white;
+            transform: scale(1.3);
+        }
+
+        .gallery-counter {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 0.78em;
+            padding: 3px 9px;
+            border-radius: 10px;
+            z-index: 2;
+        }
+
+        .gallery-no-image {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.9em;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* 面板正文 */
+        .panel-body {
+            padding: 24px;
+        }
+
+        .detail-section {
+            margin-bottom: 22px;
+        }
+
+        .detail-section-title {
+            font-size: 0.88em;
+            color: var(--text-muted);
+            font-weight: bold;
+            margin-bottom: 8px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-section-title::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .detail-text {
+            line-height: 1.8;
+            color: var(--text-sub);
+            font-size: 0.93em;
+        }
+
+        .features-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .feature-tag {
+            background: rgba(139,69,19,0.1);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.83em;
+        }
+
+        .buildings-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .building-list-tag {
+            background: var(--bg);
+            color: var(--primary);
+            padding: 5px 14px;
+            border-radius: 14px;
+            font-size: 0.83em;
+            cursor: pointer;
+            transition: all var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .building-list-tag:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            background: var(--text-main);
+            color: rgba(245,245,220,0.8);
+            text-align: center;
+            padding: 36px 24px;
+            font-size: 0.88em;
+            line-height: 2;
+            border-top: 2px solid var(--secondary);
+        }
+
+        /* ===== 响应式设计 ===== */
+        @media (max-width: 900px) {
+            .nav-bar { padding: 0 20px; }
+            .nav-link { padding: 6px 10px; font-size: 0.88em; }
+
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 52px;
+            }
+
+            .timeline-content {
+                width: 100%;
+            }
+
+            .timeline-content::after { display: none; }
+
+            .timeline-line {
+                left: 18px;
+            }
+
+            .timeline-dot {
+                left: 18px;
+            }
+
+            .detail-panel {
+                width: 100%;
+                right: -100%;
+            }
+
+            .hero-title { font-size: 1.8em; }
+        }
+
+        /* 卷轴展开动画 */
+        @keyframes scrollOpen {
+            0% {
+                clip-path: inset(0 50% 0 50%);
+                opacity: 0;
+            }
+            100% {
+                clip-path: inset(0 0 0 0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景云纹装饰 -->
+    <div class="cloud-pattern-bg"></div>
+
+    <!-- 导航栏 -->
+    <nav class="nav-bar">
+        <a href="index_architecture.html" class="nav-logo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            营造中华
+        </a>
+        <div class="nav-links">
+            <a href="space.html" class="nav-link">空间漫游</a>
+            <a href="know.html" class="nav-link">民族之窗</a>
+            <a href="time.html" class="nav-link">时间之境</a>
+            <a href="3d_architecture.html" class="nav-link">3D展示</a>
+            <a href="indivisual.html" class="nav-link">喜好映射</a>
+            <a href="chat.html" class="nav-link">AI助手</a>
+        </div>
+    </nav>
+
+    <!-- 英雄区 -->
+    <div class="page-hero">
+        <h1 class="hero-title">中国古建筑历史长河</h1>
+        <p class="hero-subtitle">穿越千年时空，领略营造智慧</p>
+        <div class="hero-badge-row">
+            <span class="hero-badge">汉代 → 清代</span>
+            <span class="hero-badge">九大朝代</span>
+            <span class="hero-badge">点击节点查看详情</span>
+        </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+        <div class="timeline-container" id="timelineContainer">
+            <div class="timeline-line"></div>
+        </div>
+    </div>
+
+    <!-- 详情侧面板 -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="panel-header">
+            <button class="detail-close" onclick="closeDetail()" title="关闭">×</button>
+            <div class="panel-dynasty-name" id="panelDynastyName">朝代名称</div>
+            <div class="panel-dynasty-period" id="panelDynastyPeriod"></div>
+        </div>
+
+        <!-- 图片画廊 -->
+        <div class="panel-gallery" id="panelGallery">
+            <div class="panel-gallery-slider" id="panelGallerySlider"></div>
+            <button class="gallery-nav gallery-nav-prev" id="galleryPrev" onclick="panelGalleryNav(-1)">‹</button>
+            <button class="gallery-nav gallery-nav-next" id="galleryNext" onclick="panelGalleryNav(1)">›</button>
+            <div class="gallery-dots" id="galleryDots"></div>
+            <div class="gallery-counter" id="galleryCounter"></div>
+        </div>
+
+        <!-- 正文内容 -->
+        <div class="panel-body">
+            <div class="detail-section">
+                <div class="detail-section-title">时代背景</div>
+                <p class="detail-text" id="panelDesc"></p>
+            </div>
+            <div class="detail-section">
+                <div class="detail-section-title">建筑特点</div>
+                <div class="features-grid" id="panelFeatures"></div>
+            </div>
+            <div class="detail-section">
+                <div class="detail-section-title">代表建筑</div>
+                <div class="buildings-list" id="panelBuildings"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>© 2024 营造中华 - 中国古建筑史可视化平台</p>
+        <p>基于梁思成《中国建筑史》学术体系构建</p>
+    </footer>
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/architecture_common.js"></script>
+    <script src="js/building_images.js"></script>
+    <script>
+        // ===== 朝代数据 =====
+        const dynastiesData = [
+            {
+                id: 1,
+                name: '汉代',
+                period: '前206年 — 220年',
+                description: '高台建筑时代，斗拱开始萌芽，是中国古建筑的奠基时期。建筑以夯土高台为主，木构架体系初步形成，彰显帝国气象。',
+                features: ['高台建筑', '斗拱萌芽', '夯土结构', '画像砖石'],
+                buildings: ['未央宫', '建章宫', '霍去病墓', '秦始皇陵']
+            },
+            {
+                id: 2,
+                name: '魏晋南北朝',
+                period: '220年 — 589年',
+                description: '佛教建筑兴起，石窟寺大量出现，斗拱体系逐渐完善。建筑风格由雄浑转向秀丽，南北风格差异显著。',
+                features: ['佛教建筑', '石窟艺术', '斗拱发展', '塔式建筑'],
+                buildings: ['云冈石窟', '龙门石窟', '悬空寺', '敦煌莫高窟']
+            },
+            {
+                id: 3,
+                name: '唐代',
+                period: '618年 — 907年',
+                description: '中国古建筑的黄金时代，雄浑大气，斗拱雄大，出檐深远。建筑规模宏大，布局严谨，气势磅礴，代表东方建筑之巅峰。',
+                features: ['雄浑大气', '斗拱雄大', '出檐深远', '规模宏大'],
+                buildings: ['佛光寺', '南禅寺', '大雁塔', '大明宫']
+            },
+            {
+                id: 4,
+                name: '五代十国',
+                period: '907年 — 960年',
+                description: '承唐启宋的过渡时期，建筑风格延续唐代遗风，同时出现向宋代转型的趋势，技术传承在战乱中艰难延续。',
+                features: ['承唐启宋', '风格过渡', '技术传承', '地方多样'],
+                buildings: ['镇国寺万佛殿', '华林寺大殿', '正定文庙']
+            },
+            {
+                id: 5,
+                name: '宋代',
+                period: '960年 — 1279年',
+                description: '建筑转向秀丽精巧，《营造法式》颁布，技术规范化。装修华丽，色彩丰富，开创了建筑学的制度化先河。',
+                features: ['秀丽精巧', '营造法式', '装修华丽', '技术规范'],
+                buildings: ['晋祠圣母殿', '应县木塔', '隆兴寺', '开元寺塔']
+            },
+            {
+                id: 6,
+                name: '辽金',
+                period: '907年 — 1234年',
+                description: '保留唐代雄浑风格，民族特色鲜明，宗教建筑发达。辽代建筑承唐风，金代融宋制，是北方建筑的重要里程碑。',
+                features: ['唐风遗存', '民族特色', '宗教发达', '木构精湛'],
+                buildings: ['独乐寺', '应县木塔', '华严寺', '善化寺']
+            },
+            {
+                id: 7,
+                name: '元代',
+                period: '1271年 — 1368年',
+                description: '结构简化，藏传佛教建筑传入，风格粗犷豪放。木构架采用天然弯木，减柱造法盛行，体现游牧民族的建筑审美。',
+                features: ['结构简化', '藏传建筑', '减柱造法', '粗犷豪放'],
+                buildings: ['永乐宫', '妙应寺白塔', '曲阳北岳庙']
+            },
+            {
+                id: 8,
+                name: '明代',
+                period: '1368年 — 1644年',
+                description: '官式建筑制度确立，砖石技术发达，紫禁城始建。建筑规模宏大，规制严谨，园林艺术亦进入黄金发展期。',
+                features: ['官式制度', '砖石技术', '规制严谨', '园林兴盛'],
+                buildings: ['太和殿', '天坛', '拙政园', '长城', '客家土楼']
+            },
+            {
+                id: 9,
+                name: '清代',
+                period: '1644年 — 1912年',
+                description: '技艺达到顶峰，装饰繁缛华丽，《工程做法则例》颁布。园林建筑登峰造极，皇家园林集天下名胜于一园。',
+                features: ['技艺顶峰', '装饰繁缛', '园林巅峰', '工程法式'],
+                buildings: ['颐和园', '避暑山庄', '天坛祈年殿']
+            }
+        ];
+
+        // ===== 画廊状态 =====
+        let panelGalleryIndex = 0;
+        let panelGalleryImages = [];
+        let panelAutoTimer = null;
+
+        // ===== 初始化 =====
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTimeline();
+            loadBuildings();
+        });
+
+        // ===== 渲染时间轴 =====
+        function renderTimeline() {
+            const container = document.getElementById('timelineContainer');
+            // 保留竖线
+            const line = container.querySelector('.timeline-line');
+            container.innerHTML = '';
+            container.appendChild(line);
+
+            dynastiesData.forEach((dynasty, index) => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+
+                // 朝代卡片
+                const content = document.createElement('div');
+                content.className = 'timeline-content';
+                content.id = `card-${index}`;
+                content.onclick = () => showDynastyDetail(index);
+
+                // 封面缩略图（如有）
+                const coverImg = getDynastyImage(dynasty.name);
+                const thumbHtml = coverImg && !coverImg.includes('lishi')
+                    ? `<div style="width:100%;height:120px;border-radius:10px;overflow:hidden;margin-bottom:14px;">
+                         <img src="${coverImg}" alt="${dynasty.name}" style="width:100%;height:100%;object-fit:cover;"
+                              onerror="this.parentElement.style.display='none'">
+                       </div>`
+                    : '';
+
+                content.innerHTML = `
+                    ${thumbHtml}
+                    <div class="dynasty-title">
+                        ${dynasty.name}
+                        <span class="dynasty-period-badge">${dynasty.period}</span>
+                    </div>
+                    <div class="dynasty-desc">${dynasty.description}</div>
+                    <div class="dynasty-features">
+                        ${dynasty.features.map(f => `<span class="feature-chip">${f}</span>`).join('')}
+                    </div>
+                    <div class="dynasty-buildings">
+                        <div class="buildings-label">代表建筑</div>
+                        ${dynasty.buildings.map(b =>
+                            `<span class="building-tag" onclick="event.stopPropagation(); searchBuilding('${b}')">${b}</span>`
+                        ).join('')}
+                    </div>
+                `;
+
+                // 时间点
+                const dot = document.createElement('div');
+                dot.className = 'timeline-dot';
+                dot.id = `dot-${index}`;
+                dot.onclick = (e) => {
+                    // 创建涟漪效果
+                    createRipple(e.currentTarget, e);
+                    showDynastyDetail(index);
+                };
+
+                item.appendChild(dot);
+                item.appendChild(content);
+                container.appendChild(item);
+            });
+        }
+
+        // 创建涟漪效果
+        function createRipple(element, event) {
+            // 移除之前的涟漪
+            const oldRipple = element.querySelector('.ripple-effect');
+            if (oldRipple) {
+                oldRipple.remove();
+            }
+
+            const rect = element.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple-effect';
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                background: radial-gradient(circle, rgba(196, 30, 58, 0.4) 0%, transparent 70%);
+                border-radius: 50%;
+                pointer-events: none;
+                animation: rippleExpand 0.8s ease-out;
+                z-index: 5;
+            `;
+            
+            element.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 800);
+        }
+
+        // ===== 显示朝代详情 - 卷轴效果 =====
+        function showDynastyDetail(index) {
+            const dynasty = dynastiesData[index];
+
+            // 更新激活态
+            document.querySelectorAll('.timeline-dot').forEach((d, i) => {
+                d.classList.toggle('active', i === index);
+                d.classList.toggle('ripple', i === index);
+                if (i === index) {
+                    setTimeout(() => d.classList.remove('ripple'), 800);
+                }
+            });
+            document.querySelectorAll('.timeline-content').forEach((c, i) => c.classList.toggle('active-card', i === index));
+
+            // 填充头部
+            document.getElementById('panelDynastyName').textContent = dynasty.name;
+            document.getElementById('panelDynastyPeriod').textContent = dynasty.period;
+
+            // 填充正文
+            document.getElementById('panelDesc').textContent = dynasty.description;
+            document.getElementById('panelFeatures').innerHTML =
+                dynasty.features.map(f => `<span class="feature-tag">${f}</span>`).join('');
+            document.getElementById('panelBuildings').innerHTML =
+                dynasty.buildings.map(b =>
+                    `<span class="building-list-tag" onclick="searchBuilding('${b}')">${b}</span>`
+                ).join('');
+
+            // 渲染图片画廊
+            renderPanelGallery(dynasty.name);
+
+            // 显示面板（卷轴展开效果）
+            setTimeout(() => {
+                document.getElementById('detailPanel').classList.add('active');
+            }, 100);
+        }
+
+        // ===== 渲染侧面板画廊 =====
+        function renderPanelGallery(dynastyName) {
+            const imgs = getDynastyImages(dynastyName);
+            panelGalleryImages = imgs;
+            panelGalleryIndex = 0;
+
+            const slider = document.getElementById('panelGallerySlider');
+            const dots = document.getElementById('galleryDots');
+            const counter = document.getElementById('galleryCounter');
+            const prevBtn = document.getElementById('galleryPrev');
+            const nextBtn = document.getElementById('galleryNext');
+
+            // 停止旧的自动轮播
+            if (panelAutoTimer) clearInterval(panelAutoTimer);
+
+            if (!imgs || imgs.length === 0) {
+                slider.innerHTML = `
+                    <div class="panel-gallery-slide" style="min-width:100%">
+                        <div class="gallery-no-image">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                                <polyline points="21 15 16 10 5 21"/>
+                            </svg>
+                            <span>暂无图片</span>
+                        </div>
+                    </div>`;
+                dots.innerHTML = '';
+                counter.textContent = '';
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                return;
+            }
+
+            // 渲染幻灯片
+            slider.innerHTML = imgs.map((src, i) => `
+                <div class="panel-gallery-slide">
+                    <img src="${src}" alt="朝代图片${i+1}" loading="lazy"
+                         onerror="this.src='img/宫殿建筑-故宫太和殿/image_01.jpg'">
+                </div>`).join('');
+
+            // 指示点
+            dots.innerHTML = imgs.map((_, i) =>
+                `<button class="gallery-dot ${i===0?'active':''}" onclick="panelGalleryGoTo(${i})"></button>`
+            ).join('');
+
+            // 控制
+            counter.textContent = `1 / ${imgs.length}`;
+            prevBtn.style.display = imgs.length > 1 ? 'flex' : 'none';
+            nextBtn.style.display = imgs.length > 1 ? 'flex' : 'none';
+
+            // 自动轮播（3.5秒）
+            if (imgs.length > 1) {
+                panelAutoTimer = setInterval(() => panelGalleryNav(1), 3500);
+            }
+        }
+
+        // ===== 画廊导航 =====
+        function panelGalleryNav(dir) {
+            if (!panelGalleryImages.length) return;
+            panelGalleryGoTo((panelGalleryIndex + dir + panelGalleryImages.length) % panelGalleryImages.length);
+        }
+
+        function panelGalleryGoTo(idx) {
+            panelGalleryIndex = idx;
+            const slider = document.getElementById('panelGallerySlider');
+            slider.style.transform = `translateX(-${idx * 100}%)`;
+
+            document.querySelectorAll('#galleryDots .gallery-dot').forEach((d, i) =>
+                d.classList.toggle('active', i === idx));
+
+            document.getElementById('galleryCounter').textContent =
+                `${idx + 1} / ${panelGalleryImages.length}`;
+        }
+
+        // 键盘导航
+        document.addEventListener('keydown', function(e) {
+            const panel = document.getElementById('detailPanel');
+            if (!panel.classList.contains('active')) return;
+            if (e.key === 'ArrowLeft') panelGalleryNav(-1);
+            else if (e.key === 'ArrowRight') panelGalleryNav(1);
+            else if (e.key === 'Escape') closeDetail();
+        });
+
+        // ===== 关闭详情 =====
+        function closeDetail() {
+            document.getElementById('detailPanel').classList.remove('active');
+            document.querySelectorAll('.timeline-dot').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.timeline-content').forEach(c => c.classList.remove('active-card'));
+            if (panelAutoTimer) { clearInterval(panelAutoTimer); panelAutoTimer = null; }
+        }
+
+        // ===== 搜索建筑 =====
+        function searchBuilding(name) {
+            // 添加页面转场效果
+            document.body.style.transition = 'opacity 0.5s ease';
+            document.body.style.opacity = '0';
+            
+            setTimeout(() => {
+                window.location.href = `explore_architecture_enhanced.html?search=${encodeURIComponent(name)}`;
+            }, 500);
+        }
+
+        // ===== 加载真实建筑数据 =====
+        let buildingsData = [];
+        function loadBuildings() {
+            $.ajax({
+                url: BASE_URL + '/architecture/buildings/',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    buildingsData = response.results || response;
+                    associateBuildingsToDynasties();
+                },
+                error: function() {
+                    console.log('使用静态建筑数据');
+                }
+            });
+        }
+
+        function associateBuildingsToDynasties() {
+            dynastiesData.forEach(dynasty => {
+                const real = buildingsData.filter(b => b.dynasty === dynasty.id);
+                if (real.length > 0) dynasty.buildings = real.map(b => b.bname);
+            });
+            const container = document.getElementById('timelineContainer');
+            const line = document.createElement('div');
+            line.className = 'timeline-line';
+            container.innerHTML = '';
+            container.appendChild(line);
+            renderTimeline();
+        }
+
+        // 点击外部关闭
+        document.addEventListener('click', function(e) {
+            const panel = document.getElementById('detailPanel');
+            if (!panel.classList.contains('active')) return;
+            if (!panel.contains(e.target) && !e.target.closest('.timeline-item')) {
+                closeDetail();
+            }
+        });
+
+        // 添加涟漪动画CSS
+        const rippleStyle = document.createElement('style');
+        rippleStyle.textContent = `
+            @keyframes rippleExpand {
+                0% {
+                    transform: translate(-50%, -50%) scale(0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(-50%, -50%) scale(3);
+                    opacity: 0;
+                }
+            }
+            .ripple-effect {
+                animation: rippleExpand 0.8s ease-out;
+            }
+        `;
+        document.head.appendChild(rippleStyle);
+    </script>
+</body>
+</html>
